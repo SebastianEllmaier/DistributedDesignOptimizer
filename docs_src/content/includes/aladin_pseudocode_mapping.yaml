@@ -1,0 +1,495 @@
+# ALADIN Pseudocode-to-Code Traceability Mapping
+# ================================================
+# This file maps each logical step in the Augmented Lagrangian Alternating
+# Direction Inexact Newton (ALADIN) pseudocode to implementing classes/methods.
+#
+# ALADIN uses a central controller that collects sensitivity information from
+# local subsystems and solves a coordinated QP to compute design variable updates.
+#
+# MAINTENANCE: If a method is renamed or moved, update the corresponding entry here.
+# The build process will warn you if a referenced method no longer exists.
+#
+# Fields:
+#   id:              Unique identifier for this mapping (used as HTML data attribute)
+#   algo_lines:      Line numbers in the pseudocode (1-based, matching CSS counter)
+#   label:           Short human-readable description of the pseudocode step
+#   pseudocode_text: The text as it appears in the pseudocode (for display)
+#   implementations: List of class.method references that implement this step
+#     - module:      Dotted Python module path
+#       class:       Class name
+#       method:      Method name (use "__init__" for constructors)
+
+mappings:
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 1–3: Require: hyperparameters and initial values
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-require-hyperparameters
+    algo_lines: [1, 2, 3]
+    label: "Require hyperparameters ν, Σ, s and initial Δd, λ"
+    pseudocode_text: "Require: hyperparameters ν, Σ, s; initial Δd, λ"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: get_Nu
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: get_Sigma_i
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: initializeCouplingParameters_before_CopyToMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: initializeCouplingParameters_before_CopyToMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 4: k ← 0
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-init-outerloop
+    algo_lines: [4]
+    label: "Initialize outerloop iterator"
+    pseudocode_text: "k ← 0 (initialize outerloop iterator)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 5–7: repeat outerloop, l ← 0, repeat innerloop
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-outerloop-repeat
+    algo_lines: [5, 6, 7]
+    label: "Outer loop repeat, initialize innerloop"
+    pseudocode_text: "repeat; l ← 0; repeat"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 8–11: Local subsystems copy Δd and compute d_hat
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-local-copy-delta
+    algo_lines: [8, 9, 10, 11]
+    label: "Local: Copy Δd from controller, compute d_hat"
+    pseudocode_text: "for every i ∈ M; Copy Δd from Controller; d_hat ← d + Δd"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalController_MiddleLevelDataStorageALADIN
+        class: LocalController_MiddleLevelDataStorageALADIN
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: get_Delta_D
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalToController_CouplingParametersALADIN
+        class: LocalToController_CouplingParametersALADIN
+        method: set_D_hat
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: updateCouplingParameters_innerLoop
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 12: Local subsystem NLP optimization
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-local-nlp
+    algo_lines: [12]
+    label: "Local subsystem NLP optimization"
+    pseudocode_text: "d ← argmin local NLP with regularization term"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: innerloop_iteration
+      - module: Distributed_Design_Optimizer.coordination.innerloop_iterationscheme.IterationSchemeInterface
+        class: IterationSchemeInterface
+        method: run_innerloop_jobs_multiprocessing
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_innerloop_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_IterativeOptimization
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluateCoordinationObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: prepare_OptimizationProblem
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalConstraint
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationInterface
+        class: OptimizationInterface
+        method: callOptimizer
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 13–15: Copy sensitivity info to controller storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-copy-to-controller
+    algo_lines: [13, 14, 15]
+    label: "Copy gradients, Hessians, coupling to controller"
+    pseudocode_text: "Copy B, ∇f, ∇g, ∇h, H, h, z, λ, s to Controller interface"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: mapToController
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluateAllHessians
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Gradient_CoordinationObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Jacobian_CoordinationEqualityConstraints
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Jacobian_CoordinationInEqualityConstraints
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: set_Hessian_LocalConstraints_Lagrangian
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: set_Gradient_LocalObjective
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: set_Jacobian_LocalEqualityConstraints
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 17–19: Controller copies sensitivity info from locals
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-controller-copy-from
+    algo_lines: [17, 18, 19]
+    label: "Controller: Copy sensitivity data from locals"
+    pseudocode_text: "for Controller; Copy B, ∇f, ... from interface ∀ i ∈ M"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: initializeCouplingParameters_after_CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: get_Copy_LocalToLocalForController_CouplingParameters
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: get_Copy_Hessian_LocalConstraints_Lagrangian
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: get_Copy_Gradient_LocalObjective
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: get_Copy_Jacobian_LocalEqualityConstraints
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 20: Controller QP optimization
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-controller-qp
+    algo_lines: [20]
+    label: "Controller QP optimization for Δd"
+    pseudocode_text: "{Δd} ← argmin QP with linearized constraints"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: prepare_OptimizationProblem
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: evaluateCoordinationObjective
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: evaluateCoordinationEqualityConstraint
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: evaluate_Jacobian_CoordinationEqualityConstraints
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: postprocess_Optimization
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: mapToCouplingParameters
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationInterface
+        class: OptimizationInterface
+        method: callOptimizer
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 21: Copy Δd to interface storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-controller-copy-delta
+    algo_lines: [21]
+    label: "Controller: Copy Δd to interface storage"
+    pseudocode_text: "Copy Δd to interface i ↔ Controller ∀ i ∈ M"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: set_Delta_D
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.ControllerToLocal_MiddleLevelCouplingALADIN
+        class: ControllerToLocal_MiddleLevelCouplingALADIN
+        method: __init__
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 23–25: Innerloop convergence check
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-innerloop-convergence
+    algo_lines: [23, 24, 25]
+    label: "Innerloop convergence check"
+    pseudocode_text: "Compute innerloop convergence; l ← l + 1; until converged"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_InnerLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Innerloop_Interface
+        class: Local_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Innerloop_DeWit
+        class: Local_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Innerloop_Interface
+        class: Centralized_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Innerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 26: Update design variables for outer loop
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-update-design
+    algo_lines: [26]
+    label: "Update design variables for outer loop"
+    pseudocode_text: "d^(k+1) ← d^(k,l) ∀ i ∈ M"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 27–32: Outerloop prepare — compute d_hat^(k+1), copy hatted H, h, z
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-outerloop-prepare
+    algo_lines: [27, 28, 29, 30, 31, 32]
+    label: "Compute outerloop iterate d_hat and prepare hatted coupling quantities"
+    pseudocode_text: "for every i ∈ M; d_hat^(k+1) ← d^(k+1) + Δd; copy hatted H, h, z"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: run_prepare_updateCouplingParameters_job
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: prepare_updateCouplingParameters
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: prepare_updateCouplingParameters
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalToController_CouplingParametersALADIN
+        class: LocalToController_CouplingParametersALADIN
+        method: set_D_hat
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 34–38: Dual Update (Lagrange multiplier update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-dual-update
+    algo_lines: [34, 35, 36, 37, 38]
+    label: "Dual Update (Lagrange multiplier update)"
+    pseudocode_text: "for every i ∈ M; λ^(k+1) ← DualUpdate(...)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: updateCouplingParameters_outerLoop
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: set_CoordinationMultipliers_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: set_CoordinationMultipliers_CopyMappedResponse_Minus_CouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: set_CoordinationMultipliers_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: set_CoordinationMultipliers_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: updateCouplingParameters_outerLoop
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 40–43: Outerloop convergence check and return
+  # ─────────────────────────────────────────────────────────────────────
+  - id: aladin-outerloop-convergence
+    algo_lines: [40, 41, 42, 43]
+    label: "Outerloop convergence and return"
+    pseudocode_text: "Compute outerloop convergence; k ← k + 1; until converged; return"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_OuterLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Outerloop_Interface
+        class: Local_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Outerloop_DeWit
+        class: Local_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Outerloop_Interface
+        class: Centralized_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Outerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Inconsistencies
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Math Symbol Mappings
+# ─────────────────────────────────────────────────────────────────────────
+# Maps mathematical symbols in the pseudocode to their implementations.
+
+math_symbol_mappings:
+  - id: aladin-sym-delta-d
+    symbol_latex: "\\Delta d"
+    label: "Design variable step (ALADIN)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: get_Delta_D
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.ControllerCouplingParametersALADIN
+        class: ControllerCouplingParametersALADIN
+        method: set_Delta_D
+
+  - id: aladin-sym-d-hat
+    symbol_latex: "\\hat{d}"
+    label: "Coordinated iterate"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalToController_CouplingParametersALADIN
+        class: LocalToController_CouplingParametersALADIN
+        method: get_D_hat
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalToController_CouplingParametersALADIN
+        class: LocalToController_CouplingParametersALADIN
+        method: set_D_hat
+
+  - id: aladin-sym-nu
+    symbol_latex: "\\nu"
+    label: "Penalty parameter"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: get_Nu
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: set_Nu
+
+  - id: aladin-sym-sigma
+    symbol_latex: "\\Sigma"
+    label: "Positive definite scaling matrix"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: get_Sigma_i
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: set_Sigma_i
+
+  - id: aladin-sym-hessian-B
+    symbol_latex: "B"
+    label: "Hessian approximation (BFGS)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluateAllHessians
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Complete_Hessian_LocalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: get_HessianApproximation_LocalObjective
+
+  - id: aladin-sym-gradient-f
+    symbol_latex: "\\nabla_d v_f"
+    label: "Gradient of local objective"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Gradient_CoordinationObjective
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: get_Gradient_LocalObjective
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: set_Gradient_LocalObjective
+
+  - id: aladin-sym-jacobian-h
+    symbol_latex: "\\nabla_d v_h"
+    label: "Jacobian of equality constraints"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Jacobian_CoordinationEqualityConstraints
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: get_Jacobian_LocalEqualityConstraints
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: set_Jacobian_LocalEqualityConstraints
+
+  - id: aladin-sym-jacobian-g
+    symbol_latex: "\\nabla_d v_g"
+    label: "Jacobian of inequality constraints"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN
+        class: LocalSubSystemALADIN
+        method: evaluate_Jacobian_CoordinationInEqualityConstraints
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: get_Jacobian_LocalInequalityConstraints
+      - module: Distributed_Design_Optimizer.middlelevel.aladin.LocalToController_MiddleLevelCouplingALADIN
+        class: LocalToController_MiddleLevelCouplingALADIN
+        method: set_Jacobian_LocalInequalityConstraints
+
+  - id: aladin-sym-lambda
+    symbol_latex: "\\lambda"
+    label: "Lagrange multiplier (ALADIN)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalCouplingParametersALADIN
+        class: LocalCouplingParametersALADIN
+        method: get_Multipliers_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalCouplingParametersALADIN
+        class: LocalCouplingParametersALADIN
+        method: get_Multipliers_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+
+  - id: aladin-sym-weight
+    symbol_latex: "s"
+    label: "Penalty weight (ALADIN)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalCouplingParametersALADIN
+        class: LocalCouplingParametersALADIN
+        method: get_Weights_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.aladin.LocalCouplingParametersALADIN
+        class: LocalCouplingParametersALADIN
+        method: get_Weights_CopySharedDesignVariable_Minus_TargetSharedDesignVariable

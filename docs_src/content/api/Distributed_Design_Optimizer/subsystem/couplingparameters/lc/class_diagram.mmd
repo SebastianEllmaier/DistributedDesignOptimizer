@@ -1,0 +1,37 @@
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Classes from other packages (clickable)
+    class SubSysCouplingParametersBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class CouplingParametersLC:::localStyle {
+        -_multipliers_mappedresponse_minus_copycouplingvariable
+        -_multipliers_copymappedresponse_minus_couplingvariable
+        -_multipliers_shareddesignvariable_minus_copytargetshareddesignvariable
+        -_multipliers_copyshareddesignvariable_minus_targetshareddesignvariable
+        +__init__(id)
+        +set_Multipliers_MappedResponse_Minus_CopyCouplingVariable(mappedresponse_minus_copycouplingvariable_in)
+        +get_Multipliers_MappedResponse_Minus_CopyCouplingVariable()
+        +set_Multipliers_CopyMappedResponse_Minus_CouplingVariable(copymappedresponse_minus_couplingvariable_in)
+        +get_Multipliers_CopyMappedResponse_Minus_CouplingVariable()
+        ...
+    }
+
+    SubSysCouplingParametersBasis <|-- CouplingParametersLC
+
+    %% Click handlers for navigation to documentation
+    click SubSysCouplingParametersBasis href "../SubSysCouplingParametersBasis/" "View SubSysCouplingParametersBasis documentation"
+    click CouplingParametersLC href "CouplingParametersLC/" "View CouplingParametersLC documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```

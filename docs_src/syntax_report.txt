@@ -1,0 +1,52 @@
+======================================================================
+SYNTAX VALIDATION REPORT
+======================================================================
+Files checked: 546
+Classes checked: 518
+Functions/Methods checked: 4832
+Files with syntax errors: 0
+Files missing license header: 0
+Docstring & type-hint issues found: 1
+
+======================================================================
+DOCSTRING & TYPE-HINT ISSUES
+======================================================================
+
+[FILE] Distributed_Design_Optimizer\coordination\updatecouplingparametermethod\UpdateCouplingParameterMethod_AugLagProximal_MultipliersFixedWeights.py
+  - UpdateCouplingParameterMethod_AugLagProximal_MultipliersFixedWeights.initialize_ProximalParameters: parameter "subsystem" uses a quoted/forward-reference type hint ("'Distributed_Design_Optimizer.subsystem.LocalSubSystemALADIN.LocalSubSystemALADIN'"); use a direct type hint instead
+
+----------------------------------------------------------------------
+RECOMMENDED ACTIONS
+----------------------------------------------------------------------
+
+DOCSTRING STYLE:
+  Add docstrings following the Google style guide.
+  Required docstrings are determined by the rules in Docstring_Style file.
+  Active rules:
+    - MODULE_DOCSTRING_REQUIRED
+    - CLASS_DOCSTRING_REQUIRED
+    - FUNCTION_DOCSTRING_REQUIRED
+    - INIT_DOCSTRING_REQUIRED
+    - SUMMARY_LINE_REQUIRED
+    - ARGS_DOCUMENTED
+    - RETURNS_DOCUMENTED
+    - RAISES_DOCUMENTED
+    - NO_UNDOCUMENTED_PARAMS
+    - NO_UNION_OPTIONAL
+    - NO_QUOTED_TYPE_HINTS
+
+  Example Google-style docstring:
+    '''
+    One-line summary of function.
+
+    Args:
+        param1: Description of first parameter.
+        param2: Description of second parameter.
+
+    Returns:
+        Description of return value.
+
+    Raises:
+        ValueError: Description of when this is raised.
+    '''
+

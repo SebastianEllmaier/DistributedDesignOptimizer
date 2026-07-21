@@ -1,0 +1,72 @@
+---
+title: pc
+---
+
+# pc
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Classes from other packages (clickable)
+    class InConsistencySizeBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class MiddleLevelDataStorageBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class SubSysMiddleLevelCouplingBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class InConsistencySize:::localStyle {
+        +__init__(id)
+        +update_state(other_inconsistency)
+    }
+
+    class MiddleLevelCouplingPC:::localStyle {
+        +__init__(id)
+        +update_state(other_middlelevelcoupling)
+    }
+
+    class MiddleLevelDataStoragePC:::localStyle {
+        -_couplingdata
+        +__init__(idparent, idchild, ...)
+        +createManagedMiddleLevel(manager, lock)
+        +update_state(other_storage)
+    }
+
+    InConsistencySizeBasis <|-- InConsistencySize
+    SubSysMiddleLevelCouplingBasis <|-- MiddleLevelCouplingPC
+    MiddleLevelDataStorageBasis <|-- MiddleLevelDataStoragePC
+
+    %% Click handlers for navigation to documentation
+    click InConsistencySizeBasis href "../InConsistencySizeBasis/" "View InConsistencySizeBasis documentation"
+    click MiddleLevelDataStorageBasis href "../MiddleLevelDataStorageBasis/" "View MiddleLevelDataStorageBasis documentation"
+    click SubSysMiddleLevelCouplingBasis href "../SubSysMiddleLevelCouplingBasis/" "View SubSysMiddleLevelCouplingBasis documentation"
+    click InConsistencySize href "InConsistencySize/" "View InConsistencySize documentation"
+    click MiddleLevelCouplingPC href "MiddleLevelCouplingPC/" "View MiddleLevelCouplingPC documentation"
+    click MiddleLevelDataStoragePC href "MiddleLevelDataStoragePC/" "View MiddleLevelDataStoragePC documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Modules
+
+- [InConsistencySize](InConsistencySize.md)
+- [MiddleLevelCouplingPC](MiddleLevelCouplingPC.md)
+- [MiddleLevelDataStoragePC](MiddleLevelDataStoragePC.md)
+

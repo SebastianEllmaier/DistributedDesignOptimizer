@@ -1,0 +1,120 @@
+# CopyFromMiddleLevel Pseudocode-to-Code Traceability Mapping
+# =============================================================
+
+mappings:
+  - id: copyfrom-entry
+    algo_lines: [1]
+    label: "CopyFromMiddleLevel entry point"
+    pseudocode_text: "procedure SubSystemBasis.CopyFromMiddleLevel()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+
+  - id: copyfrom-loop-middlelevels
+    algo_lines: [2]
+    label: "Iterate over all MiddleLevelDataStorage instances"
+    pseudocode_text: "for every MiddleLevelDataStorage in self._middlelevels do"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_MiddleLevels
+
+  - id: copyfrom-get-id
+    algo_lines: [3]
+    label: "Get MiddleLevelDataStorage ID pair"
+    pseudocode_text: "Get MiddleLevelDataStorage ID pair [id_parent, id_child]"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: get_ID
+
+  - id: copyfrom-determine-neighbor
+    algo_lines: [4]
+    label: "Determine neighbor subsystem ID"
+    pseudocode_text: "Determine neighbor ID from the pair"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_SUBSYSTEMID
+
+  - id: copyfrom-get-stored
+    algo_lines: [5]
+    label: "Acquire lock and read coupling data"
+    pseudocode_text: "Acquire multiprocessing lock and read neighbor coupling data"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: get_StoredCoupling
+
+  - id: copyfrom-find-coupling
+    algo_lines: [6]
+    label: "Find matching CouplingParameters"
+    pseudocode_text: "Find matching CouplingParameters by neighbor ID"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.CouplingParametersBasis
+        class: CouplingParametersBasis
+        method: get_ID
+
+  - id: copyfrom-copy-polymorphic
+    algo_lines: [7]
+    label: "Copy from MiddleLevelCoupling into CouplingParameters (polymorphic)"
+    pseudocode_text: "Copy from MiddleLevelCoupling into local CouplingParameters"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: CopyFromMiddleLevelCoupling
+
+  - id: copyfrom-mapped-responses
+    algo_lines: [8]
+    label: "Read MappedResponseVariables from neighbor"
+    pseudocode_text: "Read MappedResponseVariables → store as CopyMappedResponseVariables"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: get_MappedResponses
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: set_Copy_MappedResponses
+
+  - id: copyfrom-coupling-variable
+    algo_lines: [9]
+    label: "Read CouplingVariable from neighbor"
+    pseudocode_text: "Read CouplingVariable → store as CopyCouplingVariable"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: get_CouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: set_Copy_CouplingVariable
+
+  - id: copyfrom-shared-dv
+    algo_lines: [10]
+    label: "Read SharedDesignVariables from neighbor"
+    pseudocode_text: "Read SharedDesignVariables → store as CopySharedDesignVariables"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: get_SharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: set_Copy_SharedDesignVariables
+
+  - id: copyfrom-target-shared-dv
+    algo_lines: [11]
+    label: "Read TargetSharedDesignVariables from neighbor"
+    pseudocode_text: "Read TargetSharedDesignVariables → store as CopyTargetSharedDesignVariables"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: get_TargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: set_Copy_TargetSharedDesignVariables

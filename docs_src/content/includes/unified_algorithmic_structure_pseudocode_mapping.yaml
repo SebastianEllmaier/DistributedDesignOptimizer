@@ -1,0 +1,718 @@
+# Pseudocode-to-Code Traceability Mapping
+# =========================================
+# This file maps each logical step in the Unified Algorithmic Structure pseudocode
+# to the implementing classes/methods in the codebase.
+#
+# MAINTENANCE: If a method is renamed or moved, update the corresponding entry here.
+# The build process will warn you if a referenced method no longer exists.
+#
+# Fields:
+#   id:              Unique identifier for this mapping (used as HTML data attribute)
+#   algo_lines:      Line numbers in the pseudocode (1-based, matching CSS counter)
+#   label:           Short human-readable description of the pseudocode step
+#   pseudocode_text: The text as it appears in the pseudocode (for display)
+#   implementations: List of class.method references that implement this step
+#     - module:      Dotted Python module path
+#       class:       Class name
+#       method:      Method name (use "__init__" for constructors)
+
+mappings:
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 1–3: Require: hyperparameters and initial coupling parameters
+  # ─────────────────────────────────────────────────────────────────────
+  - id: require-hyperparameters
+    algo_lines: [1, 2, 3]
+    label: "Require hyperparameters and initial coupling parameters"
+    pseudocode_text: "Require: hyperparameters and initial coupling parameters in interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.InputFileInterface
+        class: InputFileInterface
+        method: get_Subsystems
+      - module: Distributed_Design_Optimizer.coordination.InputFileInterface
+        class: InputFileInterface
+        method: get_CoordinationMethod
+      - module: Distributed_Design_Optimizer.coordination.InputFileBasis
+        class: InputFileBasis
+        method: __init__
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.CoordinationMethodInterface
+        class: CoordinationMethodInterface
+        method: createSubSystems
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.CoordinationMethodInterface
+        class: CoordinationMethodInterface
+        method: createControllerSubSystem
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: __init__
+      - module: Distributed_Design_Optimizer.middlelevel.CreateMiddleLevels
+        class: CreateMiddleLevels
+        method: createMiddleLevels
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 4: k ← 0
+  # ─────────────────────────────────────────────────────────────────────
+  - id: init-outerloop
+    algo_lines: [4]
+    label: "Initialize outerloop iterator"
+    pseudocode_text: "k ← 0 (initialize outerloop iterator)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 5: repeat (outerloop)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-repeat
+    algo_lines: [5]
+    label: "Outer loop repeat"
+    pseudocode_text: "repeat"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 6: l ← 0
+  # ─────────────────────────────────────────────────────────────────────
+  - id: init-innerloop
+    algo_lines: [6]
+    label: "Initialize innerloop iterator"
+    pseudocode_text: "l ← 0 (initialize innerloop iterator)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 7: repeat (innerloop, following some iteration scheme)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-repeat
+    algo_lines: [7]
+    label: "Inner loop repeat (following some iteration scheme)"
+    pseudocode_text: "repeat (following some iteration scheme)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: innerloop_iteration
+      - module: Distributed_Design_Optimizer.coordination.innerloop_iterationscheme.IterationSchemeInterface
+        class: IterationSchemeInterface
+        method: run_innerloop_jobs_multiprocessing
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 8: for every i ∈ M do
+  # ─────────────────────────────────────────────────────────────────────
+  - id: subsystem-for-loop
+    algo_lines: [8]
+    label: "For every subsystem i ∈ M"
+    pseudocode_text: "for every i ∈ M do"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.innerloop_iterationscheme.IterationSchemeBasis
+        class: IterationSchemeBasis
+        method: run_subsystem
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_innerloop_job
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 9: Copy relevant coupling parameters from interface storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: subsystem-copy-from
+    algo_lines: [9]
+    label: "Copy coupling parameters from interface storage (subsystem)"
+    pseudocode_text: "Copy relevant coupling parameters from interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageInterface
+        class: MiddleLevelDataStorageInterface
+        method: get_StoredCoupling
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 10: Prepare optimization problem formulation
+  # ─────────────────────────────────────────────────────────────────────
+  - id: subsystem-prepare-optimization
+    algo_lines: [10]
+    label: "Prepare optimization problem formulation (subsystem)"
+    pseudocode_text: "Prepare optimization problem formulation"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: prepare_OptimizationProblem
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 11: Solve subsystem optimization (argmin)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: subsystem-solve-optimization
+    algo_lines: [11]
+    label: "Solve subsystem optimization (argmin)"
+    pseudocode_text: "argmin optimization problem"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_IterativeOptimization
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationInterface
+        class: OptimizationInterface
+        method: callOptimizer
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalConstraint
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: runAnalysis
+      - module: Distributed_Design_Optimizer.subsystem.optimization.AnalysisInterface
+        class: AnalysisInterface
+        method: evaluateLocalResponses
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalObjectiveInterface
+        class: LocalObjectiveInterface
+        method: evaluateLocalObjective
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalConstraintsInterface
+        class: LocalConstraintsInterface
+        method: evaluateEqualityLocalConstraints
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalConstraintsInterface
+        class: LocalConstraintsInterface
+        method: evaluateInEqualityLocalConstraints
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 12: Post-process the optimization
+  # ─────────────────────────────────────────────────────────────────────
+  - id: subsystem-postprocess
+    algo_lines: [12]
+    label: "Post-process the optimization (subsystem)"
+    pseudocode_text: "Post-process the optimization"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: postprocess_Optimization
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: updateSubsystemfromOptimdata
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: updateSubsystemfromOptimdata
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 13: Copy relevant coupling parameters to interface storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: subsystem-copy-to
+    algo_lines: [13]
+    label: "Copy coupling parameters to interface storage (subsystem)"
+    pseudocode_text: "Copy relevant coupling parameters to interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageInterface
+        class: MiddleLevelDataStorageInterface
+        method: set_Coupling
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 15: for Controller do
+  # ─────────────────────────────────────────────────────────────────────
+  - id: controller-for
+    algo_lines: [15]
+    label: "For Controller do"
+    pseudocode_text: "for Controller do"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.innerloop_iterationscheme.IterationSchemeBasis
+        class: IterationSchemeBasis
+        method: run_subsystem
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_innerloop_job
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemBasis
+        class: ControllerSubSystemBasis
+        method: __init__
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 16: Copy coupling parameters from interface storage (Controller)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: controller-copy-from
+    algo_lines: [16]
+    label: "Controller: Copy coupling parameters from interface storage"
+    pseudocode_text: "Copy relevant coupling parameters from interface storage (Controller)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 17: Prepare optimization problem formulation (Controller)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: controller-prepare-optimization
+    algo_lines: [17]
+    label: "Controller: Prepare optimization problem"
+    pseudocode_text: "Prepare optimization problem formulation (Controller)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: prepare_OptimizationProblem
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 18: Controller argmin
+  # ─────────────────────────────────────────────────────────────────────
+  - id: controller-solve-optimization
+    algo_lines: [18]
+    label: "Controller: Solve optimization (argmin)"
+    pseudocode_text: "Controller argmin optimization problem"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_IterativeOptimization
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationInterface
+        class: OptimizationInterface
+        method: callOptimizer
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 19: Post-process the optimization (Controller)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: controller-postprocess
+    algo_lines: [19]
+    label: "Controller: Post-process the optimization"
+    pseudocode_text: "Post-process the optimization (Controller)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: postprocess_Optimization
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: updateSubsystemfromOptimdata
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 20: Copy coupling parameters to interface storage (Controller)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: controller-copy-to
+    algo_lines: [20]
+    label: "Controller: Copy coupling parameters to interface storage"
+    pseudocode_text: "Copy relevant coupling parameters to interface storage (Controller)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 22: for every i ∈ M and Controller in parallel do (inner update loop)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-update-for
+    algo_lines: [22]
+    label: "For every subsystem and Controller (inner loop update)"
+    pseudocode_text: "for every i ∈ M and Controller in parallel do"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: innerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 23: Copy from interface storage (inner update step)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-update-coupling-from
+    algo_lines: [23]
+    label: "Copy coupling parameters from interface storage (inner update)"
+    pseudocode_text: "Copy relevant coupling parameters from interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 24: Update relevant coupling parameters (inner loop)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-update-coupling
+    algo_lines: [24]
+    label: "Update relevant coupling parameters (inner loop)"
+    pseudocode_text: "Update relevant coupling parameters"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_updateCouplingParameters_innerLoop_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: updateCouplingParameters_innerLoop
+      # Controller participates in the inner-loop update as well
+      # (ControllerSubSystemALADIN.updateCouplingParameters_innerLoop)
+      - module: Distributed_Design_Optimizer.subsystem.ControllerSubSystemALADIN
+        class: ControllerSubSystemALADIN
+        method: updateCouplingParameters_innerLoop
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 25: Copy to interface storage (after inner update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-update-coupling-to
+    algo_lines: [25]
+    label: "Copy coupling parameters to interface storage (after inner update)"
+    pseudocode_text: "Copy relevant coupling parameters to interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 27: Compute innerloop convergence criterion
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-convergence
+    algo_lines: [27]
+    label: "Compute innerloop convergence criterion"
+    pseudocode_text: "Compute innerloop convergence criterion"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_InnerLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Innerloop_Interface
+        class: Local_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Innerloop_DeWit
+        class: Local_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Innerloop_Interface
+        class: Centralized_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Innerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 28: l ← l + 1
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-increment
+    algo_lines: [28]
+    label: "Increment innerloop iterator"
+    pseudocode_text: "l ← l + 1"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: innerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 29: until innerloop convergence criterion is met
+  # ─────────────────────────────────────────────────────────────────────
+  - id: innerloop-until
+    algo_lines: [29]
+    label: "Until innerloop convergence criterion is met"
+    pseudocode_text: "until innerloop convergence criterion is met"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 30: d^(k+1) ← d^(k,l) ∀ i ∈ M
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-update-design
+    algo_lines: [30]
+    label: "Update design variables for outer loop"
+    pseudocode_text: "d^(k+1) ← d^(k,l) for all i ∈ M"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 31: for every i ∈ M and Controller in parallel do (outer loop PREPARE update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-prepare-for
+    algo_lines: [31]
+    label: "For every subsystem and Controller (outer loop prepare update)"
+    pseudocode_text: "for every i ∈ M and Controller in parallel do"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 32: Copy from interface storage (outer loop prepare update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-prepare-coupling-from
+    algo_lines: [32]
+    label: "Copy coupling parameters from interface storage (outer loop prepare update)"
+    pseudocode_text: "Copy relevant coupling parameters from interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: run_prepare_updateCouplingParameters_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 33: Prepare update of relevant coupling parameters (outer loop)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-prepare-coupling
+    algo_lines: [33]
+    label: "Prepare update of relevant coupling parameters (outer loop)"
+    pseudocode_text: "Prepare update of relevant coupling parameters"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: run_prepare_updateCouplingParameters_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: prepare_updateCouplingParameters
+      # Centralized preparation step performed by the coordination method
+      # (Coordinator.outerloop_iteration calls
+      #  CoordinationMethod.centralized_prepare_updateCouplingParameters)
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.CoordinationMethodInterface
+        class: CoordinationMethodInterface
+        method: centralized_prepare_updateCouplingParameters
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 34: Copy to interface storage (outer loop prepare update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-prepare-coupling-to
+    algo_lines: [34]
+    label: "Copy coupling parameters to interface storage (outer loop prepare update)"
+    pseudocode_text: "Copy relevant coupling parameters to interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 36: for every i ∈ M and Controller in parallel do (outer loop UPDATE)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-update-for
+    algo_lines: [36]
+    label: "For every subsystem and Controller (outer loop update)"
+    pseudocode_text: "for every i ∈ M and Controller in parallel do"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 37: Copy from interface storage (outer loop update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-update-coupling-from
+    algo_lines: [37]
+    label: "Copy coupling parameters from interface storage (outer loop update)"
+    pseudocode_text: "Copy relevant coupling parameters from interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: run_updateCouplingParameters_outerLoop_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 38: Update relevant coupling parameters (outer loop)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-update-coupling
+    algo_lines: [38]
+    label: "Update relevant coupling parameters (outer loop)"
+    pseudocode_text: "Update relevant coupling parameters"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: run_updateCouplingParameters_outerLoop_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: updateCouplingParameters_outerLoop
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 39: Copy to interface storage (outer loop update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-update-coupling-to
+    algo_lines: [39]
+    label: "Copy coupling parameters to interface storage (outer loop update)"
+    pseudocode_text: "Copy relevant coupling parameters to interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 41: Compute outerloop convergence criterion
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-convergence
+    algo_lines: [41]
+    label: "Compute outerloop convergence criterion"
+    pseudocode_text: "Compute outerloop convergence criterion"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluate_Inconsistencies
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_OuterLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Outerloop_Interface
+        class: Local_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Outerloop_DeWit
+        class: Local_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Outerloop_Interface
+        class: Centralized_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Outerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 42: k ← k + 1
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-increment
+    algo_lines: [42]
+    label: "Increment outerloop iterator"
+    pseudocode_text: "k ← k + 1"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 43: until outerloop convergence criterion is met
+  # ─────────────────────────────────────────────────────────────────────
+  - id: outerloop-until
+    algo_lines: [43]
+    label: "Until outerloop convergence criterion is met"
+    pseudocode_text: "until outerloop convergence criterion is met"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 44: return {d^(k)} ∀ i ∈ M
+  # ─────────────────────────────────────────────────────────────────────
+  - id: return-result
+    algo_lines: [44]
+    label: "Return optimized design variables"
+    pseudocode_text: "return {d^(k)} for all i ∈ M"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Math-symbol-level mappings
+# ─────────────────────────────────────────────────────────────────────────────
+# These map individual mathematical symbols inside the argmin blocks (lines 11
+# and 18) to the implementing code.  The hook uses these to wrap matching LaTeX
+# tokens with hover/click popups.
+
+math_symbol_mappings:
+  - id: math-vf
+    symbol_latex: "{}^{i}v_f"
+    label: "Local objective function vf"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalObjectiveInterface
+        class: LocalObjectiveInterface
+        method: evaluateLocalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateLocalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: get_LocalObjectiveValue
+
+  - id: math-vg
+    symbol_latex: "{}^{i}v_g"
+    label: "Local inequality constraints vg"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalConstraintsInterface
+        class: LocalConstraintsInterface
+        method: evaluateInEqualityLocalConstraints
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateLocalConstraints
+
+  - id: math-vh
+    symbol_latex: "{}^{i}v_h"
+    label: "Local equality constraints vh"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalConstraintsInterface
+        class: LocalConstraintsInterface
+        method: evaluateEqualityLocalConstraints
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateLocalConstraints
+
+  - id: math-P
+    symbol_latex: "{}^{i}P"
+    label: "Coordination penalty function P"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: evaluateCoordinationObjective
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_CoordinationObjectiveValue
+
+  - id: math-Qleq
+    symbol_latex: "{}^{i}Q^{\\leq}"
+    label: "Coordination inequality constraints Q≤"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: evaluate_Jacobian_CoordinationInEqualityConstraints
+
+  - id: math-Qeq
+    symbol_latex: "{}^{i}Q^{=}"
+    label: "Coordination equality constraints Q="
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: evaluateCoordinationEqualityConstraint
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_CoordinationEqualityConstraintValue
+
+  - id: math-d
+    symbol_latex: "{}^{i}d"
+    label: "Design variables d"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: set_DesignVariables
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_DesignVariables
+
+  - id: math-r
+    symbol_latex: "{}^{i}r"
+    label: "Analysis responses r"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.AnalysisInterface
+        class: AnalysisInterface
+        method: evaluateLocalResponses
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: runAnalysis
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: get_Responses_Unscaled
+
+  - id: math-u
+    symbol_latex: "{}^{i}_{j}u"
+    label: "Coupling parameters u between subsystems"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.CouplingParametersInterface
+        class: CouplingParametersInterface
+        method: get_ID
+      - module: Distributed_Design_Optimizer.subsystem.optimization.AnalysisInterface
+        class: AnalysisInterface
+        method: mapLocalResponsesDesignVariables_to_CouplingParameters
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: mapToCouplingParameters
+
+  - id: math-calD
+    symbol_latex: "{}^{i}\\mathcal{D}"
+    label: "Design space (bounds on design variables)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_LowerBounds_Unscaled
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_UpperBounds_Unscaled

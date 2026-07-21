@@ -1,0 +1,53 @@
+---
+title: sbdp
+---
+
+# sbdp
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Classes from other packages (clickable)
+    class SubSysCouplingParametersBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class CouplingParametersSBDP:::localStyle {
+        -_multipliers_mappedresponse_minus_copycouplingvariable
+        -_multipliers_shareddesignvariable_minus_copytargetshareddesignvariable
+        -_copy_multipliers_mappedresponse_minus_copycouplingvariable
+        -_copy_multipliers_shareddesignvariable_minus_copytargetshareddesignvariable
+        -_sensitivity_gradient
+        +__init__(id)
+        +set_Multipliers_MappedResponse_Minus_CopyCouplingVariable(multipliersin)
+        +get_Multipliers_MappedResponse_Minus_CopyCouplingVariable()
+        +set_Multipliers_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable(multipliersin)
+        +get_Multipliers_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable()
+        ...
+    }
+
+    SubSysCouplingParametersBasis <|-- CouplingParametersSBDP
+
+    %% Click handlers for navigation to documentation
+    click SubSysCouplingParametersBasis href "../SubSysCouplingParametersBasis/" "View SubSysCouplingParametersBasis documentation"
+    click CouplingParametersSBDP href "CouplingParametersSBDP/" "View CouplingParametersSBDP documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Modules
+
+- [CouplingParametersSBDP](CouplingParametersSBDP.md)
+

@@ -1,0 +1,231 @@
+﻿# run_IterativeOptimization Pseudocode-to-Code Traceability Mapping
+# ===================================================================
+
+mappings:
+  - id: optim-call-optimizer
+    algo_lines: [1]
+    label: "Call the optimizer wrapper"
+    pseudocode_text: "optimdata ← OptimizationBasis.callOptimizer(subsystem)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_IterativeOptimization
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationBasis
+        class: OptimizationBasis
+        method: callOptimizer
+
+  - id: optim-solver-execute
+    algo_lines: [2]
+    label: "Dispatch to concrete solver"
+    pseudocode_text: "SolverInterface.execute(subsystem)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.solver.SolverInterface
+        class: SolverInterface
+        method: execute
+
+  - id: optim-bounds-scaling
+    algo_lines: [3]
+    label: "Retrieve design variable bounds and scaling"
+    pseudocode_text: "Retrieve design variable bounds and scaling"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_LowerBounds_Unscaled
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_UpperBounds_Unscaled
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: get_Scalers
+
+  - id: optim-set-dv
+    algo_lines: [5]
+    label: "Set current design variables from solver"
+    pseudocode_text: "Set current design variables"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: set_DesignVariables
+
+  - id: optim-eval-total-obj
+    algo_lines: [6]
+    label: "Evaluate total objective function"
+    pseudocode_text: "evaluateTotalObjective()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalObjective
+
+  - id: optim-run-analysis
+    algo_lines: [7]
+    label: "Run analysis model"
+    pseudocode_text: "runAnalysis()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: runAnalysis
+
+  - id: optim-eval-responses
+    algo_lines: [8]
+    label: "Evaluate subsystem responses (user-defined)"
+    pseudocode_text: "AnalysisInterface.evaluateLocalResponses()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.AnalysisInterface
+        class: AnalysisInterface
+        method: evaluateLocalResponses
+
+  - id: optim-map-coupling
+    algo_lines: [9]
+    label: "Map responses to coupling parameters"
+    pseudocode_text: "mapToCouplingParameters()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: mapToCouplingParameters
+
+  - id: optim-map-responses
+    algo_lines: [10]
+    label: "Map subsystem responses (user-defined)"
+    pseudocode_text: "AnalysisInterface.mapLocalResponsesDesignVariables_to_CouplingParameters()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.AnalysisInterface
+        class: AnalysisInterface
+        method: mapLocalResponsesDesignVariables_to_CouplingParameters
+
+  - id: optim-eval-local-obj
+    algo_lines: [11]
+    label: "Evaluate local objective"
+    pseudocode_text: "evaluateLocalObjective()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateLocalObjective
+
+  - id: optim-eval-local-obj-user
+    algo_lines: [12]
+    label: "User-defined local objective evaluation"
+    pseudocode_text: "LocalObjectiveInterface.evaluateLocalObjective()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalObjectiveInterface
+        class: LocalObjectiveInterface
+        method: evaluateLocalObjective
+
+  - id: optim-eval-coord-obj
+    algo_lines: [13]
+    label: "Coordination-specific penalty/augmented objective terms"
+    pseudocode_text: "evaluateCoordinationObjective()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: evaluateCoordinationObjective
+
+  - id: optim-combine-obj
+    algo_lines: [14]
+    label: "Combine local and coordination objectives"
+    pseudocode_text: "Combine: f = LocalObjective + CoordinationObjective"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalObjective
+
+  - id: optim-eval-total-constr
+    algo_lines: [15]
+    label: "Evaluate total constraints"
+    pseudocode_text: "evaluateTotalConstraint()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalConstraint
+
+  - id: optim-eval-local-constr
+    algo_lines: [18]
+    label: "Evaluate local constraints"
+    pseudocode_text: "evaluateLocalConstraints()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateLocalConstraints
+
+  - id: optim-eval-eq-constr
+    algo_lines: [19]
+    label: "User-defined equality constraints"
+    pseudocode_text: "LocalConstraintsInterface.evaluateEqualityLocalConstraints()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalConstraintsInterface
+        class: LocalConstraintsInterface
+        method: evaluateEqualityLocalConstraints
+
+  - id: optim-eval-ineq-constr
+    algo_lines: [20]
+    label: "User-defined inequality constraints"
+    pseudocode_text: "LocalConstraintsInterface.evaluateInEqualityLocalConstraints()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.optimization.designproblem.LocalConstraintsInterface
+        class: LocalConstraintsInterface
+        method: evaluateInEqualityLocalConstraints
+
+  - id: optim-eval-coord-constr
+    algo_lines: [21]
+    label: "Coordination-specific equality constraints"
+    pseudocode_text: "evaluateCoordinationEqualityConstraint()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemInterface
+        class: SubSystemInterface
+        method: evaluateCoordinationEqualityConstraint
+
+  - id: optim-combine-constr
+    algo_lines: [22]
+    label: "Combine local and coordination constraints"
+    pseudocode_text: "Combine constraints"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalConstraint
+
+  - id: optim-update-from-data
+    algo_lines: [24]
+    label: "Update subsystem from optimization results"
+    pseudocode_text: "updateSubsystemfromOptimdata(optimdata)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: updateSubsystemfromOptimdata
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: updateSubsystemfromOptimdata
+
+  - id: optim-update-set-results
+    algo_lines: [25]
+    label: "Set optimal design variables, objectives, constraints"
+    pseudocode_text: "Set optimal design variables, objectives, constraints"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: set_DesignVariables
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: set_OptimData
+
+  - id: optim-update-map-final
+    algo_lines: [26]
+    label: "Final coupling parameter update"
+    pseudocode_text: "mapToCouplingParameters()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: mapToCouplingParameters
+      - module: Distributed_Design_Optimizer.subsystem.optimization.AnalysisInterface
+        class: AnalysisInterface
+        method: mapLocalResponsesDesignVariables_to_CouplingParameters
+
+  - id: optim-update-rerun-analysis
+    algo_lines: [27]
+    label: "Re-run analysis at optimum"
+    pseudocode_text: "runAnalysis()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: runAnalysis
+      - module: Distributed_Design_Optimizer.subsystem.optimization.AnalysisInterface
+        class: AnalysisInterface
+        method: evaluateLocalResponses

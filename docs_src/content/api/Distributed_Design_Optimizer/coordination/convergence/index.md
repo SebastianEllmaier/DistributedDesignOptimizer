@@ -1,0 +1,125 @@
+---
+title: convergence
+---
+
+# convergence
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Sub-packages (click to navigate)
+    class AlwaysConverged["AlwaysConverged/"]:::packageStyle
+    class DeWit["DeWit/"]:::packageStyle
+
+    class Centralized_ConvergenceIndicator_Innerloop_Basis:::localStyle {
+        -_convinnerloop
+        +__init__()
+        +get_ConvInnerLoop()
+        +print_convergence_result()
+        +update_state(other)
+    }
+
+    class Centralized_ConvergenceIndicator_Innerloop_Interface:::abstractStyle {
+        <<abstract>>
+        +get_ConvInnerLoop()
+        +evaluate(subsystems)
+        +print_beginning_of_centralized_convergenceindicator_innerloop_evaluation()
+        +print_end_of_centralized_convergenceindicator_innerloop_evaluation(subsystems)
+        +print_convergence_result()
+        +update_state(other)
+    }
+
+    class Centralized_ConvergenceIndicator_Outerloop_Basis:::localStyle {
+        -_convouterloop
+        +__init__()
+        +get_ConvOuterLoop()
+        +print_convergence_result()
+        +update_state(other)
+    }
+
+    class Centralized_ConvergenceIndicator_Outerloop_Interface:::abstractStyle {
+        <<abstract>>
+        +get_ConvOuterLoop()
+        +evaluate(subsystems)
+        +print_beginning_of_centralized_convergenceindicator_outerloop_evaluation()
+        +print_end_of_centralized_convergenceindicator_outerloop_evaluation(subsystems)
+        +print_convergence_result()
+        +update_state(other)
+    }
+
+    class ConvergenceIndicator_Innerloop_Interface:::abstractStyle {
+        <<abstract>>
+        +createLocalConvergenceIndicator()
+        +createCentralizedConvergenceIndicator()
+        +validate_inputs()
+        +print_startup_summary()
+        +print_termination_summary()
+    }
+
+    class ConvergenceIndicator_Outerloop_Interface:::abstractStyle {
+        <<abstract>>
+        +createLocalConvergenceIndicator()
+        +createCentralizedConvergenceIndicator()
+        +validate_inputs()
+        +print_startup_summary()
+        +print_termination_summary()
+    }
+
+    class Local_ConvergenceIndicator_Innerloop_Interface:::abstractStyle {
+        <<abstract>>
+        +evaluate(subsystem)
+        +update_state(other)
+    }
+
+    class Local_ConvergenceIndicator_Outerloop_Interface:::abstractStyle {
+        <<abstract>>
+        +evaluate(subsystem)
+        +update_state(other)
+    }
+
+    Centralized_ConvergenceIndicator_Innerloop_Interface <|-- Centralized_ConvergenceIndicator_Innerloop_Basis
+    Centralized_ConvergenceIndicator_Outerloop_Interface <|-- Centralized_ConvergenceIndicator_Outerloop_Basis
+
+    %% Click handlers for navigation to documentation
+    click AlwaysConverged href "AlwaysConverged/" "Browse AlwaysConverged package"
+    click DeWit href "DeWit/" "Browse DeWit package"
+    click Centralized_ConvergenceIndicator_Innerloop_Basis href "Centralized_ConvergenceIndicator_Innerloop_Basis/" "View Centralized_ConvergenceIndicator_Innerloop_Basis documentation"
+    click Centralized_ConvergenceIndicator_Innerloop_Interface href "Centralized_ConvergenceIndicator_Innerloop_Interface/" "View Centralized_ConvergenceIndicator_Innerloop_Interface documentation"
+    click Centralized_ConvergenceIndicator_Outerloop_Basis href "Centralized_ConvergenceIndicator_Outerloop_Basis/" "View Centralized_ConvergenceIndicator_Outerloop_Basis documentation"
+    click Centralized_ConvergenceIndicator_Outerloop_Interface href "Centralized_ConvergenceIndicator_Outerloop_Interface/" "View Centralized_ConvergenceIndicator_Outerloop_Interface documentation"
+    click ConvergenceIndicator_Innerloop_Interface href "ConvergenceIndicator_Innerloop_Interface/" "View ConvergenceIndicator_Innerloop_Interface documentation"
+    click ConvergenceIndicator_Outerloop_Interface href "ConvergenceIndicator_Outerloop_Interface/" "View ConvergenceIndicator_Outerloop_Interface documentation"
+    click Local_ConvergenceIndicator_Innerloop_Interface href "Local_ConvergenceIndicator_Innerloop_Interface/" "View Local_ConvergenceIndicator_Innerloop_Interface documentation"
+    click Local_ConvergenceIndicator_Outerloop_Interface href "Local_ConvergenceIndicator_Outerloop_Interface/" "View Local_ConvergenceIndicator_Outerloop_Interface documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Subpackages
+
+- [AlwaysConverged](AlwaysConverged/index.md)
+- [DeWit](DeWit/index.md)
+
+## Modules
+
+- [Centralized_ConvergenceIndicator_Innerloop_Basis](Centralized_ConvergenceIndicator_Innerloop_Basis.md)
+- [Centralized_ConvergenceIndicator_Innerloop_Interface](Centralized_ConvergenceIndicator_Innerloop_Interface.md)
+- [Centralized_ConvergenceIndicator_Outerloop_Basis](Centralized_ConvergenceIndicator_Outerloop_Basis.md)
+- [Centralized_ConvergenceIndicator_Outerloop_Interface](Centralized_ConvergenceIndicator_Outerloop_Interface.md)
+- [ConvergenceIndicator_Innerloop_Interface](ConvergenceIndicator_Innerloop_Interface.md)
+- [ConvergenceIndicator_Outerloop_Interface](ConvergenceIndicator_Outerloop_Interface.md)
+- [Local_ConvergenceIndicator_Innerloop_Interface](Local_ConvergenceIndicator_Innerloop_Interface.md)
+- [Local_ConvergenceIndicator_Outerloop_Interface](Local_ConvergenceIndicator_Outerloop_Interface.md)
+

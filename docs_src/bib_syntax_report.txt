@@ -1,0 +1,7 @@
+BibTeX Syntax Report  (Ellmaier_Group_clean.bib)
+============================================================
+
+Source file : content\includes\Ellmaier_Group_clean.bib
+Total issues: 0
+
+No issues found.

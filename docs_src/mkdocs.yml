@@ -1,0 +1,835 @@
+site_name: Distributed Design Optimizer
+site_description: A modular Python package for distributed multidisciplinary design
+  optimization
+site_url: https://sebastianellmaier.github.io/DistributedDesignOptimizer/
+repo_url: https://github.com/SebastianEllmaier/DistributedDesignOptimizer
+repo_name: DistributedDesignOptimizer
+docs_dir: content
+site_dir: ../docs
+
+# Allow build to continue even with missing nav entries (outdated references)
+validation:
+  nav:
+    omitted_files: info
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    absolute_links: warn
+    unrecognized_links: warn
+strict: false
+
+# Exclude raw data files from being built as standalone pages
+exclude_docs: |
+  includes/abbreviations.md
+  includes/symbols.md
+  includes/Ellmaier_Group.bib
+  includes/Ellmaier_Group_clean.bib
+  includes/ieee.csl
+  framework-architecture/subsystem-copyfrom.md
+  framework-architecture/subsystem-copyto.md
+  framework-architecture/subsystem-run-iterative-optimization.md
+
+# Hooks (custom Python scripts for build-time processing)
+hooks:
+  - hooks/abbreviations.py
+  - hooks/symbols.py
+  - hooks/citations.py
+  - hooks/pseudocode_traceability.py
+  - hooks/highlight_classes.py
+  - hooks/repo_url.py
+
+# Plugins
+plugins:
+  - search
+  - panzoom:
+      # Enable fullscreen mode for diagrams (click button to expand)
+      full_screen: true
+      # Show hint on hover (not permanently)
+      always_show_hint: false
+      # Hint location at bottom of diagram
+      hint_location: "bottom"
+      # Use Alt key + scroll to zoom (prevents accidental zooming)
+      key: "alt"
+      # Initial zoom level (1.0 = 100%)
+      initial_zoom_level: 1.0
+      # Mermaid and D2 diagrams are included by default - add img for images
+      include_selectors:
+        - "img"
+
+theme:
+  name: material
+  logo: DistributedDesignOptimizer_Logo.svg
+  palette:
+    scheme: default
+    primary: custom
+    accent: custom
+  features:
+  - navigation.instant
+  - navigation.tracking
+  - navigation.top
+  - navigation.footer
+  - search.highlight
+  - search.suggest
+  - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+# Mermaid diagrams support - interactive, clickable UML diagrams
+markdown_extensions:
+  - abbr
+  - footnotes
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - pymdownx.arithmatex:
+      generic: true
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+  - javascripts/katex.js
+  - javascripts/pseudocode-sync.js
+  - javascripts/collapsible-code.js
+
+extra_css:
+  - https://unpkg.com/katex@0/dist/katex.min.css
+  - stylesheets/custom.css
+
+extra:
+  citations:
+    bib_file: "content/includes/Ellmaier_Group_clean.bib"
+    csl_file: "content/includes/ieee.csl"
+    references_url: "includes/references/"
+
+nav:
+- Home: index.md
+- Distributed Optimization for Multidisciplinary Design:
+  - Distributed Design Approach: distributed-optimization-for-multidisciplinary-design/distributed-design-approach.md
+  - Categorization and Selection of Suitable Solution Approaches: distributed-optimization-for-multidisciplinary-design/categorization-and-selection-of-suitable-solution-approaches.md
+  - Unified Algorithmic Structure: distributed-optimization-for-multidisciplinary-design/unified-algorithmic-structure.md
+  - Coordination Methods:
+    - ALC: distributed-optimization-for-multidisciplinary-design/coordination-methods/augmented-lagrangian-coordination.md
+    - ALADIN: distributed-optimization-for-multidisciplinary-design/coordination-methods/aladin.md
+    - Consensus ALC: distributed-optimization-for-multidisciplinary-design/coordination-methods/consensus-augmented-lagrangian-coordination.md
+    - SBDP: distributed-optimization-for-multidisciplinary-design/coordination-methods/sensitivity-based-distributed-programming.md
+- Installation: installation/index.md
+- Tutorial:
+  - Problem Definition and Algorithm Execution: tutorial/problem-definition-and-algorithm-execution/index.md
+  - Processing:
+    - tutorial/processing/index.md
+    - Terminal Output: tutorial/processing/terminal-output.md
+    - DDO Viewer: tutorial/processing/ddo-viewer.md
+  - Novel Distributed Optimization Method: tutorial/novel-distributed-optimization-method/index.md
+- Examples:
+  - Overview: examples/overview.md
+  - Geometric Programming: examples/GeometricProgramming/index.md
+  - Sellar: examples/Sellar/index.md
+  - Speed Reducer: examples/SpeedReducer/index.md
+  - SSBJ: examples/SSBJ/index.md
+  - Two-Bar Truss: examples/TwoBarTruss/index.md
+- Framework Architecture:
+  - Core Components and Unified Algorithmic Structure: framework-architecture/core-components-and-unified-algorithmic-structure.md
+  - Information Sharing via CouplingParameters and MiddleLevelDataStorage: framework-architecture/information-sharing-via-couplingparameters-and-middleleveldatastorage.md
+  - SubSystem Optimization: framework-architecture/subsystem-optimization.md
+  - Data Logging: framework-architecture/data-logging.md
+  - Derivative Computation: framework-architecture/derivative-computation.md
+  - Pseudocode-to-Code Traceability:
+    - ALC: framework-architecture/pseudocode-traceability/augmented-lagrangian-coordination-pseudocode-traceability.md
+    - Consensus ALC: framework-architecture/pseudocode-traceability/consensus-augmented-lagrangian-coordination-pseudocode-traceability.md
+    - ALADIN: framework-architecture/pseudocode-traceability/aladin-pseudocode-traceability.md
+    - SBDP: framework-architecture/pseudocode-traceability/sensitivity-based-distributed-programming-pseudocode-traceability.md
+- Nomenclature: includes/index.md
+- References: includes/references.md
+- API Reference:
+  - api/index.md
+  - Distributed_Design_Optimizer:
+    - api/Distributed_Design_Optimizer/index.md
+    - coordination:
+      - api/Distributed_Design_Optimizer/coordination/index.md
+      - convergence:
+        - api/Distributed_Design_Optimizer/coordination/convergence/index.md
+        - AlwaysConverged:
+          - api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/index.md
+          - Centralized_ConvergenceIndicator_Innerloop_AlwaysConverged: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Centralized_ConvergenceIndicator_Innerloop_AlwaysConverged.md
+          - Centralized_ConvergenceIndicator_Innerloop_AlwaysConverged_source: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Centralized_ConvergenceIndicator_Innerloop_AlwaysConverged_source.md
+          - Centralized_ConvergenceIndicator_Outerloop_AlwaysConverged: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Centralized_ConvergenceIndicator_Outerloop_AlwaysConverged.md
+          - Centralized_ConvergenceIndicator_Outerloop_AlwaysConverged_source: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Centralized_ConvergenceIndicator_Outerloop_AlwaysConverged_source.md
+          - ConvergenceIndicator_Innerloop_AlwaysConverged: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/ConvergenceIndicator_Innerloop_AlwaysConverged.md
+          - ConvergenceIndicator_Innerloop_AlwaysConverged_source: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/ConvergenceIndicator_Innerloop_AlwaysConverged_source.md
+          - ConvergenceIndicator_Outerloop_AlwaysConverged: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/ConvergenceIndicator_Outerloop_AlwaysConverged.md
+          - ConvergenceIndicator_Outerloop_AlwaysConverged_source: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/ConvergenceIndicator_Outerloop_AlwaysConverged_source.md
+          - Local_ConvergenceIndicator_Innerloop_AlwaysConverged: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Local_ConvergenceIndicator_Innerloop_AlwaysConverged.md
+          - Local_ConvergenceIndicator_Innerloop_AlwaysConverged_source: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Local_ConvergenceIndicator_Innerloop_AlwaysConverged_source.md
+          - Local_ConvergenceIndicator_Outerloop_AlwaysConverged: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Local_ConvergenceIndicator_Outerloop_AlwaysConverged.md
+          - Local_ConvergenceIndicator_Outerloop_AlwaysConverged_source: api/Distributed_Design_Optimizer/coordination/convergence/AlwaysConverged/Local_ConvergenceIndicator_Outerloop_AlwaysConverged_source.md
+        - DeWit:
+          - api/Distributed_Design_Optimizer/coordination/convergence/DeWit/index.md
+          - Centralized_ConvergenceIndicator_Innerloop_DeWit: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Centralized_ConvergenceIndicator_Innerloop_DeWit.md
+          - Centralized_ConvergenceIndicator_Innerloop_DeWit_source: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Centralized_ConvergenceIndicator_Innerloop_DeWit_source.md
+          - Centralized_ConvergenceIndicator_Outerloop_DeWit: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Centralized_ConvergenceIndicator_Outerloop_DeWit.md
+          - Centralized_ConvergenceIndicator_Outerloop_DeWit_source: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Centralized_ConvergenceIndicator_Outerloop_DeWit_source.md
+          - ConvergenceIndicator_Innerloop_DeWit: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/ConvergenceIndicator_Innerloop_DeWit.md
+          - ConvergenceIndicator_Innerloop_DeWit_source: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/ConvergenceIndicator_Innerloop_DeWit_source.md
+          - ConvergenceIndicator_Outerloop_DeWit: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/ConvergenceIndicator_Outerloop_DeWit.md
+          - ConvergenceIndicator_Outerloop_DeWit_source: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/ConvergenceIndicator_Outerloop_DeWit_source.md
+          - Local_ConvergenceIndicator_Innerloop_DeWit: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Local_ConvergenceIndicator_Innerloop_DeWit.md
+          - Local_ConvergenceIndicator_Innerloop_DeWit_source: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Local_ConvergenceIndicator_Innerloop_DeWit_source.md
+          - Local_ConvergenceIndicator_Outerloop_DeWit: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Local_ConvergenceIndicator_Outerloop_DeWit.md
+          - Local_ConvergenceIndicator_Outerloop_DeWit_source: api/Distributed_Design_Optimizer/coordination/convergence/DeWit/Local_ConvergenceIndicator_Outerloop_DeWit_source.md
+        - Centralized_ConvergenceIndicator_Innerloop_Basis: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Innerloop_Basis.md
+        - Centralized_ConvergenceIndicator_Innerloop_Basis_source: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Innerloop_Basis_source.md
+        - Centralized_ConvergenceIndicator_Innerloop_Interface: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Innerloop_Interface.md
+        - Centralized_ConvergenceIndicator_Innerloop_Interface_source: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Innerloop_Interface_source.md
+        - Centralized_ConvergenceIndicator_Outerloop_Basis: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Outerloop_Basis.md
+        - Centralized_ConvergenceIndicator_Outerloop_Basis_source: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Outerloop_Basis_source.md
+        - Centralized_ConvergenceIndicator_Outerloop_Interface: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Outerloop_Interface.md
+        - Centralized_ConvergenceIndicator_Outerloop_Interface_source: api/Distributed_Design_Optimizer/coordination/convergence/Centralized_ConvergenceIndicator_Outerloop_Interface_source.md
+        - ConvergenceIndicator_Innerloop_Interface: api/Distributed_Design_Optimizer/coordination/convergence/ConvergenceIndicator_Innerloop_Interface.md
+        - ConvergenceIndicator_Innerloop_Interface_source: api/Distributed_Design_Optimizer/coordination/convergence/ConvergenceIndicator_Innerloop_Interface_source.md
+        - ConvergenceIndicator_Outerloop_Interface: api/Distributed_Design_Optimizer/coordination/convergence/ConvergenceIndicator_Outerloop_Interface.md
+        - ConvergenceIndicator_Outerloop_Interface_source: api/Distributed_Design_Optimizer/coordination/convergence/ConvergenceIndicator_Outerloop_Interface_source.md
+        - Local_ConvergenceIndicator_Innerloop_Interface: api/Distributed_Design_Optimizer/coordination/convergence/Local_ConvergenceIndicator_Innerloop_Interface.md
+        - Local_ConvergenceIndicator_Innerloop_Interface_source: api/Distributed_Design_Optimizer/coordination/convergence/Local_ConvergenceIndicator_Innerloop_Interface_source.md
+        - Local_ConvergenceIndicator_Outerloop_Interface: api/Distributed_Design_Optimizer/coordination/convergence/Local_ConvergenceIndicator_Outerloop_Interface.md
+        - Local_ConvergenceIndicator_Outerloop_Interface_source: api/Distributed_Design_Optimizer/coordination/convergence/Local_ConvergenceIndicator_Outerloop_Interface_source.md
+      - coordinationmethod:
+        - api/Distributed_Design_Optimizer/coordination/coordinationmethod/index.md
+        - ALADIN: api/Distributed_Design_Optimizer/coordination/coordinationmethod/ALADIN.md
+        - ALADIN_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/ALADIN_source.md
+        - ALC: api/Distributed_Design_Optimizer/coordination/coordinationmethod/ALC.md
+        - ALC_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/ALC_source.md
+        - Consensus_ALC: api/Distributed_Design_Optimizer/coordination/coordinationmethod/Consensus_ALC.md
+        - Consensus_ALC_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/Consensus_ALC_source.md
+        - CoordinationMethodBasis: api/Distributed_Design_Optimizer/coordination/coordinationmethod/CoordinationMethodBasis.md
+        - CoordinationMethodBasis_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/CoordinationMethodBasis_source.md
+        - CoordinationMethodInterface: api/Distributed_Design_Optimizer/coordination/coordinationmethod/CoordinationMethodInterface.md
+        - CoordinationMethodInterface_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/CoordinationMethodInterface_source.md
+        - LC: api/Distributed_Design_Optimizer/coordination/coordinationmethod/LC.md
+        - LC_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/LC_source.md
+        - PC: api/Distributed_Design_Optimizer/coordination/coordinationmethod/PC.md
+        - PC_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/PC_source.md
+        - SBDP: api/Distributed_Design_Optimizer/coordination/coordinationmethod/SBDP.md
+        - SBDP_source: api/Distributed_Design_Optimizer/coordination/coordinationmethod/SBDP_source.md
+      - innerloop_iterationscheme:
+        - api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/index.md
+        - IterationSchemeBasis: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/IterationSchemeBasis.md
+        - IterationSchemeBasis_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/IterationSchemeBasis_source.md
+        - IterationSchemeInterface: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/IterationSchemeInterface.md
+        - IterationSchemeInterface_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/IterationSchemeInterface_source.md
+        - Parallel: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/Parallel.md
+        - Parallel_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/Parallel_source.md
+        - ParallelEvenThenOddLevels: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelEvenThenOddLevels.md
+        - ParallelEvenThenOddLevels_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelEvenThenOddLevels_source.md
+        - ParallelLocal_SequentialController: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelLocal_SequentialController.md
+        - ParallelLocal_SequentialController_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelLocal_SequentialController_source.md
+        - ParallelOddThenEvenLevels: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelOddThenEvenLevels.md
+        - ParallelOddThenEvenLevels_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelOddThenEvenLevels_source.md
+        - ParallelPerLevelIncreasing: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelPerLevelIncreasing.md
+        - ParallelPerLevelIncreasing_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/ParallelPerLevelIncreasing_source.md
+        - SequentialBackward: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/SequentialBackward.md
+        - SequentialBackward_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/SequentialBackward_source.md
+        - SequentialForward: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/SequentialForward.md
+        - SequentialForward_source: api/Distributed_Design_Optimizer/coordination/innerloop_iterationscheme/SequentialForward_source.md
+      - updatecouplingparametermethod:
+        - api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/index.md
+        - UpdateCouplingParameterMethod_AdaptiveWeights: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AdaptiveWeights.md
+        - UpdateCouplingParameterMethod_AdaptiveWeights_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AdaptiveWeights_source.md
+        - UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights.md
+        - UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights_source.md
+        - UpdateCouplingParameterMethod_AugLagMultipliersFixedWeights: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AugLagMultipliersFixedWeights.md
+        - UpdateCouplingParameterMethod_AugLagMultipliersFixedWeights_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AugLagMultipliersFixedWeights_source.md
+        - UpdateCouplingParameterMethod_AugLagProximal_MultipliersFixedWeights: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AugLagProximal_MultipliersFixedWeights.md
+        - UpdateCouplingParameterMethod_AugLagProximal_MultipliersFixedWeights_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_AugLagProximal_MultipliersFixedWeights_source.md
+        - UpdateCouplingParameterMethod_NoOp: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_NoOp.md
+        - UpdateCouplingParameterMethod_NoOp_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_NoOp_source.md
+        - UpdateCouplingParameterMethod_OnlyInitialMultipliers: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_OnlyInitialMultipliers.md
+        - UpdateCouplingParameterMethod_OnlyInitialMultipliers_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_OnlyInitialMultipliers_source.md
+        - UpdateCouplingParameterMethod_SubgradientMultipliers: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_SubgradientMultipliers.md
+        - UpdateCouplingParameterMethod_SubgradientMultipliers_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethod_SubgradientMultipliers_source.md
+        - UpdateCouplingParameterMethodInterface: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethodInterface.md
+        - UpdateCouplingParameterMethodInterface_source: api/Distributed_Design_Optimizer/coordination/updatecouplingparametermethod/UpdateCouplingParameterMethodInterface_source.md
+      - Coordinator: api/Distributed_Design_Optimizer/coordination/Coordinator.md
+      - Coordinator_source: api/Distributed_Design_Optimizer/coordination/Coordinator_source.md
+      - CoordinatorHistoryEntry: api/Distributed_Design_Optimizer/coordination/CoordinatorHistoryEntry.md
+      - CoordinatorHistoryEntry_source: api/Distributed_Design_Optimizer/coordination/CoordinatorHistoryEntry_source.md
+      - CustomManager: api/Distributed_Design_Optimizer/coordination/CustomManager.md
+      - CustomManager_source: api/Distributed_Design_Optimizer/coordination/CustomManager_source.md
+      - InputFileBasis: api/Distributed_Design_Optimizer/coordination/InputFileBasis.md
+      - InputFileBasis_source: api/Distributed_Design_Optimizer/coordination/InputFileBasis_source.md
+      - InputFileInterface: api/Distributed_Design_Optimizer/coordination/InputFileInterface.md
+      - InputFileInterface_source: api/Distributed_Design_Optimizer/coordination/InputFileInterface_source.md
+    - middlelevel:
+      - api/Distributed_Design_Optimizer/middlelevel/index.md
+      - aladin:
+        - api/Distributed_Design_Optimizer/middlelevel/aladin/index.md
+        - ControllerToLocal_MiddleLevelCouplingALADIN: api/Distributed_Design_Optimizer/middlelevel/aladin/ControllerToLocal_MiddleLevelCouplingALADIN.md
+        - ControllerToLocal_MiddleLevelCouplingALADIN_source: api/Distributed_Design_Optimizer/middlelevel/aladin/ControllerToLocal_MiddleLevelCouplingALADIN_source.md
+        - InConsistencySize: api/Distributed_Design_Optimizer/middlelevel/aladin/InConsistencySize.md
+        - InConsistencySize_source: api/Distributed_Design_Optimizer/middlelevel/aladin/InConsistencySize_source.md
+        - LocalController_MiddleLevelDataStorageALADIN: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalController_MiddleLevelDataStorageALADIN.md
+        - LocalController_MiddleLevelDataStorageALADIN_source: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalController_MiddleLevelDataStorageALADIN_source.md
+        - LocalToController_MiddleLevelCouplingALADIN: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalToController_MiddleLevelCouplingALADIN.md
+        - LocalToController_MiddleLevelCouplingALADIN_source: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalToController_MiddleLevelCouplingALADIN_source.md
+        - LocalToLocal_MiddleLevelCouplingALADIN: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalToLocal_MiddleLevelCouplingALADIN.md
+        - LocalToLocal_MiddleLevelCouplingALADIN_source: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalToLocal_MiddleLevelCouplingALADIN_source.md
+        - LocalToLocal_MiddleLevelDataStorageALADIN: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalToLocal_MiddleLevelDataStorageALADIN.md
+        - LocalToLocal_MiddleLevelDataStorageALADIN_source: api/Distributed_Design_Optimizer/middlelevel/aladin/LocalToLocal_MiddleLevelDataStorageALADIN_source.md
+      - alc:
+        - api/Distributed_Design_Optimizer/middlelevel/alc/index.md
+        - InConsistencySize: api/Distributed_Design_Optimizer/middlelevel/alc/InConsistencySize.md
+        - InConsistencySize_source: api/Distributed_Design_Optimizer/middlelevel/alc/InConsistencySize_source.md
+        - MiddleLevelCouplingALC: api/Distributed_Design_Optimizer/middlelevel/alc/MiddleLevelCouplingALC.md
+        - MiddleLevelCouplingALC_source: api/Distributed_Design_Optimizer/middlelevel/alc/MiddleLevelCouplingALC_source.md
+        - MiddleLevelDataStorageALC: api/Distributed_Design_Optimizer/middlelevel/alc/MiddleLevelDataStorageALC.md
+        - MiddleLevelDataStorageALC_source: api/Distributed_Design_Optimizer/middlelevel/alc/MiddleLevelDataStorageALC_source.md
+      - consensus_alc:
+        - api/Distributed_Design_Optimizer/middlelevel/consensus_alc/index.md
+        - InConsistencySize: api/Distributed_Design_Optimizer/middlelevel/consensus_alc/InConsistencySize.md
+        - InConsistencySize_source: api/Distributed_Design_Optimizer/middlelevel/consensus_alc/InConsistencySize_source.md
+        - MiddleLevelCouplingConsensusALC: api/Distributed_Design_Optimizer/middlelevel/consensus_alc/MiddleLevelCouplingConsensusALC.md
+        - MiddleLevelCouplingConsensusALC_source: api/Distributed_Design_Optimizer/middlelevel/consensus_alc/MiddleLevelCouplingConsensusALC_source.md
+        - MiddleLevelDataStorageConsensusALC: api/Distributed_Design_Optimizer/middlelevel/consensus_alc/MiddleLevelDataStorageConsensusALC.md
+        - MiddleLevelDataStorageConsensusALC_source: api/Distributed_Design_Optimizer/middlelevel/consensus_alc/MiddleLevelDataStorageConsensusALC_source.md
+      - lc:
+        - api/Distributed_Design_Optimizer/middlelevel/lc/index.md
+        - InConsistencySize: api/Distributed_Design_Optimizer/middlelevel/lc/InConsistencySize.md
+        - InConsistencySize_source: api/Distributed_Design_Optimizer/middlelevel/lc/InConsistencySize_source.md
+        - MiddleLevelCouplingLC: api/Distributed_Design_Optimizer/middlelevel/lc/MiddleLevelCouplingLC.md
+        - MiddleLevelCouplingLC_source: api/Distributed_Design_Optimizer/middlelevel/lc/MiddleLevelCouplingLC_source.md
+        - MiddleLevelDataStorageLC: api/Distributed_Design_Optimizer/middlelevel/lc/MiddleLevelDataStorageLC.md
+        - MiddleLevelDataStorageLC_source: api/Distributed_Design_Optimizer/middlelevel/lc/MiddleLevelDataStorageLC_source.md
+      - pc:
+        - api/Distributed_Design_Optimizer/middlelevel/pc/index.md
+        - InConsistencySize: api/Distributed_Design_Optimizer/middlelevel/pc/InConsistencySize.md
+        - InConsistencySize_source: api/Distributed_Design_Optimizer/middlelevel/pc/InConsistencySize_source.md
+        - MiddleLevelCouplingPC: api/Distributed_Design_Optimizer/middlelevel/pc/MiddleLevelCouplingPC.md
+        - MiddleLevelCouplingPC_source: api/Distributed_Design_Optimizer/middlelevel/pc/MiddleLevelCouplingPC_source.md
+        - MiddleLevelDataStoragePC: api/Distributed_Design_Optimizer/middlelevel/pc/MiddleLevelDataStoragePC.md
+        - MiddleLevelDataStoragePC_source: api/Distributed_Design_Optimizer/middlelevel/pc/MiddleLevelDataStoragePC_source.md
+      - sbdp:
+        - api/Distributed_Design_Optimizer/middlelevel/sbdp/index.md
+        - InConsistencySize: api/Distributed_Design_Optimizer/middlelevel/sbdp/InConsistencySize.md
+        - InConsistencySize_source: api/Distributed_Design_Optimizer/middlelevel/sbdp/InConsistencySize_source.md
+        - MiddleLevelCouplingSBDP: api/Distributed_Design_Optimizer/middlelevel/sbdp/MiddleLevelCouplingSBDP.md
+        - MiddleLevelCouplingSBDP_source: api/Distributed_Design_Optimizer/middlelevel/sbdp/MiddleLevelCouplingSBDP_source.md
+        - MiddleLevelDataStorageSBDP: api/Distributed_Design_Optimizer/middlelevel/sbdp/MiddleLevelDataStorageSBDP.md
+        - MiddleLevelDataStorageSBDP_source: api/Distributed_Design_Optimizer/middlelevel/sbdp/MiddleLevelDataStorageSBDP_source.md
+      - ControllerToLocal_MiddleLevelCouplingBasis: api/Distributed_Design_Optimizer/middlelevel/ControllerToLocal_MiddleLevelCouplingBasis.md
+      - ControllerToLocal_MiddleLevelCouplingBasis_source: api/Distributed_Design_Optimizer/middlelevel/ControllerToLocal_MiddleLevelCouplingBasis_source.md
+      - CreateMiddleLevels: api/Distributed_Design_Optimizer/middlelevel/CreateMiddleLevels.md
+      - CreateMiddleLevels_source: api/Distributed_Design_Optimizer/middlelevel/CreateMiddleLevels_source.md
+      - InConsistencySizeBasis: api/Distributed_Design_Optimizer/middlelevel/InConsistencySizeBasis.md
+      - InConsistencySizeBasis_source: api/Distributed_Design_Optimizer/middlelevel/InConsistencySizeBasis_source.md
+      - InConsistencySizeInterface: api/Distributed_Design_Optimizer/middlelevel/InConsistencySizeInterface.md
+      - InConsistencySizeInterface_source: api/Distributed_Design_Optimizer/middlelevel/InConsistencySizeInterface_source.md
+      - LocalController_MiddleLevelCouplingBasis: api/Distributed_Design_Optimizer/middlelevel/LocalController_MiddleLevelCouplingBasis.md
+      - LocalController_MiddleLevelCouplingBasis_source: api/Distributed_Design_Optimizer/middlelevel/LocalController_MiddleLevelCouplingBasis_source.md
+      - LocalToController_MiddleLevelCouplingBasis: api/Distributed_Design_Optimizer/middlelevel/LocalToController_MiddleLevelCouplingBasis.md
+      - LocalToController_MiddleLevelCouplingBasis_source: api/Distributed_Design_Optimizer/middlelevel/LocalToController_MiddleLevelCouplingBasis_source.md
+      - MiddleLevelCouplingBasis: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelCouplingBasis.md
+      - MiddleLevelCouplingBasis_source: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelCouplingBasis_source.md
+      - MiddleLevelCouplingInterface: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelCouplingInterface.md
+      - MiddleLevelCouplingInterface_source: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelCouplingInterface_source.md
+      - MiddleLevelDataStorageBasis: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelDataStorageBasis.md
+      - MiddleLevelDataStorageBasis_source: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelDataStorageBasis_source.md
+      - MiddleLevelDataStorageInterface: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelDataStorageInterface.md
+      - MiddleLevelDataStorageInterface_source: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelDataStorageInterface_source.md
+      - MiddleLevelDataStorageProxy: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelDataStorageProxy.md
+      - MiddleLevelDataStorageProxy_source: api/Distributed_Design_Optimizer/middlelevel/MiddleLevelDataStorageProxy_source.md
+      - SubSysMiddleLevelCouplingBasis: api/Distributed_Design_Optimizer/middlelevel/SubSysMiddleLevelCouplingBasis.md
+      - SubSysMiddleLevelCouplingBasis_source: api/Distributed_Design_Optimizer/middlelevel/SubSysMiddleLevelCouplingBasis_source.md
+    - postprocess:
+      - api/Distributed_Design_Optimizer/postprocess/index.md
+      - handlers:
+        - api/Distributed_Design_Optimizer/postprocess/handlers/index.md
+        - _axis_aligner: api/Distributed_Design_Optimizer/postprocess/handlers/_axis_aligner.md
+        - _axis_aligner_source: api/Distributed_Design_Optimizer/postprocess/handlers/_axis_aligner_source.md
+        - _dynamic_builder: api/Distributed_Design_Optimizer/postprocess/handlers/_dynamic_builder.md
+        - _dynamic_builder_source: api/Distributed_Design_Optimizer/postprocess/handlers/_dynamic_builder_source.md
+        - _plot_builder: api/Distributed_Design_Optimizer/postprocess/handlers/_plot_builder.md
+        - _plot_builder_source: api/Distributed_Design_Optimizer/postprocess/handlers/_plot_builder_source.md
+        - _plot_customizer: api/Distributed_Design_Optimizer/postprocess/handlers/_plot_customizer.md
+        - _plot_customizer_source: api/Distributed_Design_Optimizer/postprocess/handlers/_plot_customizer_source.md
+        - _static_graph_builder: api/Distributed_Design_Optimizer/postprocess/handlers/_static_graph_builder.md
+        - _static_graph_builder_source: api/Distributed_Design_Optimizer/postprocess/handlers/_static_graph_builder_source.md
+        - _topology_dispatch: api/Distributed_Design_Optimizer/postprocess/handlers/_topology_dispatch.md
+        - _topology_dispatch_source: api/Distributed_Design_Optimizer/postprocess/handlers/_topology_dispatch_source.md
+        - ChatHandler: api/Distributed_Design_Optimizer/postprocess/handlers/ChatHandler.md
+        - ChatHandler_source: api/Distributed_Design_Optimizer/postprocess/handlers/ChatHandler_source.md
+        - DataHandler: api/Distributed_Design_Optimizer/postprocess/handlers/DataHandler.md
+        - DataHandler_source: api/Distributed_Design_Optimizer/postprocess/handlers/DataHandler_source.md
+        - llm_api: api/Distributed_Design_Optimizer/postprocess/handlers/llm_api.md
+        - llm_api_source: api/Distributed_Design_Optimizer/postprocess/handlers/llm_api_source.md
+        - llm_utils: api/Distributed_Design_Optimizer/postprocess/handlers/llm_utils.md
+        - llm_utils_source: api/Distributed_Design_Optimizer/postprocess/handlers/llm_utils_source.md
+        - PlotHandler: api/Distributed_Design_Optimizer/postprocess/handlers/PlotHandler.md
+        - PlotHandler_source: api/Distributed_Design_Optimizer/postprocess/handlers/PlotHandler_source.md
+        - TopologyHandler: api/Distributed_Design_Optimizer/postprocess/handlers/TopologyHandler.md
+        - TopologyHandler_source: api/Distributed_Design_Optimizer/postprocess/handlers/TopologyHandler_source.md
+      - models:
+        - api/Distributed_Design_Optimizer/postprocess/models/index.md
+        - AnalysisConfig: api/Distributed_Design_Optimizer/postprocess/models/AnalysisConfig.md
+        - AnalysisConfig_source: api/Distributed_Design_Optimizer/postprocess/models/AnalysisConfig_source.md
+        - DataSource: api/Distributed_Design_Optimizer/postprocess/models/DataSource.md
+        - DataSource_source: api/Distributed_Design_Optimizer/postprocess/models/DataSource_source.md
+        - DillDataSource: api/Distributed_Design_Optimizer/postprocess/models/DillDataSource.md
+        - DillDataSource_source: api/Distributed_Design_Optimizer/postprocess/models/DillDataSource_source.md
+        - PlotConfig: api/Distributed_Design_Optimizer/postprocess/models/PlotConfig.md
+        - PlotConfig_source: api/Distributed_Design_Optimizer/postprocess/models/PlotConfig_source.md
+        - PostgresDataSource: api/Distributed_Design_Optimizer/postprocess/models/PostgresDataSource.md
+        - PostgresDataSource_source: api/Distributed_Design_Optimizer/postprocess/models/PostgresDataSource_source.md
+      - styles:
+        - api/Distributed_Design_Optimizer/postprocess/styles/index.md
+        - Theme: api/Distributed_Design_Optimizer/postprocess/styles/Theme.md
+        - Theme_source: api/Distributed_Design_Optimizer/postprocess/styles/Theme_source.md
+      - utils:
+        - api/Distributed_Design_Optimizer/postprocess/utils/index.md
+        - FlexibleUnpickler: api/Distributed_Design_Optimizer/postprocess/utils/FlexibleUnpickler.md
+        - FlexibleUnpickler_source: api/Distributed_Design_Optimizer/postprocess/utils/FlexibleUnpickler_source.md
+        - graph_utils: api/Distributed_Design_Optimizer/postprocess/utils/graph_utils.md
+        - graph_utils_source: api/Distributed_Design_Optimizer/postprocess/utils/graph_utils_source.md
+      - widgets:
+        - api/Distributed_Design_Optimizer/postprocess/widgets/index.md
+        - _auto_update_delegate: api/Distributed_Design_Optimizer/postprocess/widgets/_auto_update_delegate.md
+        - _auto_update_delegate_source: api/Distributed_Design_Optimizer/postprocess/widgets/_auto_update_delegate_source.md
+        - _topology_delegate: api/Distributed_Design_Optimizer/postprocess/widgets/_topology_delegate.md
+        - _topology_delegate_source: api/Distributed_Design_Optimizer/postprocess/widgets/_topology_delegate_source.md
+        - _welcome_card: api/Distributed_Design_Optimizer/postprocess/widgets/_welcome_card.md
+        - _welcome_card_source: api/Distributed_Design_Optimizer/postprocess/widgets/_welcome_card_source.md
+        - ChatPanel: api/Distributed_Design_Optimizer/postprocess/widgets/ChatPanel.md
+        - ChatPanel_source: api/Distributed_Design_Optimizer/postprocess/widgets/ChatPanel_source.md
+        - CollapsibleSection: api/Distributed_Design_Optimizer/postprocess/widgets/CollapsibleSection.md
+        - CollapsibleSection_source: api/Distributed_Design_Optimizer/postprocess/widgets/CollapsibleSection_source.md
+        - DataSelectionPanel: api/Distributed_Design_Optimizer/postprocess/widgets/DataSelectionPanel.md
+        - DataSelectionPanel_source: api/Distributed_Design_Optimizer/postprocess/widgets/DataSelectionPanel_source.md
+        - GraphWidget: api/Distributed_Design_Optimizer/postprocess/widgets/GraphWidget.md
+        - GraphWidget_source: api/Distributed_Design_Optimizer/postprocess/widgets/GraphWidget_source.md
+        - MainWindow: api/Distributed_Design_Optimizer/postprocess/widgets/MainWindow.md
+        - MainWindow_source: api/Distributed_Design_Optimizer/postprocess/widgets/MainWindow_source.md
+        - PlotCanvas: api/Distributed_Design_Optimizer/postprocess/widgets/PlotCanvas.md
+        - PlotCanvas_source: api/Distributed_Design_Optimizer/postprocess/widgets/PlotCanvas_source.md
+        - PlotlyPanel: api/Distributed_Design_Optimizer/postprocess/widgets/PlotlyPanel.md
+        - PlotlyPanel_source: api/Distributed_Design_Optimizer/postprocess/widgets/PlotlyPanel_source.md
+        - PlotSettingsPanel: api/Distributed_Design_Optimizer/postprocess/widgets/PlotSettingsPanel.md
+        - PlotSettingsPanel_source: api/Distributed_Design_Optimizer/postprocess/widgets/PlotSettingsPanel_source.md
+        - ToggleSwitch: api/Distributed_Design_Optimizer/postprocess/widgets/ToggleSwitch.md
+        - ToggleSwitch_source: api/Distributed_Design_Optimizer/postprocess/widgets/ToggleSwitch_source.md
+        - TopologyControlsWidget: api/Distributed_Design_Optimizer/postprocess/widgets/TopologyControlsWidget.md
+        - TopologyControlsWidget_source: api/Distributed_Design_Optimizer/postprocess/widgets/TopologyControlsWidget_source.md
+        - TopologyPanel: api/Distributed_Design_Optimizer/postprocess/widgets/TopologyPanel.md
+        - TopologyPanel_source: api/Distributed_Design_Optimizer/postprocess/widgets/TopologyPanel_source.md
+      - workers:
+        - api/Distributed_Design_Optimizer/postprocess/workers/index.md
+        - AutoUpdateWorker: api/Distributed_Design_Optimizer/postprocess/workers/AutoUpdateWorker.md
+        - AutoUpdateWorker_source: api/Distributed_Design_Optimizer/postprocess/workers/AutoUpdateWorker_source.md
+        - CallableWorker: api/Distributed_Design_Optimizer/postprocess/workers/CallableWorker.md
+        - CallableWorker_source: api/Distributed_Design_Optimizer/postprocess/workers/CallableWorker_source.md
+        - FileLoaderWorker: api/Distributed_Design_Optimizer/postprocess/workers/FileLoaderWorker.md
+        - FileLoaderWorker_source: api/Distributed_Design_Optimizer/postprocess/workers/FileLoaderWorker_source.md
+        - LLMWorker: api/Distributed_Design_Optimizer/postprocess/workers/LLMWorker.md
+        - LLMWorker_source: api/Distributed_Design_Optimizer/postprocess/workers/LLMWorker_source.md
+        - TopologyWorker: api/Distributed_Design_Optimizer/postprocess/workers/TopologyWorker.md
+        - TopologyWorker_source: api/Distributed_Design_Optimizer/postprocess/workers/TopologyWorker_source.md
+      - App: api/Distributed_Design_Optimizer/postprocess/App.md
+      - App_source: api/Distributed_Design_Optimizer/postprocess/App_source.md
+      - CentralityComputer: api/Distributed_Design_Optimizer/postprocess/CentralityComputer.md
+      - CentralityComputer_source: api/Distributed_Design_Optimizer/postprocess/CentralityComputer_source.md
+      - ClusterComputer: api/Distributed_Design_Optimizer/postprocess/ClusterComputer.md
+      - ClusterComputer_source: api/Distributed_Design_Optimizer/postprocess/ClusterComputer_source.md
+      - CompromiseComputer: api/Distributed_Design_Optimizer/postprocess/CompromiseComputer.md
+      - CompromiseComputer_source: api/Distributed_Design_Optimizer/postprocess/CompromiseComputer_source.md
+      - CouplingStrengthComputer: api/Distributed_Design_Optimizer/postprocess/CouplingStrengthComputer.md
+      - CouplingStrengthComputer_source: api/Distributed_Design_Optimizer/postprocess/CouplingStrengthComputer_source.md
+      - GraphInit: api/Distributed_Design_Optimizer/postprocess/GraphInit.md
+      - GraphInit_source: api/Distributed_Design_Optimizer/postprocess/GraphInit_source.md
+      - InConsistencyOscillationComputer: api/Distributed_Design_Optimizer/postprocess/InConsistencyOscillationComputer.md
+      - InConsistencyOscillationComputer_source: api/Distributed_Design_Optimizer/postprocess/InConsistencyOscillationComputer_source.md
+      - JacobianComputer: api/Distributed_Design_Optimizer/postprocess/JacobianComputer.md
+      - JacobianComputer_source: api/Distributed_Design_Optimizer/postprocess/JacobianComputer_source.md
+      - PerformanceMetrics: api/Distributed_Design_Optimizer/postprocess/PerformanceMetrics.md
+      - PerformanceMetrics_source: api/Distributed_Design_Optimizer/postprocess/PerformanceMetrics_source.md
+      - ResidualComputer: api/Distributed_Design_Optimizer/postprocess/ResidualComputer.md
+      - ResidualComputer_source: api/Distributed_Design_Optimizer/postprocess/ResidualComputer_source.md
+      - terminal_print_tools: api/Distributed_Design_Optimizer/postprocess/terminal_print_tools.md
+      - terminal_print_tools_source: api/Distributed_Design_Optimizer/postprocess/terminal_print_tools_source.md
+    - subsystem:
+      - api/Distributed_Design_Optimizer/subsystem/index.md
+      - couplingparameters:
+        - api/Distributed_Design_Optimizer/subsystem/couplingparameters/index.md
+        - aladin:
+          - api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/index.md
+          - ControllerCouplingParametersALADIN: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/ControllerCouplingParametersALADIN.md
+          - ControllerCouplingParametersALADIN_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/ControllerCouplingParametersALADIN_source.md
+          - ControllerToLocalCouplingParameters: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/ControllerToLocalCouplingParameters.md
+          - ControllerToLocalCouplingParameters_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/ControllerToLocalCouplingParameters_source.md
+          - LocalCouplingParametersALADIN: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/LocalCouplingParametersALADIN.md
+          - LocalCouplingParametersALADIN_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/LocalCouplingParametersALADIN_source.md
+          - LocalToController_CouplingParametersALADIN: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/LocalToController_CouplingParametersALADIN.md
+          - LocalToController_CouplingParametersALADIN_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/LocalToController_CouplingParametersALADIN_source.md
+          - LocalToLocalForController_CouplingParameters: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/LocalToLocalForController_CouplingParameters.md
+          - LocalToLocalForController_CouplingParameters_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/aladin/LocalToLocalForController_CouplingParameters_source.md
+        - alc:
+          - api/Distributed_Design_Optimizer/subsystem/couplingparameters/alc/index.md
+          - CouplingParametersALC: api/Distributed_Design_Optimizer/subsystem/couplingparameters/alc/CouplingParametersALC.md
+          - CouplingParametersALC_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/alc/CouplingParametersALC_source.md
+        - consensus_alc:
+          - api/Distributed_Design_Optimizer/subsystem/couplingparameters/consensus_alc/index.md
+          - CouplingParametersConsensusALC: api/Distributed_Design_Optimizer/subsystem/couplingparameters/consensus_alc/CouplingParametersConsensusALC.md
+          - CouplingParametersConsensusALC_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/consensus_alc/CouplingParametersConsensusALC_source.md
+        - lc:
+          - api/Distributed_Design_Optimizer/subsystem/couplingparameters/lc/index.md
+          - CouplingParametersLC: api/Distributed_Design_Optimizer/subsystem/couplingparameters/lc/CouplingParametersLC.md
+          - CouplingParametersLC_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/lc/CouplingParametersLC_source.md
+        - pc:
+          - api/Distributed_Design_Optimizer/subsystem/couplingparameters/pc/index.md
+          - CouplingParametersPC: api/Distributed_Design_Optimizer/subsystem/couplingparameters/pc/CouplingParametersPC.md
+          - CouplingParametersPC_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/pc/CouplingParametersPC_source.md
+        - sbdp:
+          - api/Distributed_Design_Optimizer/subsystem/couplingparameters/sbdp/index.md
+          - CouplingParametersSBDP: api/Distributed_Design_Optimizer/subsystem/couplingparameters/sbdp/CouplingParametersSBDP.md
+          - CouplingParametersSBDP_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/sbdp/CouplingParametersSBDP_source.md
+        - ControllerCouplingParametersBasis: api/Distributed_Design_Optimizer/subsystem/couplingparameters/ControllerCouplingParametersBasis.md
+        - ControllerCouplingParametersBasis_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/ControllerCouplingParametersBasis_source.md
+        - CouplingParametersBasis: api/Distributed_Design_Optimizer/subsystem/couplingparameters/CouplingParametersBasis.md
+        - CouplingParametersBasis_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/CouplingParametersBasis_source.md
+        - CouplingParametersInterface: api/Distributed_Design_Optimizer/subsystem/couplingparameters/CouplingParametersInterface.md
+        - CouplingParametersInterface_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/CouplingParametersInterface_source.md
+        - LocalToController_CouplingParametersBasis: api/Distributed_Design_Optimizer/subsystem/couplingparameters/LocalToController_CouplingParametersBasis.md
+        - LocalToController_CouplingParametersBasis_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/LocalToController_CouplingParametersBasis_source.md
+        - SubSysCouplingParametersBasis: api/Distributed_Design_Optimizer/subsystem/couplingparameters/SubSysCouplingParametersBasis.md
+        - SubSysCouplingParametersBasis_source: api/Distributed_Design_Optimizer/subsystem/couplingparameters/SubSysCouplingParametersBasis_source.md
+      - historyentry:
+        - api/Distributed_Design_Optimizer/subsystem/historyentry/index.md
+        - ControllerSubSystemHistoryEntry: api/Distributed_Design_Optimizer/subsystem/historyentry/ControllerSubSystemHistoryEntry.md
+        - ControllerSubSystemHistoryEntry_source: api/Distributed_Design_Optimizer/subsystem/historyentry/ControllerSubSystemHistoryEntry_source.md
+        - HistoryEntry: api/Distributed_Design_Optimizer/subsystem/historyentry/HistoryEntry.md
+        - HistoryEntry_source: api/Distributed_Design_Optimizer/subsystem/historyentry/HistoryEntry_source.md
+        - LocalSubSystemHistoryEntry: api/Distributed_Design_Optimizer/subsystem/historyentry/LocalSubSystemHistoryEntry.md
+        - LocalSubSystemHistoryEntry_source: api/Distributed_Design_Optimizer/subsystem/historyentry/LocalSubSystemHistoryEntry_source.md
+        - SubSystemHistoryEntry: api/Distributed_Design_Optimizer/subsystem/historyentry/SubSystemHistoryEntry.md
+        - SubSystemHistoryEntry_source: api/Distributed_Design_Optimizer/subsystem/historyentry/SubSystemHistoryEntry_source.md
+      - optimization:
+        - api/Distributed_Design_Optimizer/subsystem/optimization/index.md
+        - designproblem:
+          - api/Distributed_Design_Optimizer/subsystem/optimization/designproblem/index.md
+          - LocalConstraintsInterface: api/Distributed_Design_Optimizer/subsystem/optimization/designproblem/LocalConstraintsInterface.md
+          - LocalConstraintsInterface_source: api/Distributed_Design_Optimizer/subsystem/optimization/designproblem/LocalConstraintsInterface_source.md
+          - LocalObjectiveInterface: api/Distributed_Design_Optimizer/subsystem/optimization/designproblem/LocalObjectiveInterface.md
+          - LocalObjectiveInterface_source: api/Distributed_Design_Optimizer/subsystem/optimization/designproblem/LocalObjectiveInterface_source.md
+        - optimizerdata:
+          - api/Distributed_Design_Optimizer/subsystem/optimization/optimizerdata/index.md
+          - ControllerOptimData: api/Distributed_Design_Optimizer/subsystem/optimization/optimizerdata/ControllerOptimData.md
+          - ControllerOptimData_source: api/Distributed_Design_Optimizer/subsystem/optimization/optimizerdata/ControllerOptimData_source.md
+          - LocalSubSystemOptimData: api/Distributed_Design_Optimizer/subsystem/optimization/optimizerdata/LocalSubSystemOptimData.md
+          - LocalSubSystemOptimData_source: api/Distributed_Design_Optimizer/subsystem/optimization/optimizerdata/LocalSubSystemOptimData_source.md
+          - OptimDataBasis: api/Distributed_Design_Optimizer/subsystem/optimization/optimizerdata/OptimDataBasis.md
+          - OptimDataBasis_source: api/Distributed_Design_Optimizer/subsystem/optimization/optimizerdata/OptimDataBasis_source.md
+        - solver:
+          - api/Distributed_Design_Optimizer/subsystem/optimization/solver/index.md
+          - Solver_PyNomadBBO: api/Distributed_Design_Optimizer/subsystem/optimization/solver/Solver_PyNomadBBO.md
+          - Solver_PyNomadBBO_source: api/Distributed_Design_Optimizer/subsystem/optimization/solver/Solver_PyNomadBBO_source.md
+          - Solver_QP: api/Distributed_Design_Optimizer/subsystem/optimization/solver/Solver_QP.md
+          - Solver_QP_source: api/Distributed_Design_Optimizer/subsystem/optimization/solver/Solver_QP_source.md
+          - SolverInterface: api/Distributed_Design_Optimizer/subsystem/optimization/solver/SolverInterface.md
+          - SolverInterface_source: api/Distributed_Design_Optimizer/subsystem/optimization/solver/SolverInterface_source.md
+        - AnalysisInterface: api/Distributed_Design_Optimizer/subsystem/optimization/AnalysisInterface.md
+        - AnalysisInterface_source: api/Distributed_Design_Optimizer/subsystem/optimization/AnalysisInterface_source.md
+        - OptimizationBasis: api/Distributed_Design_Optimizer/subsystem/optimization/OptimizationBasis.md
+        - OptimizationBasis_source: api/Distributed_Design_Optimizer/subsystem/optimization/OptimizationBasis_source.md
+        - OptimizationController: api/Distributed_Design_Optimizer/subsystem/optimization/OptimizationController.md
+        - OptimizationController_source: api/Distributed_Design_Optimizer/subsystem/optimization/OptimizationController_source.md
+        - OptimizationInterface: api/Distributed_Design_Optimizer/subsystem/optimization/OptimizationInterface.md
+        - OptimizationInterface_source: api/Distributed_Design_Optimizer/subsystem/optimization/OptimizationInterface_source.md
+      - tools:
+        - api/Distributed_Design_Optimizer/subsystem/tools/index.md
+        - FiniteDifferencesJacobian: api/Distributed_Design_Optimizer/subsystem/tools/FiniteDifferencesJacobian.md
+        - FiniteDifferencesJacobian_source: api/Distributed_Design_Optimizer/subsystem/tools/FiniteDifferencesJacobian_source.md
+        - HessianApproximationBFGS: api/Distributed_Design_Optimizer/subsystem/tools/HessianApproximationBFGS.md
+        - HessianApproximationBFGS_source: api/Distributed_Design_Optimizer/subsystem/tools/HessianApproximationBFGS_source.md
+        - ScalerBasis: api/Distributed_Design_Optimizer/subsystem/tools/ScalerBasis.md
+        - ScalerBasis_source: api/Distributed_Design_Optimizer/subsystem/tools/ScalerBasis_source.md
+        - ScalerConstraint: api/Distributed_Design_Optimizer/subsystem/tools/ScalerConstraint.md
+        - ScalerConstraint_source: api/Distributed_Design_Optimizer/subsystem/tools/ScalerConstraint_source.md
+        - ScalerInterface: api/Distributed_Design_Optimizer/subsystem/tools/ScalerInterface.md
+        - ScalerInterface_source: api/Distributed_Design_Optimizer/subsystem/tools/ScalerInterface_source.md
+        - ScalerZeroOne: api/Distributed_Design_Optimizer/subsystem/tools/ScalerZeroOne.md
+        - ScalerZeroOne_source: api/Distributed_Design_Optimizer/subsystem/tools/ScalerZeroOne_source.md
+        - update_state_listprimitive: api/Distributed_Design_Optimizer/subsystem/tools/update_state_listprimitive.md
+        - update_state_listprimitive_source: api/Distributed_Design_Optimizer/subsystem/tools/update_state_listprimitive_source.md
+      - ControllerSubSystemALADIN: api/Distributed_Design_Optimizer/subsystem/ControllerSubSystemALADIN.md
+      - ControllerSubSystemALADIN_source: api/Distributed_Design_Optimizer/subsystem/ControllerSubSystemALADIN_source.md
+      - ControllerSubSystemBasis: api/Distributed_Design_Optimizer/subsystem/ControllerSubSystemBasis.md
+      - ControllerSubSystemBasis_source: api/Distributed_Design_Optimizer/subsystem/ControllerSubSystemBasis_source.md
+      - LocalSubSystemALADIN: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemALADIN.md
+      - LocalSubSystemALADIN_source: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemALADIN_source.md
+      - LocalSubSystemALC: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemALC.md
+      - LocalSubSystemALC_source: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemALC_source.md
+      - LocalSubSystemBasis: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemBasis.md
+      - LocalSubSystemBasis_source: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemBasis_source.md
+      - LocalSubSystemConsensusALC: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemConsensusALC.md
+      - LocalSubSystemConsensusALC_source: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemConsensusALC_source.md
+      - LocalSubSystemLC: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemLC.md
+      - LocalSubSystemLC_source: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemLC_source.md
+      - LocalSubSystemPC: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemPC.md
+      - LocalSubSystemPC_source: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemPC_source.md
+      - LocalSubSystemSBDP: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemSBDP.md
+      - LocalSubSystemSBDP_source: api/Distributed_Design_Optimizer/subsystem/LocalSubSystemSBDP_source.md
+      - SubSystemBasis: api/Distributed_Design_Optimizer/subsystem/SubSystemBasis.md
+      - SubSystemBasis_source: api/Distributed_Design_Optimizer/subsystem/SubSystemBasis_source.md
+      - SubSystemInterface: api/Distributed_Design_Optimizer/subsystem/SubSystemInterface.md
+      - SubSystemInterface_source: api/Distributed_Design_Optimizer/subsystem/SubSystemInterface_source.md
+    - generate_inits: api/Distributed_Design_Optimizer/generate_inits.md
+    - generate_inits_source: api/Distributed_Design_Optimizer/generate_inits_source.md
+  - userfiles:
+    - api/userfiles/index.md
+    - GeometricProgramming:
+      - api/userfiles/GeometricProgramming/index.md
+      - subsystem0:
+        - api/userfiles/GeometricProgramming/subsystem0/index.md
+        - Analysis0: api/userfiles/GeometricProgramming/subsystem0/Analysis0.md
+        - Analysis0_source: api/userfiles/GeometricProgramming/subsystem0/Analysis0_source.md
+        - LocalConstraints0: api/userfiles/GeometricProgramming/subsystem0/LocalConstraints0.md
+        - LocalConstraints0_source: api/userfiles/GeometricProgramming/subsystem0/LocalConstraints0_source.md
+        - LocalObjective0: api/userfiles/GeometricProgramming/subsystem0/LocalObjective0.md
+        - LocalObjective0_source: api/userfiles/GeometricProgramming/subsystem0/LocalObjective0_source.md
+        - Optimization0: api/userfiles/GeometricProgramming/subsystem0/Optimization0.md
+        - Optimization0_source: api/userfiles/GeometricProgramming/subsystem0/Optimization0_source.md
+      - subsystem1:
+        - api/userfiles/GeometricProgramming/subsystem1/index.md
+        - Analysis1: api/userfiles/GeometricProgramming/subsystem1/Analysis1.md
+        - Analysis1_source: api/userfiles/GeometricProgramming/subsystem1/Analysis1_source.md
+        - LocalConstraints1: api/userfiles/GeometricProgramming/subsystem1/LocalConstraints1.md
+        - LocalConstraints1_source: api/userfiles/GeometricProgramming/subsystem1/LocalConstraints1_source.md
+        - LocalObjective1: api/userfiles/GeometricProgramming/subsystem1/LocalObjective1.md
+        - LocalObjective1_source: api/userfiles/GeometricProgramming/subsystem1/LocalObjective1_source.md
+        - Optimization1: api/userfiles/GeometricProgramming/subsystem1/Optimization1.md
+        - Optimization1_source: api/userfiles/GeometricProgramming/subsystem1/Optimization1_source.md
+      - subsystem2:
+        - api/userfiles/GeometricProgramming/subsystem2/index.md
+        - Analysis2: api/userfiles/GeometricProgramming/subsystem2/Analysis2.md
+        - Analysis2_source: api/userfiles/GeometricProgramming/subsystem2/Analysis2_source.md
+        - LocalConstraints2: api/userfiles/GeometricProgramming/subsystem2/LocalConstraints2.md
+        - LocalConstraints2_source: api/userfiles/GeometricProgramming/subsystem2/LocalConstraints2_source.md
+        - LocalObjective2: api/userfiles/GeometricProgramming/subsystem2/LocalObjective2.md
+        - LocalObjective2_source: api/userfiles/GeometricProgramming/subsystem2/LocalObjective2_source.md
+        - Optimization2: api/userfiles/GeometricProgramming/subsystem2/Optimization2.md
+        - Optimization2_source: api/userfiles/GeometricProgramming/subsystem2/Optimization2_source.md
+      - InputFile: api/userfiles/GeometricProgramming/InputFile.md
+      - InputFile_source: api/userfiles/GeometricProgramming/InputFile_source.md
+      - main: api/userfiles/GeometricProgramming/main.md
+      - main_source: api/userfiles/GeometricProgramming/main_source.md
+    - NewUseCase_Template:
+      - api/userfiles/NewUseCase_Template/index.md
+      - subsystem0:
+        - api/userfiles/NewUseCase_Template/subsystem0/index.md
+        - Analysis0: api/userfiles/NewUseCase_Template/subsystem0/Analysis0.md
+        - Analysis0_source: api/userfiles/NewUseCase_Template/subsystem0/Analysis0_source.md
+        - LocalConstraints0: api/userfiles/NewUseCase_Template/subsystem0/LocalConstraints0.md
+        - LocalConstraints0_source: api/userfiles/NewUseCase_Template/subsystem0/LocalConstraints0_source.md
+        - LocalObjective0: api/userfiles/NewUseCase_Template/subsystem0/LocalObjective0.md
+        - LocalObjective0_source: api/userfiles/NewUseCase_Template/subsystem0/LocalObjective0_source.md
+        - Optimization0: api/userfiles/NewUseCase_Template/subsystem0/Optimization0.md
+        - Optimization0_source: api/userfiles/NewUseCase_Template/subsystem0/Optimization0_source.md
+      - subsystem1:
+        - api/userfiles/NewUseCase_Template/subsystem1/index.md
+        - Analysis1: api/userfiles/NewUseCase_Template/subsystem1/Analysis1.md
+        - Analysis1_source: api/userfiles/NewUseCase_Template/subsystem1/Analysis1_source.md
+        - LocalConstraints1: api/userfiles/NewUseCase_Template/subsystem1/LocalConstraints1.md
+        - LocalConstraints1_source: api/userfiles/NewUseCase_Template/subsystem1/LocalConstraints1_source.md
+        - LocalObjective1: api/userfiles/NewUseCase_Template/subsystem1/LocalObjective1.md
+        - LocalObjective1_source: api/userfiles/NewUseCase_Template/subsystem1/LocalObjective1_source.md
+        - Optimization1: api/userfiles/NewUseCase_Template/subsystem1/Optimization1.md
+        - Optimization1_source: api/userfiles/NewUseCase_Template/subsystem1/Optimization1_source.md
+      - subsystem2:
+        - api/userfiles/NewUseCase_Template/subsystem2/index.md
+        - Analysis2: api/userfiles/NewUseCase_Template/subsystem2/Analysis2.md
+        - Analysis2_source: api/userfiles/NewUseCase_Template/subsystem2/Analysis2_source.md
+        - LocalConstraints2: api/userfiles/NewUseCase_Template/subsystem2/LocalConstraints2.md
+        - LocalConstraints2_source: api/userfiles/NewUseCase_Template/subsystem2/LocalConstraints2_source.md
+        - LocalObjective2: api/userfiles/NewUseCase_Template/subsystem2/LocalObjective2.md
+        - LocalObjective2_source: api/userfiles/NewUseCase_Template/subsystem2/LocalObjective2_source.md
+        - Optimization2: api/userfiles/NewUseCase_Template/subsystem2/Optimization2.md
+        - Optimization2_source: api/userfiles/NewUseCase_Template/subsystem2/Optimization2_source.md
+      - InputFile: api/userfiles/NewUseCase_Template/InputFile.md
+      - InputFile_source: api/userfiles/NewUseCase_Template/InputFile_source.md
+      - main: api/userfiles/NewUseCase_Template/main.md
+      - main_source: api/userfiles/NewUseCase_Template/main_source.md
+    - Sellar:
+      - api/userfiles/Sellar/index.md
+      - subsystem0:
+        - api/userfiles/Sellar/subsystem0/index.md
+        - Analysis0: api/userfiles/Sellar/subsystem0/Analysis0.md
+        - Analysis0_source: api/userfiles/Sellar/subsystem0/Analysis0_source.md
+        - LocalConstraints0: api/userfiles/Sellar/subsystem0/LocalConstraints0.md
+        - LocalConstraints0_source: api/userfiles/Sellar/subsystem0/LocalConstraints0_source.md
+        - LocalObjective0: api/userfiles/Sellar/subsystem0/LocalObjective0.md
+        - LocalObjective0_source: api/userfiles/Sellar/subsystem0/LocalObjective0_source.md
+        - Optimization0: api/userfiles/Sellar/subsystem0/Optimization0.md
+        - Optimization0_source: api/userfiles/Sellar/subsystem0/Optimization0_source.md
+      - subsystem1:
+        - api/userfiles/Sellar/subsystem1/index.md
+        - Analysis1: api/userfiles/Sellar/subsystem1/Analysis1.md
+        - Analysis1_source: api/userfiles/Sellar/subsystem1/Analysis1_source.md
+        - LocalConstraints1: api/userfiles/Sellar/subsystem1/LocalConstraints1.md
+        - LocalConstraints1_source: api/userfiles/Sellar/subsystem1/LocalConstraints1_source.md
+        - LocalObjective1: api/userfiles/Sellar/subsystem1/LocalObjective1.md
+        - LocalObjective1_source: api/userfiles/Sellar/subsystem1/LocalObjective1_source.md
+        - Optimization1: api/userfiles/Sellar/subsystem1/Optimization1.md
+        - Optimization1_source: api/userfiles/Sellar/subsystem1/Optimization1_source.md
+      - InputFile: api/userfiles/Sellar/InputFile.md
+      - InputFile_source: api/userfiles/Sellar/InputFile_source.md
+      - main: api/userfiles/Sellar/main.md
+      - main_source: api/userfiles/Sellar/main_source.md
+    - SpeedReducer:
+      - api/userfiles/SpeedReducer/index.md
+      - subsystem0:
+        - api/userfiles/SpeedReducer/subsystem0/index.md
+        - Analysis0: api/userfiles/SpeedReducer/subsystem0/Analysis0.md
+        - Analysis0_source: api/userfiles/SpeedReducer/subsystem0/Analysis0_source.md
+        - LocalConstraints0: api/userfiles/SpeedReducer/subsystem0/LocalConstraints0.md
+        - LocalConstraints0_source: api/userfiles/SpeedReducer/subsystem0/LocalConstraints0_source.md
+        - LocalObjective0: api/userfiles/SpeedReducer/subsystem0/LocalObjective0.md
+        - LocalObjective0_source: api/userfiles/SpeedReducer/subsystem0/LocalObjective0_source.md
+        - Optimization0: api/userfiles/SpeedReducer/subsystem0/Optimization0.md
+        - Optimization0_source: api/userfiles/SpeedReducer/subsystem0/Optimization0_source.md
+      - subsystem1:
+        - api/userfiles/SpeedReducer/subsystem1/index.md
+        - Analysis1: api/userfiles/SpeedReducer/subsystem1/Analysis1.md
+        - Analysis1_source: api/userfiles/SpeedReducer/subsystem1/Analysis1_source.md
+        - LocalConstraints1: api/userfiles/SpeedReducer/subsystem1/LocalConstraints1.md
+        - LocalConstraints1_source: api/userfiles/SpeedReducer/subsystem1/LocalConstraints1_source.md
+        - LocalObjective1: api/userfiles/SpeedReducer/subsystem1/LocalObjective1.md
+        - LocalObjective1_source: api/userfiles/SpeedReducer/subsystem1/LocalObjective1_source.md
+        - Optimization1: api/userfiles/SpeedReducer/subsystem1/Optimization1.md
+        - Optimization1_source: api/userfiles/SpeedReducer/subsystem1/Optimization1_source.md
+      - subsystem2:
+        - api/userfiles/SpeedReducer/subsystem2/index.md
+        - Analysis2: api/userfiles/SpeedReducer/subsystem2/Analysis2.md
+        - Analysis2_source: api/userfiles/SpeedReducer/subsystem2/Analysis2_source.md
+        - LocalConstraints2: api/userfiles/SpeedReducer/subsystem2/LocalConstraints2.md
+        - LocalConstraints2_source: api/userfiles/SpeedReducer/subsystem2/LocalConstraints2_source.md
+        - LocalObjective2: api/userfiles/SpeedReducer/subsystem2/LocalObjective2.md
+        - LocalObjective2_source: api/userfiles/SpeedReducer/subsystem2/LocalObjective2_source.md
+        - Optimization2: api/userfiles/SpeedReducer/subsystem2/Optimization2.md
+        - Optimization2_source: api/userfiles/SpeedReducer/subsystem2/Optimization2_source.md
+      - InputFile: api/userfiles/SpeedReducer/InputFile.md
+      - InputFile_source: api/userfiles/SpeedReducer/InputFile_source.md
+      - main: api/userfiles/SpeedReducer/main.md
+      - main_source: api/userfiles/SpeedReducer/main_source.md
+    - SSBJ:
+      - api/userfiles/SSBJ/index.md
+      - subsystem0:
+        - api/userfiles/SSBJ/subsystem0/index.md
+        - Analysis0: api/userfiles/SSBJ/subsystem0/Analysis0.md
+        - Analysis0_source: api/userfiles/SSBJ/subsystem0/Analysis0_source.md
+        - calculate_responses0: api/userfiles/SSBJ/subsystem0/calculate_responses0.md
+        - calculate_responses0_source: api/userfiles/SSBJ/subsystem0/calculate_responses0_source.md
+        - LocalConstraints0: api/userfiles/SSBJ/subsystem0/LocalConstraints0.md
+        - LocalConstraints0_source: api/userfiles/SSBJ/subsystem0/LocalConstraints0_source.md
+        - LocalObjective0: api/userfiles/SSBJ/subsystem0/LocalObjective0.md
+        - LocalObjective0_source: api/userfiles/SSBJ/subsystem0/LocalObjective0_source.md
+        - Optimization0: api/userfiles/SSBJ/subsystem0/Optimization0.md
+        - Optimization0_source: api/userfiles/SSBJ/subsystem0/Optimization0_source.md
+      - subsystem1:
+        - api/userfiles/SSBJ/subsystem1/index.md
+        - Analysis1: api/userfiles/SSBJ/subsystem1/Analysis1.md
+        - Analysis1_source: api/userfiles/SSBJ/subsystem1/Analysis1_source.md
+        - calculate_responses1: api/userfiles/SSBJ/subsystem1/calculate_responses1.md
+        - calculate_responses1_source: api/userfiles/SSBJ/subsystem1/calculate_responses1_source.md
+        - LocalConstraints1: api/userfiles/SSBJ/subsystem1/LocalConstraints1.md
+        - LocalConstraints1_source: api/userfiles/SSBJ/subsystem1/LocalConstraints1_source.md
+        - LocalObjective1: api/userfiles/SSBJ/subsystem1/LocalObjective1.md
+        - LocalObjective1_source: api/userfiles/SSBJ/subsystem1/LocalObjective1_source.md
+        - Optimization1: api/userfiles/SSBJ/subsystem1/Optimization1.md
+        - Optimization1_source: api/userfiles/SSBJ/subsystem1/Optimization1_source.md
+      - subsystem2:
+        - api/userfiles/SSBJ/subsystem2/index.md
+        - Analysis2: api/userfiles/SSBJ/subsystem2/Analysis2.md
+        - Analysis2_source: api/userfiles/SSBJ/subsystem2/Analysis2_source.md
+        - calculate_responses2: api/userfiles/SSBJ/subsystem2/calculate_responses2.md
+        - calculate_responses2_source: api/userfiles/SSBJ/subsystem2/calculate_responses2_source.md
+        - LocalConstraints2: api/userfiles/SSBJ/subsystem2/LocalConstraints2.md
+        - LocalConstraints2_source: api/userfiles/SSBJ/subsystem2/LocalConstraints2_source.md
+        - LocalObjective2: api/userfiles/SSBJ/subsystem2/LocalObjective2.md
+        - LocalObjective2_source: api/userfiles/SSBJ/subsystem2/LocalObjective2_source.md
+        - Optimization2: api/userfiles/SSBJ/subsystem2/Optimization2.md
+        - Optimization2_source: api/userfiles/SSBJ/subsystem2/Optimization2_source.md
+      - subsystem3:
+        - api/userfiles/SSBJ/subsystem3/index.md
+        - Analysis3: api/userfiles/SSBJ/subsystem3/Analysis3.md
+        - Analysis3_source: api/userfiles/SSBJ/subsystem3/Analysis3_source.md
+        - calculate_responses3: api/userfiles/SSBJ/subsystem3/calculate_responses3.md
+        - calculate_responses3_source: api/userfiles/SSBJ/subsystem3/calculate_responses3_source.md
+        - LocalConstraints3: api/userfiles/SSBJ/subsystem3/LocalConstraints3.md
+        - LocalConstraints3_source: api/userfiles/SSBJ/subsystem3/LocalConstraints3_source.md
+        - LocalObjective3: api/userfiles/SSBJ/subsystem3/LocalObjective3.md
+        - LocalObjective3_source: api/userfiles/SSBJ/subsystem3/LocalObjective3_source.md
+        - Optimization3: api/userfiles/SSBJ/subsystem3/Optimization3.md
+        - Optimization3_source: api/userfiles/SSBJ/subsystem3/Optimization3_source.md
+      - InputFile: api/userfiles/SSBJ/InputFile.md
+      - InputFile_source: api/userfiles/SSBJ/InputFile_source.md
+      - main: api/userfiles/SSBJ/main.md
+      - main_source: api/userfiles/SSBJ/main_source.md
+    - TwoBarTruss:
+      - api/userfiles/TwoBarTruss/index.md
+      - subsystem0:
+        - api/userfiles/TwoBarTruss/subsystem0/index.md
+        - Analysis0: api/userfiles/TwoBarTruss/subsystem0/Analysis0.md
+        - Analysis0_source: api/userfiles/TwoBarTruss/subsystem0/Analysis0_source.md
+        - LocalConstraints0: api/userfiles/TwoBarTruss/subsystem0/LocalConstraints0.md
+        - LocalConstraints0_source: api/userfiles/TwoBarTruss/subsystem0/LocalConstraints0_source.md
+        - LocalObjective0: api/userfiles/TwoBarTruss/subsystem0/LocalObjective0.md
+        - LocalObjective0_source: api/userfiles/TwoBarTruss/subsystem0/LocalObjective0_source.md
+        - Optimization0: api/userfiles/TwoBarTruss/subsystem0/Optimization0.md
+        - Optimization0_source: api/userfiles/TwoBarTruss/subsystem0/Optimization0_source.md
+      - subsystem1:
+        - api/userfiles/TwoBarTruss/subsystem1/index.md
+        - Analysis1: api/userfiles/TwoBarTruss/subsystem1/Analysis1.md
+        - Analysis1_source: api/userfiles/TwoBarTruss/subsystem1/Analysis1_source.md
+        - LocalConstraints1: api/userfiles/TwoBarTruss/subsystem1/LocalConstraints1.md
+        - LocalConstraints1_source: api/userfiles/TwoBarTruss/subsystem1/LocalConstraints1_source.md
+        - LocalObjective1: api/userfiles/TwoBarTruss/subsystem1/LocalObjective1.md
+        - LocalObjective1_source: api/userfiles/TwoBarTruss/subsystem1/LocalObjective1_source.md
+        - Optimization1: api/userfiles/TwoBarTruss/subsystem1/Optimization1.md
+        - Optimization1_source: api/userfiles/TwoBarTruss/subsystem1/Optimization1_source.md
+      - subsystem2:
+        - api/userfiles/TwoBarTruss/subsystem2/index.md
+        - Analysis2: api/userfiles/TwoBarTruss/subsystem2/Analysis2.md
+        - Analysis2_source: api/userfiles/TwoBarTruss/subsystem2/Analysis2_source.md
+        - LocalConstraints2: api/userfiles/TwoBarTruss/subsystem2/LocalConstraints2.md
+        - LocalConstraints2_source: api/userfiles/TwoBarTruss/subsystem2/LocalConstraints2_source.md
+        - LocalObjective2: api/userfiles/TwoBarTruss/subsystem2/LocalObjective2.md
+        - LocalObjective2_source: api/userfiles/TwoBarTruss/subsystem2/LocalObjective2_source.md
+        - Optimization2: api/userfiles/TwoBarTruss/subsystem2/Optimization2.md
+        - Optimization2_source: api/userfiles/TwoBarTruss/subsystem2/Optimization2_source.md
+      - InputFile: api/userfiles/TwoBarTruss/InputFile.md
+      - InputFile_source: api/userfiles/TwoBarTruss/InputFile_source.md
+      - main: api/userfiles/TwoBarTruss/main.md
+      - main_source: api/userfiles/TwoBarTruss/main_source.md
+- Citation and Publications: citation-and-publications/index.md
+- Roadmap and Contribution:
+  - Reporting Issues: roadmap-and-contribution/reporting-issues.md
+  - Pull Requests: roadmap-and-contribution/pull-requests.md
+  - Roadmap: roadmap-and-contribution/roadmap.md

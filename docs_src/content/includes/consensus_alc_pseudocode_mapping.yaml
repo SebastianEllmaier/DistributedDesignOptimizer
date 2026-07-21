@@ -1,0 +1,379 @@
+# Consensus ALC Pseudocode-to-Code Traceability Mapping
+# ======================================================
+# This file maps each logical step in the Consensus Augmented Lagrangian
+# Coordination (Consensus ALC) pseudocode to the implementing classes/methods.
+#
+# Consensus ALC uses auxiliary variables (y) and consensus constraints (c_c)
+# instead of the coupling constraints used in standard ALC.
+#
+# MAINTENANCE: If a method is renamed or moved, update the corresponding entry here.
+# The build process will warn you if a referenced method no longer exists.
+#
+# Fields:
+#   id:              Unique identifier for this mapping (used as HTML data attribute)
+#   algo_lines:      Line numbers in the pseudocode (1-based, matching CSS counter)
+#   label:           Short human-readable description of the pseudocode step
+#   pseudocode_text: The text as it appears in the pseudocode (for display)
+#   implementations: List of class.method references that implement this step
+#     - module:      Dotted Python module path
+#       class:       Class name
+#       method:      Method name (use "__init__" for constructors)
+
+mappings:
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 1–2: Require: hyperparameters and initial coupling parameters
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-require-hyperparameters
+    algo_lines: [1, 2]
+    label: "Require hyperparameters γ, β and initial auxiliary variables/multipliers"
+    pseudocode_text: "Require: hyperparameters γ, β; initial y, λ, s"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: initializeCouplingParameters_after_CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.consensus_alc.MiddleLevelDataStorageConsensusALC
+        class: MiddleLevelDataStorageConsensusALC
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: __init__
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 3: k ← 0
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-init-outerloop
+    algo_lines: [3]
+    label: "Initialize outerloop iterator"
+    pseudocode_text: "k ← 0 (initialize outerloop iterator)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 4–6: repeat outerloop, l ← 0, repeat innerloop
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-outerloop-repeat
+    algo_lines: [4, 5, 6]
+    label: "Outer loop repeat, initialize innerloop"
+    pseudocode_text: "repeat; l ← 0; repeat (Primal Update)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 7–8: Innerloop Primal Update (decentralized optimization)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-innerloop-primal
+    algo_lines: [7, 8]
+    label: "Innerloop decentralized Primal Update optimization"
+    pseudocode_text: "for every i ∈ M in parallel do; argmin optimization"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: innerloop_iteration
+      - module: Distributed_Design_Optimizer.coordination.innerloop_iterationscheme.IterationSchemeInterface
+        class: IterationSchemeInterface
+        method: run_innerloop_jobs_multiprocessing
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_innerloop_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_IterativeOptimization
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: evaluateCoordinationObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalConstraint
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationInterface
+        class: OptimizationInterface
+        method: callOptimizer
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 9: Copy to interface storage after primal update
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-copy-to-after-primal
+    algo_lines: [9]
+    label: "Copy coupling data to interface storage"
+    pseudocode_text: "Copy H(r), h, z, λ, s to interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: set_Coupling
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_MappedResponses
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_SharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 11–12: Copy from interface storage before auxiliary update
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-copy-from-auxiliary
+    algo_lines: [11, 12]
+    label: "Copy from interface, prepare auxiliary update"
+    pseudocode_text: "for every i ∈ M in parallel; Copy from interface"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: get_StoredCoupling
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 13–14: Auxiliary variable closed-form update (y update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-auxiliary-update
+    algo_lines: [13, 14]
+    label: "Auxiliary variable closed-form update"
+    pseudocode_text: "y ← weighted-average closed-form consensus update (squared-weight combination divided by sum of squared weights)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: update_AuxiliaryVariables
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: updateCouplingParameters_innerLoop
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: set_Auxiliary_MappedResponse
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: set_Auxiliary_CouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: set_Auxiliary_SharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: set_Auxiliary_TargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 16–18: Innerloop convergence check
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-innerloop-convergence
+    algo_lines: [16, 17, 18]
+    label: "Innerloop convergence check"
+    pseudocode_text: "Compute innerloop convergence criterion; l ← l + 1; until converged"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_InnerLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Innerloop_Interface
+        class: Local_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Innerloop_DeWit
+        class: Local_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Innerloop_Interface
+        class: Centralized_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Innerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 19: Update design and auxiliary variables for outer loop
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-update-design-auxiliary
+    algo_lines: [19]
+    label: "Update design and auxiliary variables for outer loop"
+    pseudocode_text: "d^(k+1), y^(k+1) ← d^(k,l), y^(k,l)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 20–21: Dual and Penalty Update loop, compute residuals
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-compute-residual
+    algo_lines: [20, 21]
+    label: "Compute consensus constraint residual"
+    pseudocode_text: "for every i ∈ M (Dual and Penalty Update); c_c^(k+1) ← y - [H(r); S_z·d]"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: run_prepare_updateCouplingParameters_job
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: evaluate_Inconsistencies
+      - module: Distributed_Design_Optimizer.middlelevel.consensus_alc.InConsistencySize
+        class: InConsistencySize
+        method: evaluate_Auxiliary_Minus_MappedResponse
+      - module: Distributed_Design_Optimizer.middlelevel.consensus_alc.InConsistencySize
+        class: InConsistencySize
+        method: evaluate_Auxiliary_Minus_CouplingVariable
+      - module: Distributed_Design_Optimizer.middlelevel.consensus_alc.InConsistencySize
+        class: InConsistencySize
+        method: evaluate_Auxiliary_Minus_SharedDesignVariable
+      - module: Distributed_Design_Optimizer.middlelevel.consensus_alc.InConsistencySize
+        class: InConsistencySize
+        method: evaluate_Auxiliary_Minus_TargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 22: Dual Update (Lagrange multiplier update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-dual-update
+    algo_lines: [22]
+    label: "Dual Update (Lagrange multiplier update)"
+    pseudocode_text: "λ^(k+1) ← DualUpdate(λ^(k), s^(k), c_c^(k+1))"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: updateCouplingParameters_outerLoop
+      - module: Distributed_Design_Optimizer.coordination.updatecouplingparametermethod.UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        class: UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        method: update_CoordinationMultipliers
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationMultipliers_Auxiliary_Minus_MappedResponse
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationMultipliers_Auxiliary_Minus_CouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationMultipliers_Auxiliary_Minus_SharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationMultipliers_Auxiliary_Minus_TargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 22: Penalty Update (weight update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-penalty-update
+    algo_lines: [22]
+    label: "Penalty Update (weight update)"
+    pseudocode_text: "s^(k+1) ← PenaltyUpdate(β, γ, s^(k), c_c^(k+1), c_c^(k))"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: updateCouplingParameters_outerLoop
+      - module: Distributed_Design_Optimizer.coordination.updatecouplingparametermethod.UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        class: UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        method: update_CoordinationWeights
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationWeights_Auxiliary_Minus_MappedResponse
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationWeights_Auxiliary_Minus_CouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationWeights_Auxiliary_Minus_SharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: set_CoordinationWeights_Auxiliary_Minus_TargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 24–27: Outerloop convergence check and return
+  # ─────────────────────────────────────────────────────────────────────
+  - id: consensus-alc-outerloop-convergence
+    algo_lines: [24, 25, 26, 27]
+    label: "Outerloop convergence and return"
+    pseudocode_text: "Compute outerloop convergence; k ← k + 1; until converged; return"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_OuterLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Outerloop_Interface
+        class: Local_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Outerloop_DeWit
+        class: Local_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Outerloop_Interface
+        class: Centralized_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Outerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: evaluate_Inconsistencies
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Math Symbol Mappings
+# ─────────────────────────────────────────────────────────────────────────
+# Maps mathematical symbols in the pseudocode to their implementations.
+
+math_symbol_mappings:
+  - id: consensus-alc-sym-y
+    symbol_latex: "y"
+    label: "Auxiliary variable (consensus)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: get_Auxiliary_MappedResponse
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: get_Auxiliary_CouplingVariable
+
+  - id: consensus-alc-sym-lambda
+    symbol_latex: "\\lambda"
+    label: "Lagrange multiplier (consensus)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: get_Multipliers_Auxiliary_Minus_MappedResponse
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: get_Multipliers_Auxiliary_Minus_CouplingVariable
+
+  - id: consensus-alc-sym-weight
+    symbol_latex: "s"
+    label: "Penalty weight (consensus)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: get_Weights_Auxiliary_Minus_MappedResponse
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.consensus_alc.CouplingParametersConsensusALC
+        class: CouplingParametersConsensusALC
+        method: get_Weights_Auxiliary_Minus_CouplingVariable
+
+  - id: consensus-alc-sym-beta
+    symbol_latex: "\\beta"
+    label: "Penalty weight increase factor"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: __init__
+
+  - id: consensus-alc-sym-gamma
+    symbol_latex: "\\gamma"
+    label: "Inconsistency reduction threshold"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemConsensusALC
+        class: LocalSubSystemConsensusALC
+        method: __init__
+
+  - id: consensus-alc-sym-cc
+    symbol_latex: "c_c"
+    label: "Consensus constraint residual"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.consensus_alc.InConsistencySize
+        class: InConsistencySize
+        method: get_Auxiliary_Minus_MappedResponse
+      - module: Distributed_Design_Optimizer.middlelevel.consensus_alc.InConsistencySize
+        class: InConsistencySize
+        method: get_Auxiliary_Minus_CouplingVariable

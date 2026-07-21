@@ -1,0 +1,5 @@
+TwoBarTruss usecase taken from 
+de Wit's Java framework
+and explained in his PhD. Thesis, Chapter 8.1
+De Wit, A. J. (2009). A Unified Approach towards Decomposition and Coordination for Multi-level Optimization. https://repository.tudelft.nl/islandora/object/uuid%3Ad8f58668-ba49-441d-bbf0-aa8c7114da4a
+   

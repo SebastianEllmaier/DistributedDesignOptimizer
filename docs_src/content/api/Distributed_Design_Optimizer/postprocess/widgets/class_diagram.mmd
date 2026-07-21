@@ -1,0 +1,326 @@
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% External classes (not in this project)
+    class QGraphicsItem:::externalStyle {
+        <<external>>
+    }
+
+    class QGraphicsLineItem:::externalStyle {
+        <<external>>
+    }
+
+    class QGraphicsView:::externalStyle {
+        <<external>>
+    }
+
+    class QMainWindow:::externalStyle {
+        <<external>>
+    }
+
+    class QObject:::externalStyle {
+        <<external>>
+    }
+
+    class QSplitter:::externalStyle {
+        <<external>>
+    }
+
+    class QSplitterHandle:::externalStyle {
+        <<external>>
+    }
+
+    class QWidget:::externalStyle {
+        <<external>>
+    }
+
+    class AutoUpdateDelegate:::localStyle {
+        -_data_handler
+        -_auto_update_action
+        -_status_bar
+        -_worker
+        +__init__(data_handler, auto_update_action, ...)
+        +worker()
+        +on_toggled(enabled)
+        +manual_update()
+        +stop()
+    }
+
+    class TopologyDelegate:::localStyle {
+        +analysis_complete
+        -_data_handler
+        -_topology_handler
+        -_chat_handler
+        -_topology_panel
+        -_chat_panel
+        -_central_stack
+        -_status_bar
+        +__init__(data_handler, topology_handler, ...)
+        +on_launch(config)
+        +on_graph_ready(graph_data, analysis_type, ...)
+        +on_chart_ready(fig_or_html, analysis_type, ...)
+        +on_html_ready(html_content, analysis_type, ...)
+        +on_error(message)
+    }
+
+    class WelcomeCard:::localStyle {
+        -_title
+        -_subtitle
+        -_divider
+        -_step_icons
+        -_arrow_labels
+        -_logo
+        +__init__(parent)
+        +showEvent(event)
+    }
+
+    class ChatPanel:::localStyle {
+        +message_sent
+        -_THINKING_MARKER
+        +__init__(parent)
+        +add_message(sender, text)
+        +show_thinking()
+        +remove_thinking()
+        +show_response(text)
+        ...
+    }
+
+    class CollapsibleSection:::localStyle {
+        +user_toggled
+        -_programmatic
+        -_toggle_btn
+        -_content
+        -_content_layout
+        +__init__(title, parent, ...)
+        +content_layout()
+        +set_expanded(expanded)
+        +showEvent(event)
+    }
+
+    class _GripSplitterHandle:::localStyle {
+        +paintEvent(event)
+    }
+
+    class _GripSplitter:::localStyle {
+        +createHandle()
+    }
+
+    class DataSelectionPanel:::localStyle {
+        +files_load_requested
+        +selection_changed
+        -_undo_stack
+        -_data_handler
+        -_pending_trees
+        +__init__(parent)
+        +set_data_handler(handler)
+        +showEvent(event)
+        +load_files()
+        +populate_tree(entry_id, tree_structure)
+        ...
+    }
+
+    class NodeItem:::localStyle {
+        +node_id
+        -_radius
+        -_shape
+        -_color
+        -_pen
+        -_brush
+        -_label
+        +__init__(node_id, x, ...)
+        +boundingRect()
+        +paint(painter, option, ...)
+        +set_highlight(on)
+    }
+
+    class EdgeItem:::localStyle {
+        -_color
+        -_arrow
+        +__init__(x1, y1, ...)
+    }
+
+    class GraphWidget:::localStyle {
+        -_scene
+        -_zoom_level
+        -_max_zoom
+        -_min_zoom
+        +__init__(parent)
+        +set_graph(graph_data)
+        +clear()
+        +update_theme()
+        +wheelEvent(event)
+        ...
+    }
+
+    class MainWindow:::localStyle {
+        -_settings
+        -_data_handler
+        -_plot_handler
+        -_topology_handler
+        -_chat_handler
+        -_auto_update_delegate
+        -_topology_delegate
+        ...
+        +__init__(llm_config)
+        +closeEvent(event)
+    }
+
+    class PlotCanvas:::localStyle {
+        +image_saved
+        +resized
+        -_stack
+        -_welcome
+        -_panel
+        +__init__(parent)
+        +resizeEvent(event)
+        +set_html(html, fig)
+        +set_figure(fig)
+        +refresh()
+        ...
+    }
+
+    class _ImageSaveBridge:::localStyle {
+        +image_saved
+        -_FILTER_MAP
+        +saveImage(fmt, ext, ...)
+    }
+
+    class PlotlyPanel:::localStyle {
+        +image_saved
+        -_layout
+        -_bridge
+        -_placeholder
+        -_web_view
+        -_html
+        -_plotly_fig
+        ...
+        +__init__(placeholder_text, parent)
+        +html()
+        +figure()
+        +set_html(html, fig)
+        +set_figure(fig)
+        ...
+    }
+
+    class _PlotSketchWidget:::localStyle {
+        +__init__(parent)
+        +paintEvent(event)
+    }
+
+    class PlotSettingsPanel:::localStyle {
+        +settings_changed
+        +customization_reset
+        -_DEBOUNCE_MS
+        -_INPUT_WIDTH
+        -_ref_line_widgets
+        -_legend_entries
+        -_per_line_widgets
+        ...
+        +__init__(parent)
+        +get_plot_config()
+        +refresh_line_entries(plottable_data)
+    }
+
+    class _SwitchTrack:::localStyle {
+        +toggled
+        +thumb_x
+        -_checked
+        -_thumb_x
+        -_anim
+        +__init__(parent)
+        +isChecked()
+        +setChecked(checked)
+        +mousePressEvent(event)
+        +changeEvent(event)
+        +paintEvent(event)
+    }
+
+    class ToggleSwitch:::localStyle {
+        +toggled
+        -_label
+        -_switch
+        +__init__(label, parent)
+        +isChecked()
+        +setChecked(checked)
+        +setToolTip(tip)
+    }
+
+    class TopologyControlsWidget:::localStyle {
+        +launch_requested
+        +__init__(parent)
+        +get_config()
+        +showEvent(event)
+    }
+
+    class TopologyPanel:::localStyle {
+        +topology_launch_requested
+        +image_saved
+        -_stack
+        -_placeholder
+        -_ph_divider
+        -_ph_title
+        -_graph_widget
+        ...
+        +__init__(parent)
+        +display_graph(graph_data)
+        +display_chart(fig_or_html)
+        +display_html(html_content)
+        +clear()
+        +update_theme()
+    }
+
+    QObject <|-- AutoUpdateDelegate
+    QObject <|-- TopologyDelegate
+    QWidget <|-- WelcomeCard
+    QWidget <|-- ChatPanel
+    QWidget <|-- CollapsibleSection
+    QSplitterHandle <|-- _GripSplitterHandle
+    QSplitter <|-- _GripSplitter
+    QWidget <|-- DataSelectionPanel
+    QGraphicsItem <|-- NodeItem
+    QGraphicsLineItem <|-- EdgeItem
+    QGraphicsView <|-- GraphWidget
+    QMainWindow <|-- MainWindow
+    QWidget <|-- PlotCanvas
+    QObject <|-- _ImageSaveBridge
+    QWidget <|-- PlotlyPanel
+    QWidget <|-- _PlotSketchWidget
+    QWidget <|-- PlotSettingsPanel
+    QWidget <|-- _SwitchTrack
+    QWidget <|-- ToggleSwitch
+    QWidget <|-- TopologyControlsWidget
+    QWidget <|-- TopologyPanel
+
+    %% Click handlers for navigation to documentation
+    click AutoUpdateDelegate href "_auto_update_delegate/" "View AutoUpdateDelegate documentation"
+    click TopologyDelegate href "_topology_delegate/" "View TopologyDelegate documentation"
+    click WelcomeCard href "_welcome_card/" "View WelcomeCard documentation"
+    click ChatPanel href "ChatPanel/" "View ChatPanel documentation"
+    click CollapsibleSection href "CollapsibleSection/" "View CollapsibleSection documentation"
+    click _GripSplitterHandle href "DataSelectionPanel/" "View _GripSplitterHandle documentation"
+    click _GripSplitter href "DataSelectionPanel/" "View _GripSplitter documentation"
+    click DataSelectionPanel href "DataSelectionPanel/" "View DataSelectionPanel documentation"
+    click NodeItem href "GraphWidget/" "View NodeItem documentation"
+    click EdgeItem href "GraphWidget/" "View EdgeItem documentation"
+    click GraphWidget href "GraphWidget/" "View GraphWidget documentation"
+    click MainWindow href "MainWindow/" "View MainWindow documentation"
+    click PlotCanvas href "PlotCanvas/" "View PlotCanvas documentation"
+    click _ImageSaveBridge href "PlotlyPanel/" "View _ImageSaveBridge documentation"
+    click PlotlyPanel href "PlotlyPanel/" "View PlotlyPanel documentation"
+    click _PlotSketchWidget href "PlotSettingsPanel/" "View _PlotSketchWidget documentation"
+    click PlotSettingsPanel href "PlotSettingsPanel/" "View PlotSettingsPanel documentation"
+    click _SwitchTrack href "ToggleSwitch/" "View _SwitchTrack documentation"
+    click ToggleSwitch href "ToggleSwitch/" "View ToggleSwitch documentation"
+    click TopologyControlsWidget href "TopologyControlsWidget/" "View TopologyControlsWidget documentation"
+    click TopologyPanel href "TopologyPanel/" "View TopologyPanel documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```

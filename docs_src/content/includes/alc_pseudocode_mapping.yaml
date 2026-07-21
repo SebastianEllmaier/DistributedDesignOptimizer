@@ -1,0 +1,388 @@
+# ALC Pseudocode-to-Code Traceability Mapping
+# ============================================
+# This file maps each logical step in the Augmented Lagrangian Coordination (ALC)
+# pseudocode to the implementing classes/methods in the codebase.
+#
+# Note: This file focuses on ALC-SPECIFIC implementations only.
+# Generic implementations shared with other coordination methods (e.g., Coordinator.run,
+# innerloop_iteration) are documented in unified_algorithmic_structure_pseudocode_mapping.yaml.
+#
+# MAINTENANCE: If a method is renamed or moved, update the corresponding entry here.
+# The build process will warn you if a referenced method no longer exists.
+#
+# Fields:
+#   id:              Unique identifier for this mapping (used as HTML data attribute)
+#   algo_lines:      Line numbers in the pseudocode (1-based, matching CSS counter)
+#   label:           Short human-readable description of the pseudocode step
+#   pseudocode_text: The text as it appears in the pseudocode (for display)
+#   implementations: List of class.method references that implement this step
+#     - module:      Dotted Python module path
+#       class:       Class name
+#       method:      Method name (use "__init__" for constructors)
+
+mappings:
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 1–3: Require: hyperparameters and initial coupling parameters
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-require-hyperparameters
+    algo_lines: [1, 2, 3]
+    label: "Require hyperparameters γ, β and initial coupling parameters"
+    pseudocode_text: "Require: hyperparameters γ, β; initial interface storage; initial λ, s"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.ALC
+        class: ALC
+        method: __init__
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.ALC
+        class: ALC
+        method: validate_inputs
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: initializeCouplingParameters_after_CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.alc.MiddleLevelDataStorageALC
+        class: MiddleLevelDataStorageALC
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: __init__
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 4: k ← 0
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-init-outerloop
+    algo_lines: [4]
+    label: "Initialize outerloop iterator"
+    pseudocode_text: "k ← 0 (initialize outerloop iterator)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 5–6: repeat outerloop, l ← 0
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-outerloop-repeat
+    algo_lines: [5, 6]
+    label: "Outer loop repeat, initialize innerloop"
+    pseudocode_text: "repeat; l ← 0"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 7–8: repeat innerloop (decentralized Primal Update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-innerloop-primal
+    algo_lines: [7, 8]
+    label: "Innerloop repeat (decentralized Primal Update)"
+    pseudocode_text: "repeat decentralized Primal Update; for every i ∈ M in sequence or parallel do"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: innerloop_iteration
+      - module: Distributed_Design_Optimizer.coordination.innerloop_iterationscheme.IterationSchemeInterface
+        class: IterationSchemeInterface
+        method: run_innerloop_jobs_multiprocessing
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_innerloop_job
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 9: Copy from interface storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-copy-from
+    algo_lines: [9]
+    label: "Copy coupling parameters from interface storage"
+    pseudocode_text: "Copy H(r), h, z from interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: get_StoredCoupling
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: get_MappedResponses
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: get_SharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 10: Solve ALC argmin optimization problem
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-solve-optimization
+    algo_lines: [10]
+    label: "Solve ALC augmented Lagrangian optimization"
+    pseudocode_text: "argmin: local objective + Lagrangian terms + penalty terms"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_IterativeOptimization
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: evaluateCoordinationObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalConstraint
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationInterface
+        class: OptimizationInterface
+        method: callOptimizer
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 11: Copy to interface storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-copy-to
+    algo_lines: [11]
+    label: "Copy coupling parameters to interface storage"
+    pseudocode_text: "Copy H(r), h, z to interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: set_Coupling
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_MappedResponses
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_SharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 13–15: Innerloop convergence check
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-innerloop-convergence
+    algo_lines: [13, 14, 15]
+    label: "Innerloop convergence check"
+    pseudocode_text: "Compute innerloop convergence criterion; l ← l + 1; until converged"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_InnerLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Innerloop_Interface
+        class: Local_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Innerloop_DeWit
+        class: Local_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Innerloop_Interface
+        class: Centralized_ConvergenceIndicator_Innerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Innerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Innerloop_DeWit
+        method: evaluate
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 16: Update design variables
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-update-design
+    algo_lines: [16]
+    label: "Update design variables for outer loop"
+    pseudocode_text: "d^(k+1) ← d^(k,l) for all i ∈ M"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 17–18: Dual and Penalty Update loop, copy from interface
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-dual-penalty-loop
+    algo_lines: [17, 18]
+    label: "Dual and Penalty Update loop"
+    pseudocode_text: "for every i ∈ M in parallel (Dual and Penalty Update); Copy from interface"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: run_prepare_updateCouplingParameters_job
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 19: Compute consistency residual c
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-compute-residual
+    algo_lines: [19]
+    label: "Compute consistency residual c"
+    pseudocode_text: "c^(k+1) ← [H(r) - h; S_z·d - z]"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluate_Inconsistencies
+      - module: Distributed_Design_Optimizer.middlelevel.InConsistencySizeBasis
+        class: InConsistencySizeBasis
+        method: evaluate_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.middlelevel.InConsistencySizeBasis
+        class: InConsistencySizeBasis
+        method: evaluate_CopyMappedResponse_Minus_CouplingVariable
+      - module: Distributed_Design_Optimizer.middlelevel.InConsistencySizeBasis
+        class: InConsistencySizeBasis
+        method: evaluate_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.middlelevel.InConsistencySizeBasis
+        class: InConsistencySizeBasis
+        method: evaluate_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 20: Dual Update (Lagrange multiplier update) — shares line 20 with
+  #          the Penalty Update (combined equation block in the pseudocode)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-dual-update
+    algo_lines: [20]
+    label: "Dual Update (Lagrange multiplier update)"
+    pseudocode_text: "λ^(k+1) ← DualUpdate(λ^(k), w^(k), c^(k+1))"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: updateCouplingParameters_outerLoop
+      - module: Distributed_Design_Optimizer.coordination.updatecouplingparametermethod.UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        class: UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        method: update_CoordinationMultipliers
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationMultipliers_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationMultipliers_CopyMappedResponse_Minus_CouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationMultipliers_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationMultipliers_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: set_Multipliers_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: set_Multipliers_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 20: Penalty Update (weight update)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-penalty-update
+    algo_lines: [20]
+    label: "Penalty Update (weight update)"
+    pseudocode_text: "s^(k+1) ← PenaltyUpdate(β, γ, s^(k), c^(k+1), c^(k))"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: updateCouplingParameters_outerLoop
+      - module: Distributed_Design_Optimizer.coordination.updatecouplingparametermethod.UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        class: UpdateCouplingParameterMethod_AugLagMultipliersAdaptiveWeights
+        method: update_CoordinationWeights
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationWeights_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationWeights_CopyMappedResponse_Minus_CouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationWeights_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: set_CoordinationWeights_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: set_Weights_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: set_Weights_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 22–25: Outerloop convergence check and return
+  # ─────────────────────────────────────────────────────────────────────
+  - id: alc-outerloop-convergence
+    algo_lines: [22, 23, 24, 25]
+    label: "Outerloop convergence and return"
+    pseudocode_text: "Compute outerloop convergence; k ← k + 1; until converged; return"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_OuterLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.Local_ConvergenceIndicator_Outerloop_Interface
+        class: Local_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Outerloop_DeWit
+        class: Local_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.Centralized_ConvergenceIndicator_Outerloop_Interface
+        class: Centralized_ConvergenceIndicator_Outerloop_Interface
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Outerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemALC
+        class: LocalSubSystemALC
+        method: evaluate_Inconsistencies
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Math Symbol Mappings
+# ─────────────────────────────────────────────────────────────────────────
+# Maps mathematical symbols in the pseudocode to their implementations.
+
+math_symbol_mappings:
+  - id: alc-sym-lambda
+    symbol_latex: "\\lambda"
+    label: "Lagrange multiplier"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: get_Multipliers_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: get_Multipliers_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+
+  - id: alc-sym-weight
+    symbol_latex: "s"
+    label: "Penalty weight for augmented Lagrangian"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: get_Weights_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: get_Weights_CopySharedDesignVariable_Minus_TargetSharedDesignVariable
+
+  - id: alc-sym-beta
+    symbol_latex: "\\beta"
+    label: "Penalty weight increase factor"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.ALC
+        class: ALC
+        method: __init__
+
+  - id: alc-sym-gamma
+    symbol_latex: "\\gamma"
+    label: "Inconsistency reduction threshold"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.ALC
+        class: ALC
+        method: __init__
+
+  - id: alc-sym-inconsistency
+    symbol_latex: "c"
+    label: "Coupling constraint inconsistency (consistency residual)"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.InConsistencySizeBasis
+        class: InConsistencySizeBasis
+        method: get_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.middlelevel.InConsistencySizeBasis
+        class: InConsistencySizeBasis
+        method: get_CopyMappedResponse_Minus_CouplingVariable

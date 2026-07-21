@@ -1,0 +1,207 @@
+---
+title: LocalConstraints1 (Source)
+---
+
+← Back to [LocalConstraints1 documentation](LocalConstraints1.md)
+
+# LocalConstraints1 - Source Code
+
+**File:** `userfiles\Sellar\subsystem1\LocalConstraints1.py`
+
+```python
+# Copyright (C) The DistributedDesignOptimizer Contributors
+# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+"""Local constraints module for Sellar subsystem 1.
+
+Defines the equality and inequality constraints local to subsystem 1
+in the Sellar distributed optimization problem.
+"""
+from typing import List
+from Distributed_Design_Optimizer.subsystem import LocalSubSystemBasis
+from Distributed_Design_Optimizer.subsystem.optimization.designproblem import LocalConstraintsInterface
+from Distributed_Design_Optimizer.subsystem.tools import ScalerBasis, ScalerConstraint
+
+
+class LocalConstraints1(LocalConstraintsInterface):
+    """Local constraints class for Sellar subsystem 1.
+
+    Evaluates the local equality and inequality constraints for the
+    second subsystem including the y2 constraint.
+
+    Attributes:
+        None specific to this class; inherits from LocalConstraintsInterface.
+    """
+
+    def __init__(self) -> None:
+        """Initialize LocalConstraints1 instance."""
+        pass
+
+    def evaluateEqualityLocalConstraints(self, subsystem: LocalSubSystemBasis) -> None:
+        """Evaluate equality constraints for subsystem 1.
+
+        Args:
+            subsystem: The local subsystem basis containing state information.
+        """
+        responses: List[float] = subsystem.get_Responses_Unscaled()  # unscaled values
+        scalers: List[ScalerBasis] = subsystem.get_Scalers()
+        
+        equality_unscaled = []
+        # append any equality Local constraints to this list using the responses
+        ################################################################
+        ###          USER CODE: Equality constraints                 ###
+        ################################################################
+        # equality_unscaled.append(responses[...])
+        # equality_unscaled.append(responses[...])  
+        
+        # scale equality Local constraint evaluation
+        scl: List[ScalerConstraint] = [scalers[4]]
+        # equality: List[float] = [scl[i].transform(equality_unscaled[i]) for i in range(len(equality_unscaled))]
+        
+        # or if no Equality Local constraints exist:
+        equality = None
+       
+        # equality Local constraints needs to be a scaled01 quantity
+        ################################################################
+        ###          END USER CODE                                   ###
+        ################################################################  
+        subsystem.set_EqualityLocalConstraintsValue(equality)
+
+    def evaluate_Jacobian_EqualityLocalConstraints(self, subsystem: LocalSubSystemBasis) -> None:
+        """Evaluate the Jacobian of the local equality constraints.
+
+        Args:
+            subsystem: The local subsystem basis containing state information.
+        """
+        
+        return None
+
+    def evaluate_Hessians_EqualityLocalConstraints(self, subsystem: LocalSubSystemBasis) -> None:
+        """Evaluate the Hessians of the local equality constraints.
+
+        Args:
+            subsystem: The local subsystem basis containing state information.
+        """
+        
+        return None
+        
+    def evaluateInEqualityLocalConstraints(self, subsystem: LocalSubSystemBasis) -> None:
+        """Evaluate inequality constraints for subsystem 1.
+
+        Computes the local inequality constraint: y2 - 24 >= 0.
+
+        Args:
+            subsystem: The local subsystem basis containing state information.
+        """
+        responses: List[float] = subsystem.get_Responses_Unscaled()  # unscaled values
+        scalers: List[ScalerBasis] = subsystem.get_Scalers()
+        
+        inequality_unscaled = []
+        # append any inequality Local constraints to this list using the responses
+        ################################################################
+        ###          USER CODE: Inequality constraints               ###
+        ################################################################
+        inequality_unscaled.append(responses[0] - 24.0)
+        
+        # scale the inequality Local constraint evaluation
+        scl: List[ScalerConstraint] = [scalers[5]]
+        inequality: List[float] = [scl[i].transform(inequality_unscaled[i]) for i in range(len(inequality_unscaled))]
+        # inequality Local constraints needs to be a scaled01 quantity        
+        ################################################################
+        ###          END USER CODE                                   ###
+        ################################################################ 
+        subsystem.set_InequalityLocalConstraintsValue(inequality)
+
+    def evaluate_Jacobian_InEqualityLocalConstraints(self, subsystem: LocalSubSystemBasis) -> None:
+        """Evaluate the Jacobian of the local inequality constraints.
+
+        Args:
+            subsystem: The local subsystem basis containing state information.
+        """
+        # === Tutorial: scaled <-> unscaled Jacobian (chain rule) ===================
+        # The optimizer works in SCALED [0, 1] design-variable space, so each Jacobian
+        # row must be d(scaled constraint) / d(scaled design variables). Every affine
+        # scaler has a constant slope get_scale() = d(scaled)/d(unscaled). From the
+        # UNSCALED partials dg/dx_u[j] convert component-wise:
+        #     dg_s/ds_j = get_scale(constraint) * dg/dx_u[j] / get_scale(dv_scaler_j)
+        # Return None instead to let the framework fall back to finite differences.
+        # ===========================================================================
+
+        des_var: List[float] = subsystem.get_DesignVariables_Unscaled()  # unscaled values
+        scalers: List[ScalerBasis] = subsystem.get_Scalers()
+        ################################################################
+        ###          USER CODE: Jacobian of inequality constraints   ###
+        ################################################################
+        # Inequality constraint (unscaled), see evaluateInEqualityLocalConstraints:
+        #   g1 = y2 - 24 = sqrt(y1) + z1 + z2 - 24   (scaled by scalers[5])
+        # with design variables x = [z1, z2, y1] = des_var[0..2].
+        y1 = des_var[2]
+
+        # Rows of dg/dx_u (w.r.t. UNSCALED design variables).
+        dgdx_unscaled: List[List[float]] = [
+            [1.0, 1.0, 0.5 * y1**-0.5],   # dg1/dx_u
+        ]
+        constraint_scalers: List[ScalerBasis] = [scalers[5]]
+
+        # Chain rule into SCALED space, row by row:
+        #   dg_s/ds_j = get_scale(constraint) * dg/dx_u[j] / get_scale(dv_scaler_j)
+        n_dv: int = len(des_var)
+        jacobian: List[List[float]] = []
+        for row in range(len(dgdx_unscaled)):
+            scale_c: float = constraint_scalers[row].get_scale()
+            jacobian.append([scale_c * dgdx_unscaled[row][j] / scalers[j].get_scale()
+                             for j in range(n_dv)])
+
+        # jacobian must be a scaled01 quantity (w.r.t. scaled01 design variables)
+        ################################################################
+        ###          END USER CODE                                   ###
+        ################################################################
+        return jacobian
+
+    def evaluate_Hessians_InEqualityLocalConstraints(self, subsystem: LocalSubSystemBasis) -> None:
+        """Evaluate the Hessians of the local inequality constraints.
+
+        Args:
+            subsystem: The local subsystem basis containing state information.
+        """
+        # === Tutorial: scaled <-> unscaled Hessians (chain rule, 2nd order) ========
+        # The optimizer works in SCALED [0, 1] space, so each constraint Hessian must
+        # be d^2(scaled constraint) / d(scaled design vars)^2. Each affine scaler has a
+        # constant slope get_scale() = d(scaled)/d(unscaled), so from the UNSCALED
+        # second derivatives d^2g/dx_j dx_k convert element-wise:
+        #     d2g_s/ds_j ds_k = get_scale(constraint) * d2g/dx_j dx_k
+        #                       / (get_scale(x_j) * get_scale(x_k))
+        # Return None instead to let the framework fall back to finite differences.
+        # ===========================================================================
+
+        des_var: List[float] = subsystem.get_DesignVariables_Unscaled()  # unscaled values
+        scalers: List[ScalerBasis] = subsystem.get_Scalers()
+        ################################################################
+        ###          USER CODE: Hessians of inequality constraints   ###
+        ################################################################
+        # g1 = sqrt(y1) + z1 + z2 - 24 is separable, so its Hessian is diagonal.
+        # Only d^2g1/dy1^2 = -0.25*y1^(-3/2) is nonzero. Design variables x = [z1, z2, y1].
+        y1 = des_var[2]
+        d2gdx2_unscaled: List[List[float]] = [
+            [0.0, 0.0, -0.25 * y1**-1.5],   # diag of d^2g1/dx_u^2
+        ]
+        constraint_scalers: List[ScalerBasis] = [scalers[5]]
+
+        # Chain rule into SCALED space (diagonal only):
+        #   H_s[k][k] = get_scale(constraint) * d2g/dx_u^2[k] / get_scale(dv_k)^2
+        n_dv: int = len(des_var)
+        hessians: List[List[List[float]]] = []
+        for row in range(len(d2gdx2_unscaled)):
+            scale_c: float = constraint_scalers[row].get_scale()
+            hessian: List[List[float]] = [[0.0 for _ in range(n_dv)] for _ in range(n_dv)]
+            for k in range(n_dv):
+                scale_dv_k: float = scalers[k].get_scale()
+                hessian[k][k] = scale_c * d2gdx2_unscaled[row][k] / (scale_dv_k**2)
+            hessians.append(hessian)
+
+        # hessians must be scaled01 quantities (w.r.t. scaled01 design variables)
+        ################################################################
+        ###          END USER CODE                                   ###
+        ################################################################
+        return hessians
+
+```

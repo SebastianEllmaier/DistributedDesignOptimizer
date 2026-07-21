@@ -1,0 +1,198 @@
+---
+title: middlelevel
+---
+
+# middlelevel
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Sub-packages (click to navigate)
+    class aladin["aladin/"]:::packageStyle
+    class alc["alc/"]:::packageStyle
+    class consensus_alc["consensus_alc/"]:::packageStyle
+    class lc["lc/"]:::packageStyle
+    class pc["pc/"]:::packageStyle
+    class sbdp["sbdp/"]:::packageStyle
+
+    %% External classes (not in this project)
+    class BaseProxy:::externalStyle {
+        <<external>>
+    }
+
+    class ControllerToLocal_MiddleLevelCouplingBasis:::localStyle {
+        +__init__()
+        +update_state(other_middlelevelcoupling)
+    }
+
+    class CreateMiddleLevels:::localStyle {
+        +createMiddleLevels(subsystemsIn, manager, ...)
+        +createManagedMiddleLevels(middlelevelsIn, managerIn)
+    }
+
+    class InConsistencySizeBasis:::localStyle {
+        -_id
+        -_mappedresponse_minus_copycouplingvariable
+        -_copymappedresponse_minus_couplingvariable
+        -_shareddesignvariable_minus_copytargetshareddesignvariable
+        -_copyshareddesignvariable_minus_targetshareddesignvariable
+        -_mappedresponse_minus_copycouplingvariable_infynorm
+        -_copymappedresponse_minus_couplingvariable_infynorm
+        ...
+        +__init__(id)
+        +get_ID()
+        +evaluate_MappedResponse_Minus_CopyCouplingVariable(mappedresponse, copycouplingvariable)
+        +get_MappedResponse_Minus_CopyCouplingVariable()
+        +get_MappedResponse_Minus_CopyCouplingVariable_InfyNorm()
+        ...
+    }
+
+    class InConsistencySizeInterface:::abstractStyle {
+        <<abstract>>
+        +get_ID()
+        +evaluate_MappedResponse_Minus_CopyCouplingVariable(mappedresponse, copycouplingvariable)
+        +get_MappedResponse_Minus_CopyCouplingVariable()
+        +get_MappedResponse_Minus_CopyCouplingVariable_InfyNorm()
+        +get_MappedResponse_Minus_CopyCouplingVariable_InfyNormID()
+        ...
+    }
+
+    class LocalController_MiddleLevelCouplingBasis:::localStyle {
+        +__init__(id)
+        +update_state(other_middlelevelcoupling)
+    }
+
+    class LocalToController_MiddleLevelCouplingBasis:::localStyle {
+        +__init__(id)
+        +update_state(other_middlelevelcoupling)
+    }
+
+    class MiddleLevelCouplingBasis:::localStyle {
+        -_id
+        +__init__(id)
+        +get_ID()
+        +update_state(other_middlelevelcoupling)
+    }
+
+    class MiddleLevelCouplingInterface:::abstractStyle {
+        <<abstract>>
+        +get_ID()
+        +update_state(other_middlelevelcoupling)
+    }
+
+    class MiddleLevelDataStorageBasis:::localStyle {
+        -_id
+        -_couplingdata
+        -_DataLock
+        +__init__(idparent, idchild, ...)
+        +set_Coupling(coupling)
+        +get_StoredCoupling(id)
+        +get_ID()
+        +get_CouplingData()
+        +update_state(other_storage)
+    }
+
+    class MiddleLevelDataStorageInterface:::abstractStyle {
+        <<abstract>>
+        +set_Coupling(coupling)
+        +get_StoredCoupling(id)
+        +get_ID()
+        +get_CouplingData()
+        +createManagedMiddleLevel(manager, lock)
+        +update_state(other_storage)
+    }
+
+    class MiddleLevelDataStorageProxy:::localStyle {
+        -_exposed_
+        +set_Coupling(coupling)
+        +get_StoredCoupling(id)
+        +get_ID()
+        +get_CouplingData()
+        +update_state(other_storage)
+    }
+
+    class SubSysMiddleLevelCouplingBasis:::localStyle {
+        -_couplingvariable
+        -_mappedresponses
+        -_shareddesignvariable
+        -_targetshareddesignvariable
+        -_couplingvariable_lower_scaler_bound_warning_raised
+        -_couplingvariable_upper_scaler_bound_warning_raised
+        -_mappedresponses_lower_scaler_bound_warning_raised
+        ...
+        +__init__(id)
+        +set_CouplingVariable(couplingvariable)
+        +get_CouplingVariable()
+        +set_MappedResponses(varin)
+        +get_MappedResponses()
+        ...
+    }
+
+    LocalController_MiddleLevelCouplingBasis <|-- ControllerToLocal_MiddleLevelCouplingBasis
+    InConsistencySizeInterface <|-- InConsistencySizeBasis
+    MiddleLevelCouplingBasis <|-- LocalController_MiddleLevelCouplingBasis
+    LocalController_MiddleLevelCouplingBasis <|-- LocalToController_MiddleLevelCouplingBasis
+    MiddleLevelCouplingInterface <|-- MiddleLevelCouplingBasis
+    MiddleLevelDataStorageInterface <|-- MiddleLevelDataStorageBasis
+    BaseProxy <|-- MiddleLevelDataStorageProxy
+    MiddleLevelCouplingBasis <|-- SubSysMiddleLevelCouplingBasis
+
+    %% Click handlers for navigation to documentation
+    click aladin href "aladin/" "Browse aladin package"
+    click alc href "alc/" "Browse alc package"
+    click consensus_alc href "consensus_alc/" "Browse consensus_alc package"
+    click lc href "lc/" "Browse lc package"
+    click pc href "pc/" "Browse pc package"
+    click sbdp href "sbdp/" "Browse sbdp package"
+    click ControllerToLocal_MiddleLevelCouplingBasis href "ControllerToLocal_MiddleLevelCouplingBasis/" "View ControllerToLocal_MiddleLevelCouplingBasis documentation"
+    click CreateMiddleLevels href "CreateMiddleLevels/" "View CreateMiddleLevels documentation"
+    click InConsistencySizeBasis href "InConsistencySizeBasis/" "View InConsistencySizeBasis documentation"
+    click InConsistencySizeInterface href "InConsistencySizeInterface/" "View InConsistencySizeInterface documentation"
+    click LocalController_MiddleLevelCouplingBasis href "LocalController_MiddleLevelCouplingBasis/" "View LocalController_MiddleLevelCouplingBasis documentation"
+    click LocalToController_MiddleLevelCouplingBasis href "LocalToController_MiddleLevelCouplingBasis/" "View LocalToController_MiddleLevelCouplingBasis documentation"
+    click MiddleLevelCouplingBasis href "MiddleLevelCouplingBasis/" "View MiddleLevelCouplingBasis documentation"
+    click MiddleLevelCouplingInterface href "MiddleLevelCouplingInterface/" "View MiddleLevelCouplingInterface documentation"
+    click MiddleLevelDataStorageBasis href "MiddleLevelDataStorageBasis/" "View MiddleLevelDataStorageBasis documentation"
+    click MiddleLevelDataStorageInterface href "MiddleLevelDataStorageInterface/" "View MiddleLevelDataStorageInterface documentation"
+    click MiddleLevelDataStorageProxy href "MiddleLevelDataStorageProxy/" "View MiddleLevelDataStorageProxy documentation"
+    click SubSysMiddleLevelCouplingBasis href "SubSysMiddleLevelCouplingBasis/" "View SubSysMiddleLevelCouplingBasis documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Subpackages
+
+- [aladin](aladin/index.md)
+- [alc](alc/index.md)
+- [consensus_alc](consensus_alc/index.md)
+- [lc](lc/index.md)
+- [pc](pc/index.md)
+- [sbdp](sbdp/index.md)
+
+## Modules
+
+- [ControllerToLocal_MiddleLevelCouplingBasis](ControllerToLocal_MiddleLevelCouplingBasis.md)
+- [CreateMiddleLevels](CreateMiddleLevels.md)
+- [InConsistencySizeBasis](InConsistencySizeBasis.md)
+- [InConsistencySizeInterface](InConsistencySizeInterface.md)
+- [LocalController_MiddleLevelCouplingBasis](LocalController_MiddleLevelCouplingBasis.md)
+- [LocalToController_MiddleLevelCouplingBasis](LocalToController_MiddleLevelCouplingBasis.md)
+- [MiddleLevelCouplingBasis](MiddleLevelCouplingBasis.md)
+- [MiddleLevelCouplingInterface](MiddleLevelCouplingInterface.md)
+- [MiddleLevelDataStorageBasis](MiddleLevelDataStorageBasis.md)
+- [MiddleLevelDataStorageInterface](MiddleLevelDataStorageInterface.md)
+- [MiddleLevelDataStorageProxy](MiddleLevelDataStorageProxy.md)
+- [SubSysMiddleLevelCouplingBasis](SubSysMiddleLevelCouplingBasis.md)
+

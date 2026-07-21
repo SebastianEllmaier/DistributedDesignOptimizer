@@ -1,0 +1,81 @@
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Sub-packages (click to navigate)
+    class aladin["aladin/"]:::packageStyle
+    class alc["alc/"]:::packageStyle
+    class consensus_alc["consensus_alc/"]:::packageStyle
+    class lc["lc/"]:::packageStyle
+    class pc["pc/"]:::packageStyle
+    class sbdp["sbdp/"]:::packageStyle
+
+    class ControllerCouplingParametersBasis:::localStyle {
+        +__init__(id)
+        +update_state(other_coupling)
+    }
+
+    class CouplingParametersBasis:::localStyle {
+        -_id
+        +__init__(id)
+        +get_ID()
+        +update_state(other_coupling)
+    }
+
+    class CouplingParametersInterface:::abstractStyle {
+        <<abstract>>
+        +get_ID()
+        +CopyFromMiddleLevelCoupling(middlelevelcouplingIn)
+        +CopyToMiddleLevelCoupling(middlelevelcouplingIn)
+        +update_state(other_coupling)
+    }
+
+    class LocalToController_CouplingParametersBasis:::localStyle {
+        +__init__()
+        +update_state(other_coupling)
+    }
+
+    class SubSysCouplingParametersBasis:::localStyle {
+        -_couplingvariable
+        -_mappedresponses
+        -_couplingvariable_unscaled
+        -_mappedresponses_unscaled
+        -_copy_couplingvariable
+        -_copy_mappedresponses
+        -_jacobian_mappedresponse
+        ...
+        +__init__(id)
+        +get_CouplingVariable()
+        +set_CouplingVariable(couplingvariable)
+        +get_MappedResponses()
+        +set_MappedResponses(varin)
+        ...
+    }
+
+    CouplingParametersBasis <|-- ControllerCouplingParametersBasis
+    CouplingParametersInterface <|-- CouplingParametersBasis
+    CouplingParametersBasis <|-- LocalToController_CouplingParametersBasis
+    CouplingParametersBasis <|-- SubSysCouplingParametersBasis
+
+    %% Click handlers for navigation to documentation
+    click aladin href "aladin/" "Browse aladin package"
+    click alc href "alc/" "Browse alc package"
+    click consensus_alc href "consensus_alc/" "Browse consensus_alc package"
+    click lc href "lc/" "Browse lc package"
+    click pc href "pc/" "Browse pc package"
+    click sbdp href "sbdp/" "Browse sbdp package"
+    click ControllerCouplingParametersBasis href "ControllerCouplingParametersBasis/" "View ControllerCouplingParametersBasis documentation"
+    click CouplingParametersBasis href "CouplingParametersBasis/" "View CouplingParametersBasis documentation"
+    click CouplingParametersInterface href "CouplingParametersInterface/" "View CouplingParametersInterface documentation"
+    click LocalToController_CouplingParametersBasis href "LocalToController_CouplingParametersBasis/" "View LocalToController_CouplingParametersBasis documentation"
+    click SubSysCouplingParametersBasis href "SubSysCouplingParametersBasis/" "View SubSysCouplingParametersBasis documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```

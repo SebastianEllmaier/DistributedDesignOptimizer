@@ -1,0 +1,92 @@
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% External classes (not in this project)
+    class BFGS:::externalStyle {
+        <<external>>
+    }
+
+    class FiniteDifferencesJacobian:::localStyle {
+        -_gradient_localobjective
+        -_gradient_coordinationobjective
+        -_jacobian_localequalityconstraints
+        -_jacobian_coordinationequalityconstraints
+        -_jacobian_localinequalityconstraints
+        -_jacobian_coordinationinequalityconstraints
+        -_jacobians_mappedresponses
+        +__init__()
+        +get_Gradient_LocalObjective()
+        +set_Gradient_LocalObjective(gradient_localobjective_in)
+        +get_Gradient_CoordinationObjective()
+        +set_Gradient_CoordinationObjective(gradient_coordinationobjective_in)
+        ...
+    }
+
+    class HessianApproximationBFGS:::localStyle {
+        -_previous_x
+        -_previous_g
+        +__init__(exception_strategy, min_curvature, ...)
+        +get_Previous_X()
+        +set_Previous_X(previous_x_in)
+        +get_Previous_G()
+        +set_Previous_G(previous_g_in)
+        ...
+    }
+
+    class ScalerBasis:::localStyle {
+        -_lower_scaler_bound_warning_raised
+        -_upper_scaler_bound_warning_raised
+        -_smallest_observed_value_unscaled
+        -_largest_observed_value_unscaled
+        -_upper_scaler_bound_scaled
+        -_lower_scaler_bound_scaled
+        -_lower_scaler_bound_unscaled
+        ...
+        +__init__(lower_scaler_bound_unscaled, upper_scaler_bound_unscaled, ...)
+        +transform(value_unscaled)
+        +inverse_transform(value_scaled)
+        +get_scale()
+        +get_bound_violation_warnings()
+        +get_bound_utilization_report()
+    }
+
+    class ScalerConstraint:::localStyle {
+        +__init__(lower_scaler_bound_unscaled, upper_scaler_bound_unscaled)
+    }
+
+    class ScalerInterface:::abstractStyle {
+        <<abstract>>
+        +__init__(lower_scaler_bound_unscaled, upper_scaler_bound_unscaled)
+        +transform(value_unscaled)
+        +inverse_transform(value_scaled)
+        +get_bound_violation_warnings()
+        +get_bound_utilization_report()
+    }
+
+    class ScalerZeroOne:::localStyle {
+        +__init__(lower_scaler_bound_unscaled, upper_scaler_bound_unscaled)
+    }
+
+    BFGS <|-- HessianApproximationBFGS
+    ScalerInterface <|-- ScalerBasis
+    ScalerBasis <|-- ScalerConstraint
+    ScalerBasis <|-- ScalerZeroOne
+
+    %% Click handlers for navigation to documentation
+    click FiniteDifferencesJacobian href "FiniteDifferencesJacobian/" "View FiniteDifferencesJacobian documentation"
+    click HessianApproximationBFGS href "HessianApproximationBFGS/" "View HessianApproximationBFGS documentation"
+    click ScalerBasis href "ScalerBasis/" "View ScalerBasis documentation"
+    click ScalerConstraint href "ScalerConstraint/" "View ScalerConstraint documentation"
+    click ScalerInterface href "ScalerInterface/" "View ScalerInterface documentation"
+    click ScalerZeroOne href "ScalerZeroOne/" "View ScalerZeroOne documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```

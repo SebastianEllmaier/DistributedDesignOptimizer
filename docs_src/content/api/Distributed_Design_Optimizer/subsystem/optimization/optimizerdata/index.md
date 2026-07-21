@@ -1,0 +1,77 @@
+---
+title: optimizerdata
+---
+
+# optimizerdata
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    class ControllerOptimData:::localStyle {
+        +__init__(optimizer_type, designvariables, ...)
+        +print_results()
+    }
+
+    class LocalSubSystemOptimData:::localStyle {
+        -_responses_unscaled
+        -_localobjectivevalue
+        -_localobjectivevalue_unscaled
+        -_equalitylocalconstraintsvalue
+        -_equalitylocalconstraintsvalue_unscaled
+        -_inequalitylocalconstraintsvalue
+        -_inequalitylocalconstraintsvalue_unscaled
+        ...
+        +__init__(optimizer_type, designvariables, ...)
+        +set_Responses_Unscaled(Responses_unscaled_in)
+        +get_Responses_Unscaled()
+        +set_LocalObjectiveValue(localobjectivevalue_in)
+        +get_LocalObjectiveValue()
+        ...
+    }
+
+    class OptimDataBasis:::localStyle {
+        -_optimizer_type
+        -_exitflag
+        -_message
+        -_designvariables
+        -_designvariables_unscaled
+        -_lowerbounds
+        -_lowerbounds_scaled
+        ...
+        +__init__(optimizer_type, designvariables, ...)
+        +set_Optimizer_Type(optimizer_type_in)
+        +get_Optimizer_Type()
+        +set_DesignVariables(designvariables_in)
+        +get_DesignVariables()
+        ...
+    }
+
+    OptimDataBasis <|-- ControllerOptimData
+    OptimDataBasis <|-- LocalSubSystemOptimData
+
+    %% Click handlers for navigation to documentation
+    click ControllerOptimData href "ControllerOptimData/" "View ControllerOptimData documentation"
+    click LocalSubSystemOptimData href "LocalSubSystemOptimData/" "View LocalSubSystemOptimData documentation"
+    click OptimDataBasis href "OptimDataBasis/" "View OptimDataBasis documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Modules
+
+- [ControllerOptimData](ControllerOptimData.md)
+- [LocalSubSystemOptimData](LocalSubSystemOptimData.md)
+- [OptimDataBasis](OptimDataBasis.md)
+

@@ -1,0 +1,132 @@
+---
+title: aladin
+---
+
+# aladin
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Classes from other packages (clickable)
+    class ControllerToLocal_MiddleLevelCouplingBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class InConsistencySizeBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class LocalToController_MiddleLevelCouplingBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class MiddleLevelDataStorageBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class SubSysMiddleLevelCouplingBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class ControllerToLocal_MiddleLevelCouplingALADIN:::localStyle {
+        -_delta_d
+        +__init__(local_neighbors_list)
+        +get_Delta_D()
+        +set_Delta_D(delta_d_in)
+        +update_state(other_middlelevelcoupling)
+    }
+
+    class InConsistencySize:::localStyle {
+        +__init__(id)
+        +update_state(other_inconsistency)
+    }
+
+    class LocalController_MiddleLevelDataStorageALADIN:::localStyle {
+        -_couplingdata
+        +__init__(idparent, idchild, ...)
+        +createManagedMiddleLevel(manager, lock)
+        +get_LocalToLocalForController_CouplingParameters()
+        +update_state(other_storage)
+    }
+
+    class LocalToController_MiddleLevelCouplingALADIN:::localStyle {
+        -_hessian_localconstraints_lagrangian
+        -_gradient_localobjective
+        -_localinequalityconstraintsvalue
+        -_jacobian_localinequalityconstraints
+        -_lower_boundconstraints_value
+        -_jacobian_lowerbound
+        -_upper_boundconstraints_value
+        ...
+        +__init__(id, local_neighbors_list)
+        +get_Hessian_LocalConstraints_Lagrangian()
+        +set_Hessian_LocalConstraints_Lagrangian(hessian_localconstraintslagrangian_in)
+        +get_Gradient_LocalObjective()
+        +set_Gradient_LocalObjective(gradient_localobjective_in)
+        ...
+    }
+
+    class LocalToLocal_MiddleLevelCouplingALADIN:::localStyle {
+        -_mappedresponses_d_hat
+        -_couplingvariable_d_hat
+        -_shareddesignvariable_d_hat
+        -_targetshareddesignvariable_d_hat
+        +__init__(id)
+        +set_MappedResponses_D_Hat(varin)
+        +get_MappedResponses_D_Hat()
+        +set_CouplingVariable_D_Hat(couplingvariable_d_hat_in)
+        +get_CouplingVariable_D_Hat()
+        ...
+    }
+
+    class LocalToLocal_MiddleLevelDataStorageALADIN:::localStyle {
+        -_couplingdata
+        +__init__(idparent, idchild, ...)
+        +createManagedMiddleLevel(manager, lock)
+        +update_state(other_storage)
+    }
+
+    ControllerToLocal_MiddleLevelCouplingBasis <|-- ControllerToLocal_MiddleLevelCouplingALADIN
+    InConsistencySizeBasis <|-- InConsistencySize
+    MiddleLevelDataStorageBasis <|-- LocalController_MiddleLevelDataStorageALADIN
+    LocalToController_MiddleLevelCouplingBasis <|-- LocalToController_MiddleLevelCouplingALADIN
+    SubSysMiddleLevelCouplingBasis <|-- LocalToLocal_MiddleLevelCouplingALADIN
+    MiddleLevelDataStorageBasis <|-- LocalToLocal_MiddleLevelDataStorageALADIN
+
+    %% Click handlers for navigation to documentation
+    click ControllerToLocal_MiddleLevelCouplingBasis href "../ControllerToLocal_MiddleLevelCouplingBasis/" "View ControllerToLocal_MiddleLevelCouplingBasis documentation"
+    click InConsistencySizeBasis href "../InConsistencySizeBasis/" "View InConsistencySizeBasis documentation"
+    click LocalToController_MiddleLevelCouplingBasis href "../LocalToController_MiddleLevelCouplingBasis/" "View LocalToController_MiddleLevelCouplingBasis documentation"
+    click MiddleLevelDataStorageBasis href "../MiddleLevelDataStorageBasis/" "View MiddleLevelDataStorageBasis documentation"
+    click SubSysMiddleLevelCouplingBasis href "../SubSysMiddleLevelCouplingBasis/" "View SubSysMiddleLevelCouplingBasis documentation"
+    click ControllerToLocal_MiddleLevelCouplingALADIN href "ControllerToLocal_MiddleLevelCouplingALADIN/" "View ControllerToLocal_MiddleLevelCouplingALADIN documentation"
+    click InConsistencySize href "InConsistencySize/" "View InConsistencySize documentation"
+    click LocalController_MiddleLevelDataStorageALADIN href "LocalController_MiddleLevelDataStorageALADIN/" "View LocalController_MiddleLevelDataStorageALADIN documentation"
+    click LocalToController_MiddleLevelCouplingALADIN href "LocalToController_MiddleLevelCouplingALADIN/" "View LocalToController_MiddleLevelCouplingALADIN documentation"
+    click LocalToLocal_MiddleLevelCouplingALADIN href "LocalToLocal_MiddleLevelCouplingALADIN/" "View LocalToLocal_MiddleLevelCouplingALADIN documentation"
+    click LocalToLocal_MiddleLevelDataStorageALADIN href "LocalToLocal_MiddleLevelDataStorageALADIN/" "View LocalToLocal_MiddleLevelDataStorageALADIN documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Modules
+
+- [ControllerToLocal_MiddleLevelCouplingALADIN](ControllerToLocal_MiddleLevelCouplingALADIN.md)
+- [InConsistencySize](InConsistencySize.md)
+- [LocalController_MiddleLevelDataStorageALADIN](LocalController_MiddleLevelDataStorageALADIN.md)
+- [LocalToController_MiddleLevelCouplingALADIN](LocalToController_MiddleLevelCouplingALADIN.md)
+- [LocalToLocal_MiddleLevelCouplingALADIN](LocalToLocal_MiddleLevelCouplingALADIN.md)
+- [LocalToLocal_MiddleLevelDataStorageALADIN](LocalToLocal_MiddleLevelDataStorageALADIN.md)
+

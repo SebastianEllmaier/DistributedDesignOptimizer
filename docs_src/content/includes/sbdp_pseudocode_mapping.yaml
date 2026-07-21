@@ -1,0 +1,311 @@
+# SBDP Pseudocode-to-Code Traceability Mapping
+# =============================================
+# This file maps each logical step in the Sensitivity Based Distributed
+# Programming (SBDP) pseudocode (Algorithm 3) to the implementing
+# classes/methods.
+#
+# SBDP replaces the augmented-Lagrangian penalty coupling of ALC with a
+# linear sensitivity term. Each subsystem solves a local NLP whose coordination
+# objective is grad_d^j L^(k)^T (d - d^(k)) and whose coordination equality
+# constraint stacks, per neighbor, the mapped-response block (H(r) - h) and the
+# shared-design-variable block (S_z d - z). The coordination-equality KKT
+# multipliers are split into lambda_h and lambda_z and exchanged with neighbors
+# through the interface storage (middle level).
+#
+# MAINTENANCE: If a method is renamed or moved, update the corresponding entry here.
+# The build process will warn you if a referenced method no longer exists.
+#
+# Fields:
+#   id:              Unique identifier for this mapping (used as HTML data attribute)
+#   algo_lines:      Line numbers in the pseudocode (1-based, matching CSS counter)
+#   label:           Short human-readable description of the pseudocode step
+#   pseudocode_text: The text as it appears in the pseudocode (for display)
+#   implementations: List of class.method references that implement this step
+#     - module:      Dotted Python module path
+#       class:       Class name
+#       method:      Method name (use "__init__" for constructors)
+
+mappings:
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 1–2: Require: hyperparameter and initial coupling parameters
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-require-hyperparameters
+    algo_lines: [1, 2]
+    label: "Require hyperparameter ε_k and initial multipliers λ"
+    pseudocode_text: "Require: hyperparameter ε_k; initial λ, h, z in interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.coordinationmethod.SBDP
+        class: SBDP
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: initializeCouplingParameters_after_CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.sbdp.MiddleLevelDataStorageSBDP
+        class: MiddleLevelDataStorageSBDP
+        method: __init__
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.sbdp.CouplingParametersSBDP
+        class: CouplingParametersSBDP
+        method: __init__
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 3: k ← 0
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-init-outerloop
+    algo_lines: [3]
+    label: "Initialize outerloop iterator"
+    pseudocode_text: "k ← 0 (initialize outerloop iterator)"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 4: repeat outerloop
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-outerloop-repeat
+    algo_lines: [4]
+    label: "Outer loop repeat"
+    pseudocode_text: "repeat"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 5: for every i ∈ M in parallel do
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-innerloop-parallel
+    algo_lines: [5]
+    label: "Decentralized subsystem jobs in parallel"
+    pseudocode_text: "for every i ∈ M in parallel do"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: innerloop_iteration
+      - module: Distributed_Design_Optimizer.coordination.innerloop_iterationscheme.IterationSchemeInterface
+        class: IterationSchemeInterface
+        method: run_innerloop_jobs_multiprocessing
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_innerloop_job
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 6: Copy λ_h, λ_z, H(r), h, z from interface storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-copy-from-interface
+    algo_lines: [6]
+    label: "Copy multipliers and coupling data from interface storage"
+    pseudocode_text: "Copy λ, H(r), h, z from interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyFromMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: get_StoredCoupling
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.sbdp.CouplingParametersSBDP
+        class: CouplingParametersSBDP
+        method: CopyFromMiddleLevelCoupling
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 7: Determine the sensitivity gradient ∇_d L^(k)
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-determine-gradient
+    algo_lines: [7]
+    label: "Determine the sensitivity gradient of the coordination objective"
+    pseudocode_text: "Determine ∇_d L^(k)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: prepare_OptimizationProblem
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.sbdp.CouplingParametersSBDP
+        class: CouplingParametersSBDP
+        method: set_Sensitivity_Gradient
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: evaluate_Gradient_CoordinationObjective
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 8: Solve the local NLP (argmin) with the linear sensitivity term
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-solve-nlp
+    algo_lines: [8]
+    label: "Solve the local NLP with the linear sensitivity term"
+    pseudocode_text: "d^(k+1) ← argmin local NLP with linear sensitivity term and hard coordination equality"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: run_IterativeOptimization
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: evaluateCoordinationObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: evaluateCoordinationEqualityConstraint
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: evaluateCoordinationInequalityConstraint
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalObjective
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemBasis
+        class: LocalSubSystemBasis
+        method: evaluateTotalConstraint
+      - module: Distributed_Design_Optimizer.subsystem.optimization.OptimizationInterface
+        class: OptimizationInterface
+        method: callOptimizer
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 9: Determine coordination-equality multipliers λ_h, λ_z
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-determine-multipliers
+    algo_lines: [9]
+    label: "Recover and distribute the coordination-equality multipliers"
+    pseudocode_text: "Determine λ"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: postprocess_Optimization
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: check_MultipliersNotSet
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: compute_KKT_multipliers
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: set_Multipliers_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: set_Multipliers_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 10: Copy λ_h, λ_z, H(r), h, z to interface storage
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-copy-to-interface
+    algo_lines: [10]
+    label: "Copy multipliers and coupling data to interface storage"
+    pseudocode_text: "Copy λ, H(r), h, z to interface storage"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: set_Coupling
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.sbdp.CouplingParametersSBDP
+        class: CouplingParametersSBDP
+        method: CopyToMiddleLevelCoupling
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Lines 11–14: end for, outerloop convergence check, k ← k + 1, until
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-outerloop-convergence
+    algo_lines: [11, 12, 13, 14]
+    label: "Outerloop convergence check"
+    pseudocode_text: "end for; Compute outerloop convergence; k ← k + 1; until converged"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: outerloop_iteration
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: evaluate_OuterLoopConvergenceIndicator
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Local_ConvergenceIndicator_Outerloop_DeWit
+        class: Local_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.Centralized_ConvergenceIndicator_Outerloop_DeWit
+        class: Centralized_ConvergenceIndicator_Outerloop_DeWit
+        method: evaluate
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: evaluate_Inconsistencies
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Line 15: return {d^(k)}
+  # ─────────────────────────────────────────────────────────────────────
+  - id: sbdp-return
+    algo_lines: [15]
+    label: "Return converged designs"
+    pseudocode_text: "return {d^(k)}"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.Coordinator
+        class: Coordinator
+        method: run
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Math Symbol Mappings
+# ─────────────────────────────────────────────────────────────────────────
+# Maps mathematical symbols in the pseudocode to their implementations.
+
+math_symbol_mappings:
+  - id: sbdp-sym-lambda
+    symbol_latex: "\\lambda"
+    label: "Coordination-equality multiplier (stacked mapped-response and shared-design-variable blocks)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.sbdp.CouplingParametersSBDP
+        class: CouplingParametersSBDP
+        method: get_Multipliers_MappedResponse_Minus_CopyCouplingVariable
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.sbdp.CouplingParametersSBDP
+        class: CouplingParametersSBDP
+        method: get_Multipliers_SharedDesignVariable_Minus_CopyTargetSharedDesignVariable
+
+  - id: sbdp-sym-H
+    symbol_latex: "H"
+    label: "Mapped response"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_MappedResponses
+
+  - id: sbdp-sym-h
+    symbol_latex: "h"
+    label: "Neighbor coupling-variable target"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_Copy_CouplingVariable
+
+  - id: sbdp-sym-z
+    symbol_latex: "z"
+    label: "Neighbor shared-design-variable target"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_Copy_SharedDesignVariables
+
+  - id: sbdp-sym-S-h
+    symbol_latex: "S_h"
+    label: "Coupling-variable selection map"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_Indices_CouplingVariables_In_DesignVariables
+
+  - id: sbdp-sym-S-z
+    symbol_latex: "S_z"
+    label: "Shared-design-variable selection map"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_Indices_SharedDesignVariables_In_DesignVariables
+
+  - id: sbdp-sym-epsilon-k
+    symbol_latex: "\\epsilon_k"
+    label: "Outerloop consistency tolerance"
+    implementations:
+      - module: Distributed_Design_Optimizer.coordination.convergence.DeWit.ConvergenceIndicator_Outerloop_DeWit
+        class: ConvergenceIndicator_Outerloop_DeWit
+        method: __init__
+
+  - id: sbdp-sym-d-k
+    symbol_latex: "d^{(k)}"
+    label: "Design of the previous outer loop iteration (linearization point)"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.LocalSubSystemSBDP
+        class: LocalSubSystemSBDP
+        method: prepare_OptimizationProblem

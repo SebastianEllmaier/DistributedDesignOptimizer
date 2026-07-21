@@ -1,0 +1,55 @@
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Sub-packages (click to navigate)
+    class designproblem["designproblem/"]:::packageStyle
+    class optimizerdata["optimizerdata/"]:::packageStyle
+    class solver["solver/"]:::packageStyle
+
+    class AnalysisInterface:::abstractStyle {
+        <<abstract>>
+        +evaluateLocalResponses(subsystem)
+        +mapLocalResponsesDesignVariables_to_CouplingParameters(subsystem)
+        +mapLocalResponsesDesignVariables_to_CouplingParameters_Jacobians(subsystem)
+        +mapLocalResponsesDesignVariables_to_CouplingParameters_Hessian(subsystem)
+    }
+
+    class OptimizationBasis:::localStyle {
+        -_optimizer
+        +__init__(optimizer)
+        +callOptimizer(subsystemin)
+        +get_Optimizer()
+    }
+
+    class OptimizationController:::localStyle {
+        +__init__()
+        +get_Optimizer()
+    }
+
+    class OptimizationInterface:::abstractStyle {
+        <<abstract>>
+        +callOptimizer(subsystemin)
+    }
+
+    OptimizationInterface <|-- OptimizationBasis
+    OptimizationBasis <|-- OptimizationController
+
+    %% Click handlers for navigation to documentation
+    click designproblem href "designproblem/" "Browse designproblem package"
+    click optimizerdata href "optimizerdata/" "Browse optimizerdata package"
+    click solver href "solver/" "Browse solver package"
+    click AnalysisInterface href "AnalysisInterface/" "View AnalysisInterface documentation"
+    click OptimizationBasis href "OptimizationBasis/" "View OptimizationBasis documentation"
+    click OptimizationController href "OptimizationController/" "View OptimizationController documentation"
+    click OptimizationInterface href "OptimizationInterface/" "View OptimizationInterface documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```

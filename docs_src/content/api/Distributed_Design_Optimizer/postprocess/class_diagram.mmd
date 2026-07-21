@@ -1,0 +1,156 @@
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Sub-packages (click to navigate)
+    class handlers["handlers/"]:::packageStyle
+    class models["models/"]:::packageStyle
+    class styles["styles/"]:::packageStyle
+    class utils["utils/"]:::packageStyle
+    class widgets["widgets/"]:::packageStyle
+    class workers["workers/"]:::packageStyle
+
+    class CentralityComputer:::localStyle {
+        -_graph_init
+        -_mastergraph
+        -_subsystems
+        +__init__(graph_init, subsystems)
+        +create_subsystem_lookup()
+        +compute_EdgeWeights()
+        +compute_single_EdgeWeight(idparent, idchild, ...)
+        +compute_CentralityMeasures()
+        ...
+    }
+
+    class ClusterComputer:::localStyle {
+        -_graph_init
+        -_mastergraph
+        -_subsystems
+        -_subsystem_lookup
+        -_undirected_graph
+        -_cluster_labels
+        -_numberof_clusters
+        +__init__(graph_init, subsystems)
+        +create_subsystem_lookup()
+        +preprocess_graph()
+        +perform_spectral_clustering()
+        +get_cluster_summary()
+        ...
+    }
+
+    class CompromiseComputer:::localStyle {
+        -_graph_init
+        -_mastergraph
+        -_subsystems
+        -_middlelevel_storages
+        -_referenceflags
+        -_referenceMappedResponseVariables
+        -_referenceCouplingVariables
+        ...
+        +__init__(graph_init, subsystems, ...)
+        +create_subsystem_lookup()
+        +create_storage_lookup()
+        +compute_all_compromises()
+        +compute_single_compromise(idparent, idchild, ...)
+        ...
+    }
+
+    class CouplingStrengthComputer:::localStyle {
+        -_graph_init
+        -_mastergraph
+        -_subsystems
+        -_partialcouplingstrength_ignoredcoupling
+        -_couplingstrengths
+        +__init__(graph_init, subsystems)
+        +execute()
+        +get_couplingstrength()
+    }
+
+    class GraphInit:::localStyle {
+        -_graph
+        +__init__()
+        +set_MasterGraph(subsystems, visualize)
+        +add_edge_with_attributes(idparent, idchild, ...)
+        +set_vertices(subsystems)
+        +set_edges(subsystems)
+        ...
+    }
+
+    class InConsistencyOscillationComputer:::localStyle {
+        -_graph_init
+        -_mastergraph
+        -_horizon
+        -_wavelet_type
+        -_wavelet_results
+        -_subsystems
+        +__init__(graph_init, subsystems)
+        +create_subsystem_lookup()
+        +get_Horizon()
+        +set_Horizon(horizon)
+        +compute_wavelet_transforms(all_history_entries)
+        ...
+    }
+
+    class JacobianComputer:::localStyle {
+        +__init__()
+        +execute(subsystemin)
+    }
+
+    class PerformanceMetrics:::localStyle {
+        -_referencevalues_initialized
+        -_globaldesignvariables
+        -_globaldesignvariablesunscaled
+        -_referenceglobaldesignvariables
+        -_referenceglobaldesignvariablesunscaled
+        -_globaldesignvariables_previousouterloop
+        -_globaldesignvariablesunscaled_previousouterloop
+        ...
+        +__init__()
+        +compute_GlobalObjectiveValue(subsystems)
+        +compute_GlobalObjectiveValueUnscaled(subsystems)
+        +compute_GlobalObjectiveValue_previousOuterLoop(subsystems)
+        +compute_GlobalObjectiveValueUnscaled_previousOuterLoop(subsystems)
+        ...
+    }
+
+    class ResidualComputer:::localStyle {
+        -_graphinit
+        -_mastergraph
+        -_subsystems
+        -_middlelevelstorages
+        -_iterationscheme
+        +__init__(graph_init, middlelevel_storages, ...)
+        +create_storage_lookup()
+        +create_subsystem_lookup()
+        +compute_all_primal_residuals()
+        +compute_single_primal_residual(idparent, idchild, ...)
+        ...
+    }
+
+
+    %% Click handlers for navigation to documentation
+    click handlers href "handlers/" "Browse handlers package"
+    click models href "models/" "Browse models package"
+    click styles href "styles/" "Browse styles package"
+    click utils href "utils/" "Browse utils package"
+    click widgets href "widgets/" "Browse widgets package"
+    click workers href "workers/" "Browse workers package"
+    click CentralityComputer href "CentralityComputer/" "View CentralityComputer documentation"
+    click ClusterComputer href "ClusterComputer/" "View ClusterComputer documentation"
+    click CompromiseComputer href "CompromiseComputer/" "View CompromiseComputer documentation"
+    click CouplingStrengthComputer href "CouplingStrengthComputer/" "View CouplingStrengthComputer documentation"
+    click GraphInit href "GraphInit/" "View GraphInit documentation"
+    click InConsistencyOscillationComputer href "InConsistencyOscillationComputer/" "View InConsistencyOscillationComputer documentation"
+    click JacobianComputer href "JacobianComputer/" "View JacobianComputer documentation"
+    click PerformanceMetrics href "PerformanceMetrics/" "View PerformanceMetrics documentation"
+    click ResidualComputer href "ResidualComputer/" "View ResidualComputer documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```

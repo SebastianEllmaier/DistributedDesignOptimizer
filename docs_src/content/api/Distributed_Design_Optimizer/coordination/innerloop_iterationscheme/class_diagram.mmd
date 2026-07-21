@@ -1,0 +1,101 @@
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    class IterationSchemeBasis:::localStyle {
+        +run_subsystem(subsystem)
+    }
+
+    class IterationSchemeInterface:::abstractStyle {
+        <<abstract>>
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    class Parallel:::localStyle {
+        +__init__()
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    class ParallelEvenThenOddLevels:::localStyle {
+        +__init__()
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    class ParallelLocal_SequentialController:::localStyle {
+        +__init__()
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    class ParallelOddThenEvenLevels:::localStyle {
+        +__init__()
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    class ParallelPerLevelIncreasing:::localStyle {
+        +__init__()
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    class SequentialBackward:::localStyle {
+        +__init__()
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    class SequentialForward:::localStyle {
+        +__init__()
+        +run_innerloop_jobs_multiprocessing(subsystemsIn)
+        +print_startup_summary()
+        +print_termination_summary()
+        +print_beginning_of_run_innerloop_jobs_multiprocessing()
+    }
+
+    IterationSchemeInterface <|-- IterationSchemeBasis
+    IterationSchemeBasis <|-- Parallel
+    IterationSchemeBasis <|-- ParallelEvenThenOddLevels
+    IterationSchemeBasis <|-- ParallelLocal_SequentialController
+    IterationSchemeBasis <|-- ParallelOddThenEvenLevels
+    IterationSchemeBasis <|-- ParallelPerLevelIncreasing
+    IterationSchemeBasis <|-- SequentialBackward
+    IterationSchemeBasis <|-- SequentialForward
+
+    %% Click handlers for navigation to documentation
+    click IterationSchemeBasis href "IterationSchemeBasis/" "View IterationSchemeBasis documentation"
+    click IterationSchemeInterface href "IterationSchemeInterface/" "View IterationSchemeInterface documentation"
+    click Parallel href "Parallel/" "View Parallel documentation"
+    click ParallelEvenThenOddLevels href "ParallelEvenThenOddLevels/" "View ParallelEvenThenOddLevels documentation"
+    click ParallelLocal_SequentialController href "ParallelLocal_SequentialController/" "View ParallelLocal_SequentialController documentation"
+    click ParallelOddThenEvenLevels href "ParallelOddThenEvenLevels/" "View ParallelOddThenEvenLevels documentation"
+    click ParallelPerLevelIncreasing href "ParallelPerLevelIncreasing/" "View ParallelPerLevelIncreasing documentation"
+    click SequentialBackward href "SequentialBackward/" "View SequentialBackward documentation"
+    click SequentialForward href "SequentialForward/" "View SequentialForward documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```

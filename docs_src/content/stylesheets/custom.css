@@ -1,0 +1,1414 @@
+/* Modern styling overrides for Distributed Design Optimizer docs */
+/* Primary color: #035970 - ONLY for links and interactive elements */
+
+:root {
+  /* Override ALL Material theme color variables */
+  --md-primary-fg-color: #035970 !important;
+  --md-primary-fg-color--light: #047a99 !important;
+  --md-primary-fg-color--dark: #024556 !important;
+  --md-accent-fg-color: #035970 !important;
+  --md-accent-fg-color--transparent: rgba(3, 89, 112, 0.1) !important;
+  --md-typeset-a-color: #035970 !important;
+  --md-default-fg-color--link: #035970 !important;
+  --md-default-fg-color--link--hover: #047a99 !important;
+  
+  /* Keep text black */
+  --md-default-fg-color: #000000 !important;
+  --md-default-fg-color--light: #333333 !important;
+  
+  /* Custom variables */
+  --primary-color: #035970;
+  --primary-light: #047a99;
+  --primary-lighter: #0596bd;
+  --primary-lightest: #e6f4f7;
+  --border-radius: 8px;
+}
+
+/* Force color scheme for both light and dark modes */
+[data-md-color-scheme="default"],
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #035970 !important;
+  --md-primary-fg-color--light: #047a99 !important;
+  --md-primary-fg-color--dark: #024556 !important;
+  --md-accent-fg-color: #035970 !important;
+  --md-typeset-a-color: #035970 !important;
+}
+
+/* ============================================
+   HEADER AND NAVIGATION
+   ============================================ */
+
+/* Top header bar */
+.md-header {
+  background-color: #035970 !important;
+}
+
+/* Site logo: scale down and place on a white background for contrast
+   against the dark teal header (logo artwork uses #035970). */
+.md-header__button.md-logo {
+  padding: 0.2rem;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.6rem;
+  width: auto;
+  background-color: #ffffff;
+  border-radius: 0.1rem;
+  padding: 0.15rem;
+  box-sizing: content-box;
+}
+
+/* Hide site name label above navigation */
+.md-nav--primary > .md-nav__title {
+  display: none;
+}
+
+/* Tabs below header */
+.md-tabs {
+  background-color: #035970 !important;
+}
+
+/* Search highlight */
+.md-search__input {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ============================================
+   TEXT AND HEADINGS - ALL BLACK
+   (No !important so Pygments syntax highlighting classes take precedence)
+   ============================================ */
+
+.md-typeset {
+  color: #000000;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+  color: #000000 !important;
+}
+
+.md-typeset p,
+.md-typeset li,
+.md-typeset td,
+.md-typeset th {
+  color: #000000 !important;
+}
+
+/* ============================================
+   LINKS - ONLY THESE ARE COLORED
+   ============================================ */
+
+.md-typeset a {
+  color: #035970 !important;
+}
+
+.md-typeset a:hover,
+.md-typeset a:focus {
+  color: #047a99 !important;
+}
+
+/* Navigation links */
+.md-nav__link {
+  color: inherit;
+}
+
+.md-nav__link:hover {
+  color: #035970 !important;
+}
+
+.md-nav__link--active,
+.md-nav__item--active > .md-nav__link {
+  color: #035970 !important;
+  font-weight: 600;
+}
+
+/* Table of contents */
+.md-nav__link--passed {
+  color: #035970 !important;
+}
+
+/* ============================================
+   ADMONITION BOXES (METHOD SIGNATURES)
+   ============================================ */
+
+/* Abstract admonition - used for method signatures */
+.md-typeset .admonition.abstract,
+.md-typeset details.abstract {
+  border-color: #035970 !important;
+  border-left-width: 4px !important;
+  margin-bottom: 0.5em !important;
+  background-color: #f5fafb !important;
+}
+
+.md-typeset .admonition.abstract > .admonition-title,
+.md-typeset details.abstract > summary {
+  background-color: #f5fafb !important;
+  border-left-color: #035970 !important;
+  padding: 0.6rem 1rem 0.6rem 1rem !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 0.85rem !important;
+  cursor: pointer;
+}
+
+/* Remove the icon/square before the title */
+.md-typeset .admonition.abstract > .admonition-title::before,
+.md-typeset details.abstract > summary::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* IMPORTANT: Make admonition content SAME font size as body (0.8rem is MkDocs default) */
+.md-typeset .admonition {
+  font-size: 0.8rem !important;
+}
+
+.md-typeset .admonition p,
+.md-typeset .admonition > p {
+  font-size: 0.8rem !important;
+  margin: 0.6em 0 !important;
+}
+
+/* ============================================
+   BUTTONS AND INTERACTIVE ELEMENTS
+   ============================================ */
+
+/* Primary button */
+.md-button--primary {
+  background-color: #035970 !important;
+  border-color: #035970 !important;
+}
+
+.md-button--primary:hover {
+  background-color: #047a99 !important;
+  border-color: #047a99 !important;
+}
+
+/* ============================================
+   CODE AND SYNTAX HIGHLIGHTING  
+   ============================================ */
+
+code {
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+pre {
+  border-radius: 8px !important;
+}
+
+/* VS Code "Dark Modern" code block: dark background regardless of site theme */
+.md-typeset .highlight {
+  background-color: #1E1E1E !important;
+}
+.md-typeset .highlight pre {
+  background-color: #1E1E1E !important;
+}
+.md-typeset .highlight code {
+  background-color: transparent !important;
+  color: #D4D4D4 !important;  /* Default text - light gray */
+}
+
+/* VS Code "Dark Modern" Pygments token colors */
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cs,
+.highlight .ch { color: #6A9955 !important; font-style: italic; }  /* Comments - green */
+
+.highlight .k,
+.highlight .kn,
+.highlight .kd,
+.highlight .kc,
+.highlight .kr,
+.highlight .kt { color: #569CD6 !important; }  /* Keywords - blue */
+
+.highlight .ow { color: #569CD6 !important; }  /* Operator words (and, or, not, in) */
+
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sd,
+.highlight .sb,
+.highlight .sc,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .ss,
+.highlight .sx,
+.highlight .sa { color: #CE9178 !important; }  /* Strings - orange/salmon */
+
+.highlight .m,
+.highlight .mi,
+.highlight .mf,
+.highlight .mh,
+.highlight .mo { color: #B5CEA8 !important; }  /* Numbers - light green */
+
+.highlight .nf,
+.highlight .fm { color: #DCDCAA !important; }  /* Functions - yellow */
+
+.highlight .nc,
+.highlight .ne { color: #4EC9B0 !important; }  /* Classes/types - teal */
+
+.highlight .nd { color: #DCDCAA !important; }  /* Decorators - yellow */
+
+.highlight .nb { color: #4EC9B0 !important; }  /* Built-ins - teal */
+
+.highlight .nn { color: #4EC9B0 !important; }  /* Module names - teal */
+
+.highlight .bp { color: #569CD6 !important; }  /* self/cls - blue */
+
+.highlight .n,
+.highlight .na,
+.highlight .nv,
+.highlight .ni,
+.highlight .no { color: #9CDCFE !important; }  /* Variables/names - light blue */
+
+.highlight .o { color: #D4D4D4 !important; }  /* Operators - light gray */
+.highlight .p { color: #D4D4D4 !important; }  /* Punctuation - light gray */
+
+/* Bracket pair colorization - VS Code Dark Modern defaults */
+.highlight .bp1 { color: #FFD700 !important; }  /* Depth 1 - Gold */
+.highlight .bp2 { color: #DA70D6 !important; }  /* Depth 2 - Orchid */
+.highlight .bp3 { color: #179FFF !important; }  /* Depth 3 - Cornflower Blue */
+
+/* Line numbers in dark theme */
+.highlight .linenos,
+.highlight .linenodiv { color: #858585 !important; }
+
+/* ============================================
+   COLLAPSIBLE CODE BLOCKS
+   ============================================ */
+
+/* Wrapper: collapsed state */
+.collapsible-code {
+  position: relative;
+}
+
+.collapsible-code .highlight {
+  position: relative;
+}
+
+.collapsible-code.collapsed .highlight {
+  max-height: 8.5em;      /* ~5 lines visible */
+  overflow: hidden;
+}
+
+/* Gradient fade overlay when collapsed */
+.collapsible-code.collapsed .highlight::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5em;
+  background: linear-gradient(transparent, #1E1E1E);
+  pointer-events: none;
+}
+
+/* Toggle button */
+.collapsible-code-toggle {
+  display: block;
+  width: 100%;
+  padding: 0.4em 0;
+  border: none;
+  border-top: 1px solid #333;
+  background: #1E1E1E;
+  color: #569CD6;
+  font-size: 0.8em;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 0 0 0.3em 0.3em;
+  margin-top: -0.5em;
+}
+
+.collapsible-code-toggle:hover {
+  color: #9CDCFE;
+  background: #252526;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+.md-typeset table:not([class]) th {
+  background-color: #035970 !important;
+  color: white !important;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.md-footer {
+  background-color: #024556 !important;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================
+   BLOCKQUOTES (used for method descriptions)
+   ============================================ */
+
+.md-typeset blockquote {
+  border-left-color: #035970 !important;
+  color: #000000 !important;
+}
+
+/* ============================================
+   MERMAID DIAGRAMS - Interactive UML
+   ============================================ */
+
+/* Container for Mermaid diagrams */
+.mermaid {
+  background-color: #fefefe !important;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+/* Class diagram styling */
+.mermaid .classGroup rect {
+  fill: #e6f4f7 !important;
+  stroke: #035970 !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid .classGroup text {
+  fill: #000000 !important;
+  font-size: 12px !important;
+}
+
+/* Class title/header */
+.mermaid .classGroup .title {
+  font-weight: bold !important;
+}
+
+/* Make clickable classes show pointer cursor and highlight on hover */
+.mermaid .classGroup {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mermaid .classGroup:hover rect {
+  fill: #cce9ef !important;
+  stroke: #024556 !important;
+  stroke-width: 3px !important;
+}
+
+.mermaid .classGroup:hover text {
+  fill: #024556 !important;
+}
+
+/* Relationship lines */
+.mermaid .relation {
+  stroke: #035970 !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Arrow markers */
+.mermaid marker path {
+  fill: #035970 !important;
+  stroke: #035970 !important;
+}
+
+/* Labels on relationships */
+.mermaid .classLabel .label {
+  fill: #333333 !important;
+  font-size: 11px !important;
+}
+
+/* Namespace/package boxes */
+.mermaid .namespace rect {
+  fill: #f5fafb !important;
+  stroke: #047a99 !important;
+}
+
+/* Notes */
+.mermaid .note rect {
+  fill: #e6f4f7 !important;
+  stroke: #035970 !important;
+}
+
+.mermaid .note text {
+  fill: #000000 !important;
+}
+
+/* Annotation styling (<<abstract>>, <<interface>>, etc.) */
+.mermaid .classGroup .classText .annotation {
+  fill: #666666 !important;
+  font-style: italic !important;
+}
+
+/* External class styling */
+.mermaid .classGroup.external rect {
+  fill: #fff8e6 !important;
+  stroke: #ffc107 !important;
+}
+
+/* Improve text readability */
+.mermaid text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Dark mode support */
+[data-md-color-scheme="slate"] .mermaid {
+  background-color: #2d2d2d !important;
+  border-color: #404040 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .classGroup rect {
+  fill: #1e3a42 !important;
+  stroke: #47a8c7 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .classGroup text {
+  fill: #e0e0e0 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .relation {
+  stroke: #47a8c7 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .note rect {
+  fill: #1e3a42 !important;
+  stroke: #47a8c7 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .note text {
+  fill: #e0e0e0 !important;
+}
+
+/* Tooltip styling for clickable elements */
+.mermaidTooltip {
+  background-color: #035970 !important;
+  color: white !important;
+  border-radius: 4px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* ============================================
+   DIAGRAM ZOOM/PAN CONTROLS
+   ============================================ */
+
+.diagram-zoom-wrapper {
+  position: relative;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 1em 0;
+  background: #fafafa;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.diagram-zoom-wrapper svg {
+  cursor: grab;
+  display: block;
+}
+
+.diagram-zoom-wrapper svg:active {
+  cursor: grabbing;
+}
+
+.diagram-zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.zoom-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.zoom-btn:hover {
+  background: #035970;
+  color: white;
+  border-color: #035970;
+}
+
+.zoom-btn:active {
+  transform: scale(0.95);
+}
+
+/* Hint text for diagram interaction */
+.diagram-zoom-wrapper::after {
+  content: "Scroll to zoom • Drag to pan • Double-click to reset";
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #888;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Dark mode support */
+[data-md-color-scheme="slate"] .diagram-zoom-wrapper {
+  background: #1e1e1e;
+  border-color: #404040;
+}
+
+[data-md-color-scheme="slate"] .diagram-zoom-controls {
+  background: rgba(30, 30, 30, 0.9);
+}
+
+[data-md-color-scheme="slate"] .zoom-btn {
+  background: #2d2d2d;
+  border-color: #404040;
+  color: #e0e0e0;
+}
+
+[data-md-color-scheme="slate"] .zoom-btn:hover {
+  background: #047a99;
+  border-color: #047a99;
+  color: white;
+}
+
+[data-md-color-scheme="slate"] .diagram-zoom-wrapper::after {
+  color: #888;
+  background: rgba(30, 30, 30, 0.8);
+}
+
+/* ============================================
+   MERMAID DIAGRAM CUSTOM COLORS
+   See: https://mermaid.js.org/syntax/classDiagram.html#css-classes
+   ============================================ */
+
+/* Package style nodes (light grey for sub-packages) */
+.packageStyle rect,
+.packageStyle polygon,
+.packageStyle > * > g {
+  fill: #e8e8e8 !important;
+  stroke: #999999 !important;
+  stroke-width: 2px !important;
+}
+
+/* External style nodes (light orange for external/base classes) */
+.externalStyle rect,
+.externalStyle polygon,
+.externalStyle > * > g {
+  fill: #fff8e6 !important;
+  stroke: #FFCC80 !important;
+  stroke-width: 2px !important;
+}
+
+/* Local style nodes (light cyan for local classes) */
+.localStyle rect,
+.localStyle polygon,
+.localStyle > * > g {
+  fill: #e6f4f7 !important;
+  stroke: #035970 !important;
+  stroke-width: 2px !important;
+}
+
+/* Abstract style nodes (light cyan with dashed border) */
+.abstractStyle rect,
+.abstractStyle polygon,
+.abstractStyle > * > g {
+  fill: #e6f4f7 !important;
+  stroke: #035970 !important;
+  stroke-width: 2px !important;
+  stroke-dasharray: 5 5 !important;
+}
+
+/* Mermaid text colors */
+.mermaid .classLabel .label {
+  fill: #000000 !important;
+}
+
+/* Mermaid relationship lines */
+.mermaid .relation {
+  stroke: #035970 !important;
+}
+
+.mermaid .cardinality {
+  fill: #000000 !important;
+}
+
+/* ============================================
+   CITATIONS & BIBLIOGRAPHY
+   ============================================ */
+
+/* Inline citation superscript links */
+.citation-ref {
+  text-decoration: none;
+  color: var(--md-typeset-a-color);
+  font-weight: 600;
+}
+
+.citation-ref:hover {
+  text-decoration: underline;
+}
+
+/* Bibliography list on the references page */
+.references.csl-bib-body {
+  margin-top: 1.5em;
+}
+
+.csl-entry {
+  display: flex;
+  gap: 0.5em;
+  margin-bottom: 0.75em;
+  line-height: 1.5;
+  scroll-margin-top: 4em;
+}
+
+.csl-left-margin {
+  min-width: 2em;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.csl-right-inline {
+  flex: 1;
+}
+
+/* ============================================
+   ALGORITHM / PSEUDOCODE
+   ============================================ */
+
+.algorithm {
+  border: 1.5px solid #555;
+  border-radius: 4px;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  background: #fafafa;
+  overflow-x: auto;
+}
+
+.algorithm-caption {
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.75em;
+  font-size: 1.05em;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5em;
+}
+
+.algo-body {
+  counter-reset: algo-line;
+  font-family: inherit;
+  font-size: 0.95em;
+  line-height: 1.8;
+}
+
+.algo-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75em;
+}
+
+.algo-line::before {
+  counter-increment: algo-line;
+  content: counter(algo-line);
+  min-width: 1.5em;
+  text-align: right;
+  color: #999;
+  font-size: 0.85em;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.algo-line.no-number::before {
+  content: "";
+  counter-increment: none;
+}
+
+.algo-indent-1 > span { padding-left: 1.5em; }
+.algo-indent-2 > span { padding-left: 3em; }
+.algo-indent-3 > span { padding-left: 4.5em; }
+.algo-indent-4 > span { padding-left: 6em; }
+.algo-indent-5 > span { padding-left: 7.5em; }
+
+.algo-keyword {
+  font-weight: 700;
+  color: #333;
+}
+
+.algo-comment {
+  color: #777;
+  font-style: italic;
+  margin-left: 1em;
+}
+
+.algo-math-block {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75em;
+  margin: 0.25em 0;
+}
+
+.algo-math-block > span {
+  padding-left: 3em;
+}
+
+.algo-math-block::before {
+  counter-increment: algo-line;
+  content: counter(algo-line);
+  min-width: 1.5em;
+  text-align: right;
+  color: #999;
+  font-size: 0.85em;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* ============================================
+   PSEUDOCODE-TO-CODE TRACEABILITY
+   ============================================ */
+
+/* Main container - applies to all traceability views */
+.unified-algorithmic-structure-pseudocode-traceability,
+.alc-pseudocode-traceability,
+.consensus-alc-pseudocode-traceability,
+.aladin-pseudocode-traceability,
+.sbdp-pseudocode-traceability,
+.subsystem-copyfrom-pseudocode-traceability,
+.subsystem-copyto-pseudocode-traceability,
+.subsystem-run-iterative-optimization-pseudocode-traceability {
+  margin: 2em 0;
+  position: relative;
+}
+
+.unified-algorithmic-structure-pseudocode-traceability .traceability-header,
+.alc-pseudocode-traceability .traceability-header,
+.consensus-alc-pseudocode-traceability .traceability-header,
+.aladin-pseudocode-traceability .traceability-header,
+.sbdp-pseudocode-traceability .traceability-header,
+.subsystem-copyfrom-pseudocode-traceability .traceability-header,
+.subsystem-copyto-pseudocode-traceability .traceability-header,
+.subsystem-run-iterative-optimization-pseudocode-traceability .traceability-header {
+  margin-bottom: 1em;
+}
+
+.unified-algorithmic-structure-pseudocode-traceability .traceability-header p,
+.alc-pseudocode-traceability .traceability-header p,
+.consensus-alc-pseudocode-traceability .traceability-header p,
+.aladin-pseudocode-traceability .traceability-header p,
+.sbdp-pseudocode-traceability .traceability-header p,
+.subsystem-copyfrom-pseudocode-traceability .traceability-header p,
+.subsystem-copyto-pseudocode-traceability .traceability-header p,
+.subsystem-run-iterative-optimization-pseudocode-traceability .traceability-header p {
+  margin: 0 !important;
+  font-size: 0.9em !important;
+  color: #666 !important;
+}
+
+/* Linked pseudocode lines (have mapping) */
+.algo-linked {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 1px 4px;
+  margin: 1px 0;
+  transition: background-color 0.2s ease, border-left-color 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.algo-linked:hover {
+  background-color: #e6f4f7;
+  border-left-color: #035970;
+}
+
+.algo-linked.algo-active {
+  background-color: #e6f4f7;
+  border-left-color: #035970;
+}
+
+.algo-linked.algo-clicked {
+  background-color: #cce9ef;
+  border-left-color: #035970;
+  box-shadow: 0 1px 3px rgba(3, 89, 112, 0.2);
+}
+
+/* ─── Floating implementation popup ─── */
+.impl-popup {
+  position: absolute;
+  z-index: 100;
+  min-width: 260px;
+  max-width: 520px;
+  background: white;
+  border: 1px solid #035970;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(3, 89, 112, 0.18);
+  font-size: 0.88em;
+  animation: popup-fade-in 0.15s ease;
+}
+
+@keyframes popup-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.impl-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em 0.75em;
+  background: #f0f8fa;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 6px 6px 0 0;
+}
+
+.impl-popup-label {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #035970;
+}
+
+.impl-popup-close {
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #999;
+  line-height: 1;
+  padding: 0 0.25em;
+}
+
+.impl-popup-close:hover {
+  color: #035970;
+}
+
+.impl-popup-body {
+  padding: 0.5em 0.75em;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.impl-popup-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35em 0.5em;
+  margin: 0.2em 0;
+  border-radius: 4px;
+  text-decoration: none !important;
+  transition: background-color 0.15s ease;
+}
+
+.impl-popup-link:hover {
+  background-color: #e6f4f7;
+}
+
+.impl-popup-link code {
+  font-size: 0.85em;
+  color: #035970 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  font-weight: 500;
+}
+
+.impl-popup-module {
+  font-size: 0.72em;
+  color: #999;
+  margin-left: 0.75em;
+  white-space: nowrap;
+}
+
+/* Dark mode support */
+[data-md-color-scheme="slate"] .unified-algorithmic-structure-pseudocode-traceability .traceability-header p,
+[data-md-color-scheme="slate"] .alc-pseudocode-traceability .traceability-header p,
+[data-md-color-scheme="slate"] .consensus-alc-pseudocode-traceability .traceability-header p,
+[data-md-color-scheme="slate"] .aladin-pseudocode-traceability .traceability-header p {
+  color: #aaa !important;
+}
+
+[data-md-color-scheme="slate"] .algo-linked:hover,
+[data-md-color-scheme="slate"] .algo-linked.algo-active {
+  background-color: #1e3a42;
+  border-left-color: #47a8c7;
+}
+
+[data-md-color-scheme="slate"] .algo-linked.algo-clicked {
+  background-color: #1e3a42;
+  border-left-color: #47a8c7;
+}
+
+[data-md-color-scheme="slate"] .impl-popup {
+  background: #2d2d2d;
+  border-color: #47a8c7;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-md-color-scheme="slate"] .impl-popup-header {
+  background: #1e3a42;
+  border-color: #404040;
+}
+
+[data-md-color-scheme="slate"] .impl-popup-label {
+  color: #47a8c7;
+}
+
+[data-md-color-scheme="slate"] .impl-popup-link:hover {
+  background-color: #1e3a42;
+}
+
+[data-md-color-scheme="slate"] .impl-popup-link code {
+  color: #47a8c7 !important;
+}
+
+/* ─── Math Symbol Reference in Popup ─── */
+.impl-popup-math-section {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+}
+
+.impl-popup-math-header {
+  font-weight: 600;
+  font-size: 0.85em;
+  color: #035970;
+  margin-bottom: 0.4em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px dashed #ccc;
+}
+
+.impl-popup-math-symbol {
+  margin: 0.35em 0;
+  padding: 0.3em 0.4em;
+  border-radius: 4px;
+  background: #fafcfd;
+}
+
+.impl-popup-math-symbol:nth-child(even) {
+  background: #f5f9fa;
+}
+
+.impl-popup-math-symbol-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.2em;
+}
+
+.impl-popup-math-latex {
+  font-size: 0.95em;
+}
+
+.impl-popup-math-label {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: #555;
+}
+
+.impl-popup-math-impls {
+  padding-left: 0.5em;
+}
+
+.impl-popup-math-impls .impl-popup-link {
+  padding: 0.2em 0.4em;
+  margin: 0.1em 0;
+  font-size: 0.92em;
+}
+
+/* Dark mode for math symbols */
+[data-md-color-scheme="slate"] .impl-popup-math-section {
+  border-top-color: #404040;
+}
+
+[data-md-color-scheme="slate"] .impl-popup-math-header {
+  color: #47a8c7;
+  border-bottom-color: #555;
+}
+
+[data-md-color-scheme="slate"] .impl-popup-math-symbol {
+  background: #2a2a2a;
+}
+
+[data-md-color-scheme="slate"] .impl-popup-math-symbol:nth-child(even) {
+  background: #252525;
+}
+
+[data-md-color-scheme="slate"] .impl-popup-math-label {
+  color: #aaa;
+}
+
+/* ============================================
+   ABBREVIATION HOVER TOOLTIPS
+   ============================================ */
+
+/* Style the abbr element generated by pymdownx.snippets + abbr extension */
+abbr {
+  text-decoration: underline dotted #035970;
+  text-underline-offset: 2px;
+  cursor: help;
+  position: relative;
+}
+
+abbr:hover {
+  text-decoration: underline solid #035970;
+}
+
+/* Custom tooltip popup (replaces browser default) */
+abbr[title] {
+  position: relative;
+}
+
+abbr[title]::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.4em 0.7em;
+  background: #035970;
+  color: white;
+  font-size: 0.82em;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 1000;
+  pointer-events: none;
+  margin-bottom: 6px;
+}
+
+abbr[title]::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #035970;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+abbr[title]:hover::after,
+abbr[title]:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Dark mode support for abbreviations */
+[data-md-color-scheme="slate"] abbr {
+  text-decoration-color: #47a8c7;
+}
+
+[data-md-color-scheme="slate"] abbr:hover {
+  text-decoration-color: #47a8c7;
+}
+
+[data-md-color-scheme="slate"] abbr[title]::after {
+  background: #1e3a42;
+  border-color: #47a8c7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-md-color-scheme="slate"] abbr[title]::before {
+  border-top-color: #1e3a42;
+}
+
+/* ============================================
+   SYMBOL GLOSSARY LINKS IN MATH
+   ============================================ */
+
+/* Symbol references with tooltips (sym:KEY syntax) */
+.sym-ref {
+  position: relative;
+  cursor: help;
+}
+
+.sym-ref::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.4em 0.7em;
+  background: #035970;
+  color: white;
+  font-size: 0.82em;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 1000;
+  pointer-events: none;
+  margin-bottom: 6px;
+}
+
+.sym-ref::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #035970;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.sym-ref:hover::after,
+.sym-ref:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Dark mode for symbol tooltips */
+[data-md-color-scheme="slate"] .sym-ref::after {
+  background: #1e3a42;
+  border-color: #47a8c7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-md-color-scheme="slate"] .sym-ref::before {
+  border-top-color: #1e3a42;
+}
+
+/* Links inside KaTeX-rendered math */
+.katex a,
+.katex-display a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted #035970;
+}
+
+.katex a:hover,
+.katex-display a:hover {
+  border-bottom-style: solid;
+}
+
+[data-md-color-scheme="slate"] .katex a,
+[data-md-color-scheme="slate"] .katex-display a {
+  border-bottom-color: #47a8c7;
+}
+
+/* ============================================
+   GITHUB-STYLE ISSUE/PR LABELS
+   ============================================ */
+.gh-label {
+  display: inline-block;
+  padding: 0.1em 0.85em;
+  border-radius: 2em;
+  font-size: 0.85em;
+  font-weight: 600;
+  line-height: 1.8;
+  white-space: nowrap;
+}
+
+.gh-label-bug {
+  background-color: #d73a4a;
+  color: #ffffff;
+}
+
+.gh-label-documentation {
+  background-color: #0075ca;
+  color: #ffffff;
+}
+
+.gh-label-duplicate {
+  background-color: #cfd3d7;
+  color: #24292f;
+}
+
+.gh-label-enhancement {
+  background-color: #a2eeef;
+  color: #24292f;
+}
+
+.gh-label-question {
+  background-color: #d876e3;
+  color: #ffffff;
+}
+
+/* ============================================
+   PROGRESS CIRCLES (feature fulfilment indicator)
+   ============================================ */
+
+.progress-circle {
+  display: inline-block;
+  width: 0.95em;
+  height: 0.95em;
+  border-radius: 50%;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  vertical-align: -0.15em;
+  /* Fill sweeps clockwise from the top (12 o'clock), matching the
+     original TikZ definition. --p is the fill percentage. */
+  background: conic-gradient(var(--primary-color) var(--p, 0%), #ffffff 0);
+}
+
+[data-md-color-scheme="slate"] .progress-circle {
+  border-color: #ffffff;
+}
+
+/* ============================================
+   DOCUMENTATION HTML TABLES (shared base style)
+   Mirrors the default MkDocs Material table look so that HTML tables
+   are visually consistent with generated Markdown tables.
+   ============================================ */
+
+.md-typeset table.doc-table {
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  width: 100%;
+  display: table;
+}
+
+.md-typeset table.doc-table th,
+.md-typeset table.doc-table td {
+  border: 1px solid #d0d0d0;
+  padding: 0.6em 0.9em;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* Header row uses the docs' default primary color (as other tables do) */
+.md-typeset table.doc-table thead th {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* ============================================
+   EXAMPLES OVERVIEW TABLE (extends .doc-table)
+   ============================================ */
+
+/* Let the first column (use-case names) size to its content and never wrap,
+   so long names like "GeometricProgramming" stay on a single line. The
+   remaining columns share the leftover width automatically. */
+.md-typeset table.examples-overview th:first-child,
+.md-typeset table.examples-overview td:first-child {
+  white-space: nowrap;
+  width: 1%;
+}
+
+/* Horizontal scroll wrapper: if a table is wider than the content column,
+   it stays inside the layout and the user scrolls it horizontally instead of
+   the table overflowing the page (similar to the embedded drawio viewers). */
+.md-typeset .table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 1.5em 0;
+}
+
+/* The wrapped table keeps its natural width (so it can exceed the wrapper and
+   trigger the scrollbar); avoid doubling the vertical margin. */
+.md-typeset .table-scroll > table {
+  margin: 0;
+  width: auto;
+  min-width: 100%;
+}
+
+/* ============================================
+   FRAMEWORK COMPARISON TABLE (extends .doc-table)
+   ============================================ */
+
+.md-typeset table.framework-comparison {
+  font-size: 0.85em;
+}
+
+.md-typeset table.framework-comparison th,
+.md-typeset table.framework-comparison td {
+  text-align: center;
+  padding: 0.45em 0.6em;
+}
+
+/* First column (framework names) uses the primary color */
+.md-typeset table.framework-comparison tbody th {
+  text-align: left;
+  font-weight: 500;
+}
+
+.md-typeset table.framework-comparison tbody th a {
+  color: var(--primary-color) !important;
+  text-decoration: underline;
+}
+
+/* Visual separation between framework groups */
+.md-typeset table.framework-comparison tr.group-start td,
+.md-typeset table.framework-comparison tr.group-start th {
+  border-top: 3px solid var(--primary-color);
+}
+
+/* Asterisk marker for non-applicable frameworks */
+.framework-comparison .na-mark {
+  vertical-align: super;
+  font-size: 0.85em;
+}
+
+/* Highlight the framework's own row so it stands out to the reader */
+.md-typeset table.framework-comparison tr.highlight-row td {
+  background-color: var(--primary-lightest) !important;
+  font-weight: 600;
+}
+
+/* Keep the primary-color fill on the framework's own name cell */
+.md-typeset table.framework-comparison tr.highlight-row th {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+}
+
+.md-typeset table.framework-comparison tr.highlight-row th,
+.md-typeset table.framework-comparison tr.highlight-row td {
+  border-top: 3px solid var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+}
+
+/* Slightly larger, bolder progress circles in the highlighted row */
+.md-typeset table.framework-comparison tr.highlight-row .progress-circle {
+  width: 1.15em;
+  height: 1.15em;
+  border-width: 1.5px;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table.framework-comparison tr.highlight-row td {
+  background-color: rgba(3, 89, 112, 0.35) !important;
+}
+

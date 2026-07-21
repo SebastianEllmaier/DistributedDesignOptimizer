@@ -1,0 +1,117 @@
+# CopyToMiddleLevel Pseudocode-to-Code Traceability Mapping
+# =============================================================
+
+mappings:
+  - id: copyto-entry
+    algo_lines: [1]
+    label: "CopyToMiddleLevel entry point"
+    pseudocode_text: "procedure SubSystemBasis.CopyToMiddleLevel()"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: CopyToMiddleLevel
+
+  - id: copyto-loop-middlelevels
+    algo_lines: [2]
+    label: "Iterate over all MiddleLevelDataStorage instances"
+    pseudocode_text: "for every MiddleLevelDataStorage in self._middlelevels do"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_MiddleLevels
+
+  - id: copyto-loop-coupling
+    algo_lines: [3]
+    label: "Iterate over all CouplingParameters"
+    pseudocode_text: "for every CouplingParameters in self._couplingparameters do"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.SubSystemBasis
+        class: SubSystemBasis
+        method: get_CouplingParameters
+
+  - id: copyto-match-ids
+    algo_lines: [4]
+    label: "Match CouplingParameters ID against storage ID pair"
+    pseudocode_text: "Match CouplingParameters.ID against MiddleLevelDataStorage.ID pair"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.CouplingParametersBasis
+        class: CouplingParametersBasis
+        method: get_ID
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: get_ID
+
+  - id: copyto-acquire-lock
+    algo_lines: [6]
+    label: "Acquire lock on MiddleLevelDataStorage"
+    pseudocode_text: "Acquire multiprocessing lock on MiddleLevelDataStorage"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: set_Coupling
+
+  - id: copyto-determine-slot
+    algo_lines: [7]
+    label: "Determine storage slot from ID pair"
+    pseudocode_text: "Determine storage slot (parent=0, child=1) from ID pair"
+    implementations:
+      - module: Distributed_Design_Optimizer.middlelevel.MiddleLevelDataStorageBasis
+        class: MiddleLevelDataStorageBasis
+        method: set_Coupling
+
+  - id: copyto-copy-polymorphic
+    algo_lines: [8]
+    label: "Copy from CouplingParameters into MiddleLevelCoupling (polymorphic)"
+    pseudocode_text: "Copy from CouplingParameters into MiddleLevelCoupling"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.alc.CouplingParametersALC
+        class: CouplingParametersALC
+        method: CopyToMiddleLevelCoupling
+
+  - id: copyto-mapped-responses
+    algo_lines: [9]
+    label: "Write MappedResponseVariables to MiddleLevelCoupling"
+    pseudocode_text: "Write MappedResponseVariables → MiddleLevelCoupling"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_MappedResponses
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_MappedResponses
+
+  - id: copyto-coupling-variable
+    algo_lines: [10]
+    label: "Write CouplingVariable to MiddleLevelCoupling"
+    pseudocode_text: "Write CouplingVariable → MiddleLevelCoupling"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_CouplingVariable
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_CouplingVariable
+
+  - id: copyto-shared-dv
+    algo_lines: [11]
+    label: "Write SharedDesignVariables to MiddleLevelCoupling"
+    pseudocode_text: "Write SharedDesignVariables → MiddleLevelCoupling"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_SharedDesignVariables
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_SharedDesignVariable
+
+  - id: copyto-target-shared-dv
+    algo_lines: [12]
+    label: "Write TargetSharedDesignVariables to MiddleLevelCoupling"
+    pseudocode_text: "Write TargetSharedDesignVariables → MiddleLevelCoupling"
+    implementations:
+      - module: Distributed_Design_Optimizer.subsystem.couplingparameters.SubSysCouplingParametersBasis
+        class: SubSysCouplingParametersBasis
+        method: get_TargetSharedDesignVariables
+      - module: Distributed_Design_Optimizer.middlelevel.SubSysMiddleLevelCouplingBasis
+        class: SubSysMiddleLevelCouplingBasis
+        method: set_TargetSharedDesignVariable

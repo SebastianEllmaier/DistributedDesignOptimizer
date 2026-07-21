@@ -1,0 +1,52 @@
+---
+title: pc
+---
+
+# pc
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Classes from other packages (clickable)
+    class SubSysCouplingParametersBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class CouplingParametersPC:::localStyle {
+        -_weights_mappedresponse_minus_copycouplingvariable
+        -_weights_copymappedresponse_minus_couplingvariable
+        -_weights_shareddesignvariable_minus_copytargetshareddesignvariable
+        -_weights_copyshareddesignvariable_minus_targetshareddesignvariable
+        +__init__(id)
+        +set_Weights_MappedResponse_Minus_CopyCouplingVariable(mappedresponse_minus_copycouplingvariable_in)
+        +get_Weights_MappedResponse_Minus_CopyCouplingVariable()
+        +set_Weights_CopyMappedResponse_Minus_CouplingVariable(copymappedresponse_minus_couplingvariable_in)
+        +get_Weights_CopyMappedResponse_Minus_CouplingVariable()
+        ...
+    }
+
+    SubSysCouplingParametersBasis <|-- CouplingParametersPC
+
+    %% Click handlers for navigation to documentation
+    click SubSysCouplingParametersBasis href "../SubSysCouplingParametersBasis/" "View SubSysCouplingParametersBasis documentation"
+    click CouplingParametersPC href "CouplingParametersPC/" "View CouplingParametersPC documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Modules
+
+- [CouplingParametersPC](CouplingParametersPC.md)
+

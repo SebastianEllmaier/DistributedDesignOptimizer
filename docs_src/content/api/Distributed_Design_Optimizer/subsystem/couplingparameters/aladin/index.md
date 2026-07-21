@@ -1,0 +1,134 @@
+---
+title: aladin
+---
+
+# aladin
+
+## Class Diagram
+
+*Click on class names to navigate to their documentation.*
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e6f4f7', 'primaryBorderColor': '#035970', 'primaryTextColor': '#000000', 'lineColor': '#035970', 'secondaryColor': '#cce9ef', 'tertiaryColor': '#f5fafb', 'noteBkgColor': '#e6f4f7', 'noteBorderColor': '#035970', 'fontFamily': 'Arial, sans-serif'}}}%%
+classDiagram
+    direction TB
+
+    %% Classes from other packages (clickable)
+    class ControllerCouplingParametersBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class LocalToController_CouplingParametersBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class SubSysCouplingParametersBasis:::projectAbstractStyle {
+        <<abstract>>
+    }
+
+    class ControllerCouplingParametersALADIN:::localStyle {
+        -_delta_d
+        -_copy_hessian_localconstraints_lagrangian
+        -_copy_gradient_localobjective
+        -_copy_localinequalityconstraintsvalue
+        -_copy_jacobian_localinequalityconstraints
+        -_copy_lower_boundconstraints_value
+        -_copy_jacobian_lowerbound
+        ...
+        +__init__(id)
+        +set_Delta_D(delta_d_in)
+        +get_Delta_D()
+        +set_Copy_Hessian_LocalConstraints_Lagrangian(copy_hessian_localconstraints_lagrangian_in)
+        +get_Copy_Hessian_LocalConstraints_Lagrangian()
+        ...
+    }
+
+    class ControllerToLocalCouplingParameters:::localStyle {
+        -_id
+        +__init__(id)
+        +get_ID()
+        +update_state(other_coupling)
+    }
+
+    class LocalCouplingParametersALADIN:::localStyle {
+        -_weights_mappedresponse_minus_copycouplingvariable
+        -_weights_copymappedresponse_minus_couplingvariable
+        -_weights_shareddesignvariable_minus_copytargetshareddesignvariable
+        -_weights_copyshareddesignvariable_minus_targetshareddesignvariable
+        -_multipliers_mappedresponse_minus_copycouplingvariable
+        -_multipliers_copymappedresponse_minus_couplingvariable
+        -_multipliers_shareddesignvariable_minus_copytargetshareddesignvariable
+        ...
+        +__init__(id)
+        +set_Weights_MappedResponse_Minus_CopyCouplingVariable(mappedresponse_minus_copycouplingvariable_in)
+        +get_Weights_MappedResponse_Minus_CopyCouplingVariable()
+        +set_Weights_CopyMappedResponse_Minus_CouplingVariable(copymappedresponse_minus_couplingvariable_in)
+        +get_Weights_CopyMappedResponse_Minus_CouplingVariable()
+        ...
+    }
+
+    class LocalToController_CouplingParametersALADIN:::localStyle {
+        -_copy_delta_d
+        -_d_hat
+        -_hessian_localconstraints_lagrangian
+        -_gradient_localobjective
+        -_localinequalityconstraintsvalue
+        -_jacobian_localinequalityconstraints
+        -_lower_boundconstraints_value
+        ...
+        +__init__()
+        +set_Copy_Delta_D(copy_delta_d_in)
+        +get_Copy_Delta_D()
+        +set_D_hat(d_hat_in)
+        +get_D_hat()
+        ...
+    }
+
+    class LocalToLocalForController_CouplingParameters:::localStyle {
+        -_id
+        -_mappedresponses
+        -_multipliers_mappedresponse_minus_copycouplingvariable
+        -_weights_mappedresponse_minus_copycouplingvariable
+        -_jacobian_mappedresponses
+        -_hessians_mappedresponses
+        -_couplingvariables
+        ...
+        +__init__(id)
+        +get_ID()
+        +set_MappedResponses(mappedresponsesin)
+        +get_MappedResponses()
+        +set_Multipliers_MappedResponse_Minus_CopyCouplingVariable(mappedresponse_minus_copycouplingvariable_in)
+        ...
+    }
+
+    ControllerCouplingParametersBasis <|-- ControllerCouplingParametersALADIN
+    SubSysCouplingParametersBasis <|-- LocalCouplingParametersALADIN
+    LocalToController_CouplingParametersBasis <|-- LocalToController_CouplingParametersALADIN
+
+    %% Click handlers for navigation to documentation
+    click ControllerCouplingParametersBasis href "../ControllerCouplingParametersBasis/" "View ControllerCouplingParametersBasis documentation"
+    click LocalToController_CouplingParametersBasis href "../LocalToController_CouplingParametersBasis/" "View LocalToController_CouplingParametersBasis documentation"
+    click SubSysCouplingParametersBasis href "../SubSysCouplingParametersBasis/" "View SubSysCouplingParametersBasis documentation"
+    click ControllerCouplingParametersALADIN href "ControllerCouplingParametersALADIN/" "View ControllerCouplingParametersALADIN documentation"
+    click ControllerToLocalCouplingParameters href "ControllerToLocalCouplingParameters/" "View ControllerToLocalCouplingParameters documentation"
+    click LocalCouplingParametersALADIN href "LocalCouplingParametersALADIN/" "View LocalCouplingParametersALADIN documentation"
+    click LocalToController_CouplingParametersALADIN href "LocalToController_CouplingParametersALADIN/" "View LocalToController_CouplingParametersALADIN documentation"
+    click LocalToLocalForController_CouplingParameters href "LocalToLocalForController_CouplingParameters/" "View LocalToLocalForController_CouplingParameters documentation"
+
+    %% Style definitions
+    classDef packageStyle fill:#e8e8e8,stroke:#999999,stroke-width:2px
+    classDef externalStyle fill:#fff8e6,stroke:#FFCC80,stroke-width:2px
+    classDef projectStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef projectAbstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+    classDef localStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px
+    classDef abstractStyle fill:#e6f4f7,stroke:#035970,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Modules
+
+- [ControllerCouplingParametersALADIN](ControllerCouplingParametersALADIN.md)
+- [ControllerToLocalCouplingParameters](ControllerToLocalCouplingParameters.md)
+- [LocalCouplingParametersALADIN](LocalCouplingParametersALADIN.md)
+- [LocalToController_CouplingParametersALADIN](LocalToController_CouplingParametersALADIN.md)
+- [LocalToLocalForController_CouplingParameters](LocalToLocalForController_CouplingParameters.md)
+
