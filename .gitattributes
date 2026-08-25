@@ -1,1 +1,3 @@
 docs_src/** linguist-documentation
+*.drawio.html linguist-vendored
+*.drawio linguist-vendored
