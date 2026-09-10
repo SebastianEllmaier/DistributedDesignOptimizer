@@ -10,7 +10,7 @@ title: Analysis2 (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Analysis module for Two-Bar Truss subsystem 2 (bar 2 sizing).
 
 Implements the analysis for bar 2 (compression member) in the Two-Bar Truss

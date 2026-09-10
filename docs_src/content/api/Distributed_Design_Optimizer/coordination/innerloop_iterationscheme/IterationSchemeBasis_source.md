@@ -10,7 +10,7 @@ title: IterationSchemeBasis (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Base class module for inner loop iteration schemes.
 
 This module provides the base class with common functionality for iteration

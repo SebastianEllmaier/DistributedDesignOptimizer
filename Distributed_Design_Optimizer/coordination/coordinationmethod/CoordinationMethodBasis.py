@@ -1,5 +1,5 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Basis class for coordination methods.
 
 This module provides the base implementation for coordination methods,

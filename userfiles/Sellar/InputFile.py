@@ -1,5 +1,5 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Input file configuration for Sellar problem with non-hierarchic decomposition.
 
 This module defines the configuration for distributed optimization of the Sellar

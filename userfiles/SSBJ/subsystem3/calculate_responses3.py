@@ -1,105 +1,109 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
-#
-# This file contains code derived from the DMDO framework by Ahmed Bayoumy,
-# originally published under the GNU General Public License v3.0.
-# Source: https://github.com/Ahmed-Bayoumy/DMDO/blob/DEV/tests/SBJ/SSBJ_Structures.py
-# Relevant original functions: Wing_Mod(), loads(), polyApprox(),
-#   calculate_structural_response(), calculate_constraints()
-#
-# Modifications from the original:
-#   - Refactored from class WingDesignAnalyzer to standalone functions; removed
-#       auxiliary methods (SBJ_structure_opt(), print_results(), __init__()).
-#   - Constants, coefficients, and state variables are passed as function
-#       arguments instead of class attributes.
-#   - polyApprox() decoupled from instance state; renamed to poly_approx().
-#   - Stress calculations use h_spar (spar height) consistently instead of
-#       altitude self.h, correcting a variable-shadowing bug in the original.
-#   - Added type hints to function signatures.
-#   - Added Google-style docstrings.
-#   - Fixed integer truncation of wing twist: `twist` is now allocated with
-#       np.zeros(aa) instead of np.array([0] * aa), which previously created an
-#       integer array that truncated the float twist values.
-#         Original line: twist = np.array([0] * aa)
-#         Modified line: twist = np.zeros(aa)
-#   - Documented that the altitude `h` parameter is intentionally unused: the
-#       original WingDesignAnalyzer never uses altitude in the structural-response
-#       physics (Ws, Wf, theta); it only appeared in the constraints via the
-#       variable-shadowing bug noted above. The parameter is retained for
-#       interface symmetry with the other subsystems.
-#   - Added a lower-bound guard on the spar height: h_spar = max(h_spar, 1E-5).
-#       The original imposes no floor, so h_spar can reach zero or go negative for
-#       some in-bounds designs, yielding non-physical sign-flipped stresses. The
-#       clamp keeps the section height strictly positive.
-#   - REPARAMETRIZED the panel thicknesses (see subsystem3/SubSystem3_Reformulation.md).
-#       The 18 absolute thickness inputs (t1..t3, ts1..ts3, in inches) are replaced by a
-#       two-level fractional parametrization, 3 values per spanwise station:
-#         * alpha1, alpha3 : top/bottom sandwich depth fractions, ts1 = 2*alpha1*D,
-#                            ts3 = 2*alpha3*D, where D = beta*(t/c)*chord is the available
-#                            structural box depth (reconstructed locally after Wing_Mod);
-#         * ts2            : web sandwich thickness, kept ABSOLUTE in inches (the web does
-#                            not set the spar height, so it has no depth to be relative to);
-#         * rho1, rho2, rho3 : skin-to-sandwich ratios, t_p = rho_p * ts_p.
-#       Consequences (all exact restatements of the original physics at the current depth D):
-#         * the spar-height margin 0.5(ts1+ts3) <= h_spar becomes the linear, division-free
-#           h_spar = D*(1 - alpha1 - alpha3) with the constraint alpha1 + alpha3 <= 0.5;
-#         * the core thickness ts_p - t_p = ts_p*(1 - rho_p) is >= 0 by construction (rho_p <= 1),
-#           so the reverted max(ts - t, 0) core clamp is permanently unnecessary;
-#         * h_spar >= 0 structurally (alpha-sum <= 1) and >= 0.5*D in the feasible region, so the
-#           negative/near-zero h_spar blow-up cannot occur for a feasible design.
-#       The Wing_Mod call is moved AHEAD of the thickness construction because the reconstruction
-#       needs the chords c[0:3]; everything downstream is unchanged and consumes the reconstructed
-#       t1..t3, ts1..ts3 exactly as before.
-#   - Signature and return value changed accordingly: the function now accepts
-#       (alpha1, alpha3, ts2, rho1, rho2, rho3) instead of (t, ts) and additionally returns the
-#       reconstructed t_ft/ts_ft (feet) and the 3 h_spar-margin values (alpha1+alpha3-0.5) so the
-#       caller can assemble the response vector and the constraint module can read them.
-#   - Clamped the torsional twist contribution to +-180 degrees: Phi is the Bredt-Batho
-#       closed-section twist (radians, converted via *180/pi) and scales like 1/h_spar**2, so a
-#       near-degenerate (infeasible) section depth drives it far past +-180 deg. Such magnitudes are
-#       non-physical for this linear small-angle model and can overflow `theta` downstream. Phi is
-#       now clipped to +-pi rad (np.clip(Phi, -np.pi, np.pi)), capping the converted contribution at
-#       +-180 deg. Feasible designs (where |Phi| stays small) are unaffected; the clamp only bounds
-#       infeasible probes the optimizer may still evaluate.
-#   - Floored the section moment of inertia I in loads() to a small positive value
-#       (I = max(I, 1E-5), analogous to the h_spar floor). I is used only as a divisor when forming
-#       the bending twist (A, B, Slope_A, Slope_B), so as Izz -> 0 for a near-degenerate thin-skin
-#       section the bending twist bend_twist ~ 1/I diverges. bend_twist is the dominant, otherwise-
-#       unbounded contributor to wing_twist (theta) -- the Phi clamp above does not cover it -- so
-#       this floor caps it and prevents the theta blow-up that triggered the scaler-range warnings.
-#   - Introduced a single module-level floor constant EPS (= 1E-5) and routed the existing h_spar
-#       and moment-of-inertia floors through it, then applied the same guard to the remaining
-#       divide-by-near-zero weaknesses that share the thin-section failure mode:
-#         * np.mean(Izz), the bending-stress divisor in sig_1..sig_6: floored to EPS (Izz_mean), so
-#           the bending stresses stay finite as Izz -> 0 (the loads() I floor does not cover this
-#           raw mean);
-#         * the panel-thickness divisors in the shear terms (tau* and tau*_T): floored copies
-#           t1_div/t2_div/t3_div = max(t_p, EPS) are used ONLY as divisors, since t_p = rho_p*ts_p
-#           can reach ~1e-7 for in-bounds-but-degenerate designs; the unfloored t1/t2/t3 still feed
-#           the weights and core thickness, leaving that physics unchanged;
-#         * the neutral-axis denominator of Y_bar: floored to EPS to prevent a 0/0 -> NaN when all
-#           panels vanish together (a NaN would silently poison Izz, the stresses, and the weights).
-#       All guards activate only for near-degenerate (effectively infeasible) sections; feasible
-#       designs are unaffected.
-#   - Clamped the per-station total elastic twist to a physical/mechanical ceiling
-#       (twist = clip(twist, -THETA_TWIST_MAX_DEG, +THETA_TWIST_MAX_DEG), THETA_TWIST_MAX_DEG = 30).
-#       The coupling response theta = deltaL_divby_q = sum(twist_deg * 0.1 * Spanel * 2) is the
-#       twist-induced lift increment delta(L)/q (an effective area, not an angle), whose only
-#       physically variable driver is the twist angle. The linear small-angle structural model is
-#       valid only for modest twist; real wash-in/out is a few degrees and the hard aeroelastic
-#       ceiling (torsional divergence / control reversal / material yield) sits at order ~10-15 deg.
-#       The 30 deg cap is a deliberately generous bound that leaves feasible designs untouched while
-#       excluding the non-physical model-breakdown values (e.g. ~8000) that thin near-degenerate
-#       sections produced even after the Phi clamp and the I floor. With this cap
-#       |theta| <= 0.1 * 30 * S_ref(<=800) ~ 2400, which is the basis for the widened wing_twist
-#       scaler range in InputFile.py.
-#   - Added explanatory inline comments and physical units (e.g. [ft], [lb], [lb/ft^2], [deg], [-])
-#       to the design variables, reconstructed quantities, loads, stresses, weights, and twist
-#       throughout, and completed the Google-style docstrings with per-argument/return units.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Response calculation module for SSBJ Subsystem 3 (Structures).
 
 This module provides structural analysis calculations for the
 Supersonic Business Jet (SSBJ) problem.
+
+Attribution:
+    This file contains code derived from the DMDO framework by Ahmed Bayoumy,
+    originally published under the GNU Lesser General Public License v3.0.
+    Ahmed H. Bayoumy, the copyright holder of the original code, has granted
+    permission to distribute this derived file under the GNU Lesser General
+    Public License v3.0.
+    Source: https://github.com/Ahmed-Bayoumy/DMDO/blob/DEV/tests/SBJ/SSBJ_Structures.py
+    Relevant original functions: Wing_Mod(), loads(), polyApprox(),
+      calculate_structural_response(), calculate_constraints()
+
+    Modifications from the original:
+      - Refactored from class WingDesignAnalyzer to standalone functions; removed
+          auxiliary methods (SBJ_structure_opt(), print_results(), __init__()).
+      - Constants, coefficients, and state variables are passed as function
+          arguments instead of class attributes.
+      - polyApprox() decoupled from instance state; renamed to poly_approx().
+      - Stress calculations use h_spar (spar height) consistently instead of
+          altitude self.h, correcting a variable-shadowing bug in the original.
+      - Added type hints to function signatures.
+      - Added Google-style docstrings.
+      - Fixed integer truncation of wing twist: `twist` is now allocated with
+          np.zeros(aa) instead of np.array([0] * aa), which previously created an
+          integer array that truncated the float twist values.
+            Original line: twist = np.array([0] * aa)
+            Modified line: twist = np.zeros(aa)
+      - Documented that the altitude `h` parameter is intentionally unused: the
+          original WingDesignAnalyzer never uses altitude in the structural-response
+          physics (Ws, Wf, theta); it only appeared in the constraints via the
+          variable-shadowing bug noted above. The parameter is retained for
+          interface symmetry with the other subsystems.
+      - Added a lower-bound guard on the spar height: h_spar = max(h_spar, 1E-5).
+          The original imposes no floor, so h_spar can reach zero or go negative for
+          some in-bounds designs, yielding non-physical sign-flipped stresses. The
+          clamp keeps the section height strictly positive.
+      - REPARAMETRIZED the panel thicknesses (see subsystem3/SubSystem3_Reformulation.md).
+          The 18 absolute thickness inputs (t1..t3, ts1..ts3, in inches) are replaced by a
+          two-level fractional parametrization, 3 values per spanwise station:
+            * alpha1, alpha3 : top/bottom sandwich depth fractions, ts1 = 2*alpha1*D,
+                               ts3 = 2*alpha3*D, where D = beta*(t/c)*chord is the available
+                               structural box depth (reconstructed locally after Wing_Mod);
+            * ts2            : web sandwich thickness, kept ABSOLUTE in inches (the web does
+                               not set the spar height, so it has no depth to be relative to);
+            * rho1, rho2, rho3 : skin-to-sandwich ratios, t_p = rho_p * ts_p.
+          Consequences (all exact restatements of the original physics at the current depth D):
+            * the spar-height margin 0.5(ts1+ts3) <= h_spar becomes the linear, division-free
+              h_spar = D*(1 - alpha1 - alpha3) with the constraint alpha1 + alpha3 <= 0.5;
+            * the core thickness ts_p - t_p = ts_p*(1 - rho_p) is >= 0 by construction (rho_p <= 1),
+              so the reverted max(ts - t, 0) core clamp is permanently unnecessary;
+            * h_spar >= 0 structurally (alpha-sum <= 1) and >= 0.5*D in the feasible region, so the
+              negative/near-zero h_spar blow-up cannot occur for a feasible design.
+          The Wing_Mod call is moved AHEAD of the thickness construction because the reconstruction
+          needs the chords c[0:3]; everything downstream is unchanged and consumes the reconstructed
+          t1..t3, ts1..ts3 exactly as before.
+      - Signature and return value changed accordingly: the function now accepts
+          (alpha1, alpha3, ts2, rho1, rho2, rho3) instead of (t, ts) and additionally returns the
+          reconstructed t_ft/ts_ft (feet) and the 3 h_spar-margin values (alpha1+alpha3-0.5) so the
+          caller can assemble the response vector and the constraint module can read them.
+      - Clamped the torsional twist contribution to +-180 degrees: Phi is the Bredt-Batho
+          closed-section twist (radians, converted via *180/pi) and scales like 1/h_spar**2, so a
+          near-degenerate (infeasible) section depth drives it far past +-180 deg. Such magnitudes are
+          non-physical for this linear small-angle model and can overflow `theta` downstream. Phi is
+          now clipped to +-pi rad (np.clip(Phi, -np.pi, np.pi)), capping the converted contribution at
+          +-180 deg. Feasible designs (where |Phi| stays small) are unaffected; the clamp only bounds
+          infeasible probes the optimizer may still evaluate.
+      - Floored the section moment of inertia I in loads() to a small positive value
+          (I = max(I, 1E-5), analogous to the h_spar floor). I is used only as a divisor when forming
+          the bending twist (A, B, Slope_A, Slope_B), so as Izz -> 0 for a near-degenerate thin-skin
+          section the bending twist bend_twist ~ 1/I diverges. bend_twist is the dominant, otherwise-
+          unbounded contributor to wing_twist (theta) -- the Phi clamp above does not cover it -- so
+          this floor caps it and prevents the theta blow-up that triggered the scaler-range warnings.
+      - Introduced a single module-level floor constant EPS (= 1E-5) and routed the existing h_spar
+          and moment-of-inertia floors through it, then applied the same guard to the remaining
+          divide-by-near-zero weaknesses that share the thin-section failure mode:
+            * np.mean(Izz), the bending-stress divisor in sig_1..sig_6: floored to EPS (Izz_mean), so
+              the bending stresses stay finite as Izz -> 0 (the loads() I floor does not cover this
+              raw mean);
+            * the panel-thickness divisors in the shear terms (tau* and tau*_T): floored copies
+              t1_div/t2_div/t3_div = max(t_p, EPS) are used ONLY as divisors, since t_p = rho_p*ts_p
+              can reach ~1e-7 for in-bounds-but-degenerate designs; the unfloored t1/t2/t3 still feed
+              the weights and core thickness, leaving that physics unchanged;
+            * the neutral-axis denominator of Y_bar: floored to EPS to prevent a 0/0 -> NaN when all
+              panels vanish together (a NaN would silently poison Izz, the stresses, and the weights).
+          All guards activate only for near-degenerate (effectively infeasible) sections; feasible
+          designs are unaffected.
+      - Clamped the per-station total elastic twist to a physical/mechanical ceiling
+          (twist = clip(twist, -THETA_TWIST_MAX_DEG, +THETA_TWIST_MAX_DEG), THETA_TWIST_MAX_DEG = 30).
+          The coupling response theta = deltaL_divby_q = sum(twist_deg * 0.1 * Spanel * 2) is the
+          twist-induced lift increment delta(L)/q (an effective area, not an angle), whose only
+          physically variable driver is the twist angle. The linear small-angle structural model is
+          valid only for modest twist; real wash-in/out is a few degrees and the hard aeroelastic
+          ceiling (torsional divergence / control reversal / material yield) sits at order ~10-15 deg.
+          The 30 deg cap is a deliberately generous bound that leaves feasible designs untouched while
+          excluding the non-physical model-breakdown values (e.g. ~8000) that thin near-degenerate
+          sections produced even after the Phi clamp and the I floor. With this cap
+          |theta| <= 0.1 * 30 * S_ref(<=800) ~ 2400, which is the basis for the widened wing_twist
+          scaler range in InputFile.py.
+      - Added explanatory inline comments and physical units (e.g. [ft], [lb], [lb/ft^2], [deg], [-])
+          to the design variables, reconstructed quantities, loads, stresses, weights, and twist
+          throughout, and completed the Google-style docstrings with per-argument/return units.
 """
 
 import numpy as np 

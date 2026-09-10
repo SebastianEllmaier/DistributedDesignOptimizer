@@ -1,5 +1,5 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """AlwaysConverged outer loop convergence indicator factory for controller subsystems.
 
 This module provides the factory for outer loop convergence indicators whose 

@@ -10,7 +10,7 @@ title: AnalysisInterface (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Analysis interface module.
 
 This module defines the abstract interface for subsystem analysis components.

@@ -10,7 +10,7 @@ title: Optimization2 (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Optimization configuration module for Speed Reducer subsystem 2.
 
 Configures the local optimization algorithm for shaft 2 in the Speed

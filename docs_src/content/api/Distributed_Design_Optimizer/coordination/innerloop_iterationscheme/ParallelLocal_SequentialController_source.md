@@ -10,7 +10,7 @@ title: ParallelLocal_SequentialController (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Parallel local, sequential controller iteration scheme module.
 
 This module provides an iteration scheme where local subsystems execute

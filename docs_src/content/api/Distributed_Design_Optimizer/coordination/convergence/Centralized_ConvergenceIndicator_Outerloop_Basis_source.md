@@ -10,7 +10,7 @@ title: Centralized_ConvergenceIndicator_Outerloop_Basis (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Base implementation for centralized outer loop convergence indicators."""
 
 from Distributed_Design_Optimizer.coordination.convergence import Centralized_ConvergenceIndicator_Outerloop_Interface

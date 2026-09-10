@@ -1,5 +1,5 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Coordinator module for distributed design optimization.
 
 This module provides the main Coordinator class that orchestrates multi-level

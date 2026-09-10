@@ -10,7 +10,7 @@ title: ParallelEvenThenOddLevels (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Even-odd level iteration scheme module.
 
 This module provides an iteration scheme where even levels are solved first

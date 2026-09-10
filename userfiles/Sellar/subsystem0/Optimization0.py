@@ -1,5 +1,5 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Optimization configuration module for Sellar subsystem 0.
 
 Configures the local optimization algorithm for subsystem 0 in the Sellar
