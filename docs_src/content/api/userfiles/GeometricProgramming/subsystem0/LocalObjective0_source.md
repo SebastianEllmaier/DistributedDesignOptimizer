@@ -10,7 +10,7 @@ title: LocalObjective0 (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Local objective module for Subsystem 0 in the Geometric Programming problem.
 
 This module defines the LocalObjective0 class which implements the local

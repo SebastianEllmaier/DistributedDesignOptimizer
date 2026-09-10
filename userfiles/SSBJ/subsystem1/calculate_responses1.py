@@ -1,24 +1,28 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
-#
-# This file contains code derived from the DMDO framework by Ahmed Bayoumy,
-# originally published under the GNU General Public License v3.0.
-# Source: https://github.com/Ahmed-Bayoumy/DMDO/blob/DEV/tests/SBJ/SSBJ_Propulsion.py
-# Relevant original functions: calculate_tempe_throttleua(), SBJ_propulsion_analysis(),
-#   calculate_sfc(), calculate_esf(), calculate_engine_weight(), poly_approx()
-#
-# Modifications from the original:
-#   - Refactored from class SSBJPropulsion to standalone functions; removed
-#       auxiliary methods (SBJ_propulsion_opt(), print_results(), __init__()).
-#   - Constants, coefficients, and state variables are passed as function
-#       arguments instead of class attributes.
-#   - poly_approx() decoupled from instance state (self.R, self.h, etc.).
-#   - Added type hints to function signatures.
-#   - Added Google-style docstrings.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Response calculation module for SSBJ Subsystem 1 (Propulsion).
 
 This module provides propulsion-related calculations for the
 Supersonic Business Jet (SSBJ) problem.
+
+Attribution:
+    This file contains code derived from the DMDO framework by Ahmed Bayoumy,
+    originally published under the GNU Lesser General Public License v3.0.
+    Ahmed H. Bayoumy, the copyright holder of the original code, has granted
+    permission to distribute this derived file under the GNU Lesser General
+    Public License v3.0.
+    Source: https://github.com/Ahmed-Bayoumy/DMDO/blob/DEV/tests/SBJ/SSBJ_Propulsion.py
+    Relevant original functions: calculate_tempe_throttleua(), SBJ_propulsion_analysis(),
+    calculate_sfc(), calculate_esf(), calculate_engine_weight(), poly_approx()
+
+    Modifications from the original:
+        - Refactored from class SSBJPropulsion to standalone functions; removed
+          auxiliary methods (SBJ_propulsion_opt(), print_results(), __init__()).
+        - Constants, coefficients, and state variables are passed as function
+          arguments instead of class attributes.
+        - poly_approx() decoupled from instance state (self.R, self.h, etc.).
+        - Added type hints to function signatures.
+        - Added Google-style docstrings.
 """
 
 import copy

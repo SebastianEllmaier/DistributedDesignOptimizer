@@ -10,49 +10,53 @@ title: calculate_responses2 (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
-#
-# This file contains code derived from the DMDO framework by Ahmed Bayoumy,
-# originally published under the GNU General Public License v3.0.
-# Source: https://github.com/Ahmed-Bayoumy/DMDO/blob/DEV/tests/SBJ/SSBJ_Aerodynamics.py
-# Relevant original functions: calculate_drag_polar(), poly_approx()
-#
-# Modifications from the original:
-#   - Refactored from class SSBJAerodynamics to standalone functions; removed
-#       auxiliary methods (SBJ_aerodynamics_opt(), print_results(), __init__()).
-#   - Constants, coefficients, and state variables are passed as function
-#       arguments instead of class attributes.
-#   - poly_approx() decoupled from instance state (self.Z, self.ESFp, etc.).
-#   - Removed the if CLo[0] > 0 branch in calculate_constraints() (only the
-#       CLo[0] > 0 case is retained).
-#   - Adverse pressure gradient (calculate_drag_polar()): the base argument of
-#       poly_approx() is set to the fixed baseline thickness-to-chord ratio
-#       (tc = 0.05) to match NoHiMDO (SBJ_constraint_dragpolar.m). The DMDO port
-#       reused the local thickness_to_chord_ratio for both the base and the
-#       evaluation point (base == new), which collapses the response surface to a
-#       constant and makes the constraint inert. Using the fixed baseline as the
-#       base restores a live constraint that responds to the local t/c design
-#       variable. (DDO's aerodynamics subsystem only has access to its own local
-#       t/c, not the shared/target copy NoHiMDO passes as tc, so the baseline
-#       design value about which the response surface is fitted is used instead.)
-#   - Engine-scale-factor drag factor Fo1 (calculate_drag_polar()): the base
-#       argument of poly_approx() is set to the fixed nominal ESF baseline
-#       (engine_scale_factor = 1.0, i.e. the initial local design value) instead
-#       of reusing the current engine_scale_factor for both base and evaluation
-#       point. The DMDO port used base == new, which collapsed Fo1 to the constant
-#       Ao and made the ESF term in CDmin inert. Using base != new restores an Fo1
-#       (and hence a minimum-drag coefficient) that responds to the local
-#       engine_scale_factor design variable, mirroring the adverse-pressure-gradient
-#       (tc = 0.05) fix above.
-#   - Added type hints to function signatures.
-#   - Added Google-style docstrings.
-#   - Added explanatory inline comments and physical units (e.g. [ft], [lb],
-#       [deg], [-]) throughout to document the design variables, responses, and
-#       intermediate quantities.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Response calculation module for SSBJ Subsystem 2 (Aerodynamics).
 
 This module provides aerodynamic calculations for the
 Supersonic Business Jet (SSBJ) problem.
+
+Attribution:
+    This file contains code derived from the DMDO framework by Ahmed Bayoumy,
+    originally published under the GNU Lesser General Public License v3.0.
+    Ahmed H. Bayoumy, the copyright holder of the original code, has granted
+    permission to distribute this derived file under the GNU Lesser General
+    Public License v3.0.
+    Source: https://github.com/Ahmed-Bayoumy/DMDO/blob/DEV/tests/SBJ/SSBJ_Aerodynamics.py
+    Relevant original functions: calculate_drag_polar(), poly_approx()
+
+    Modifications from the original:
+        - Refactored from class SSBJAerodynamics to standalone functions; removed
+          auxiliary methods (SBJ_aerodynamics_opt(), print_results(), __init__()).
+        - Constants, coefficients, and state variables are passed as function
+          arguments instead of class attributes.
+        - poly_approx() decoupled from instance state (self.Z, self.ESFp, etc.).
+        - Removed the if CLo[0] > 0 branch in calculate_constraints() (only the
+          CLo[0] > 0 case is retained).
+        - Adverse pressure gradient (calculate_drag_polar()): the base argument of
+          poly_approx() is set to the fixed baseline thickness-to-chord ratio
+          (tc = 0.05) to match NoHiMDO (SBJ_constraint_dragpolar.m). The DMDO port
+          reused the local thickness_to_chord_ratio for both the base and the
+          evaluation point (base == new), which collapses the response surface to a
+          constant and makes the constraint inert. Using the fixed baseline as the
+          base restores a live constraint that responds to the local t/c design
+          variable. (DDO's aerodynamics subsystem only has access to its own local
+          t/c, not the shared/target copy NoHiMDO passes as tc, so the baseline
+          design value about which the response surface is fitted is used instead.)
+        - Engine-scale-factor drag factor Fo1 (calculate_drag_polar()): the base
+          argument of poly_approx() is set to the fixed nominal ESF baseline
+          (engine_scale_factor = 1.0, i.e. the initial local design value) instead
+          of reusing the current engine_scale_factor for both base and evaluation
+          point. The DMDO port used base == new, which collapsed Fo1 to the constant
+          Ao and made the ESF term in CDmin inert. Using base != new restores an Fo1
+          (and hence a minimum-drag coefficient) that responds to the local
+          engine_scale_factor design variable, mirroring the adverse-pressure-gradient
+          (tc = 0.05) fix above.
+        - Added type hints to function signatures.
+        - Added Google-style docstrings.
+        - Added explanatory inline comments and physical units (e.g. [ft], [lb],
+          [deg], [-]) throughout to document the design variables, responses, and
+          intermediate quantities.
 """
 
 import numpy as np 

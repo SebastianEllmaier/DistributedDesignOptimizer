@@ -10,7 +10,7 @@ title: LocalConstraints1 (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Local constraints module for Sellar subsystem 1.
 
 Defines the equality and inequality constraints local to subsystem 1

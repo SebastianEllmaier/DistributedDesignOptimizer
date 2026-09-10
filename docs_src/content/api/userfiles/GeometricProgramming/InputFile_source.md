@@ -10,7 +10,7 @@ title: InputFile (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Input file configuration for Geometric Programming Top-Down Hierarchic continuous optimization.
 
 This module defines the InputFileAugmentedLagrangian class which configures

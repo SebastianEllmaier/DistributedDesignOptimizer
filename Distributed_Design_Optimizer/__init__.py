@@ -1,5 +1,5 @@
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 
 # Invalidate bytecode caches once when the package structure changes so
 # beartype's import hook doesn't trip over stale .pyc files that reference

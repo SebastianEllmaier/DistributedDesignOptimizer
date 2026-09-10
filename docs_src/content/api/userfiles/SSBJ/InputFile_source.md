@@ -10,7 +10,7 @@ title: InputFile (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Input file configuration for Supersonic Business Jet (SSBJ) distributed optimization.
 
 This module defines the InputFile class which configures all parameters for the

@@ -10,7 +10,7 @@ title: MiddleLevelDataStorageALC (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Middle-level data storage module for standard ALC.
 
 This module provides data storage for coupling parameters in standard

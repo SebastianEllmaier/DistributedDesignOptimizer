@@ -1,6 +1,6 @@
 
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """ANSI color constants and print utilities for DDO terminal output."""
 
 import textwrap

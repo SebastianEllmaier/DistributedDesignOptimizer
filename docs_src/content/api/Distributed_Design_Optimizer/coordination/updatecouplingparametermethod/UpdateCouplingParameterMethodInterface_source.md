@@ -10,7 +10,7 @@ title: UpdateCouplingParameterMethodInterface (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Interface for coupling parameter update methods.
 
 This module defines the abstract interface for updating coupling parameters

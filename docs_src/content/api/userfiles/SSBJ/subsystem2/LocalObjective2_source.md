@@ -10,7 +10,7 @@ title: LocalObjective2 (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Local objective module for Subsystem 2 in the Supersonic Business Jet (SSBJ) problem."""
 from typing import List
 from Distributed_Design_Optimizer.subsystem.optimization.designproblem import LocalObjectiveInterface

@@ -10,7 +10,7 @@ title: ConvergenceIndicator_Innerloop_DeWit (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """DeWit inner loop convergence indicator factory.
 
 This module provides the DeWit factory for inner loop convergence indicators

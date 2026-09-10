@@ -10,7 +10,7 @@ title: LocalConstraints3 (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Local constraints module for Subsystem 3 in the Supersonic Business Jet (SSBJ) problem.
 
 This module defines the LocalConstraints3 class which implements the local

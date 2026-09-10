@@ -10,7 +10,7 @@ title: generate_inits (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Script to auto-generate __init__.py files for the Distributed_Design_Optimizer package.
 
 Uses AST parsing to discover public classes/functions from each package's direct .py
@@ -57,7 +57,7 @@ USERFILES_ROOT = os.path.join(REPO_ROOT, "userfiles")
 
 HEADER = """\
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """
 
 AUTOGEN_OPEN = "# <AUTOGEN_INIT>"

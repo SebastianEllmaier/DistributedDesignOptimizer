@@ -10,7 +10,7 @@ title: ConvergenceIndicator_Innerloop_AlwaysConverged (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """AlwaysConverged inner loop convergence indicator factory for controller subsystems.
 
 This module provides the factory for inner loop convergence indicators whose 

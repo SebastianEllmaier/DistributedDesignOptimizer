@@ -10,7 +10,7 @@ title: LocalController_MiddleLevelDataStorageALADIN (Source)
 
 ```python
 # Copyright (C) The DistributedDesignOptimizer Contributors
-# Licensed under the GNU General Public License v3.0. See LICENSE file for details.
+# Licensed under the GNU Lesser General Public License v3.0. See LICENSE file for details.
 """Local-to-controller middle-level data storage module for ALADIN.
 
 This module provides data storage for local-to-controller subsystem
